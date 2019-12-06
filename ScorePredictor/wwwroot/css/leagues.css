@@ -1,5 +1,5 @@
 ﻿* {
-
+    font-family: Fjalla One;
     margin: 0;
     border: 0;
     padding: 0;
@@ -10,7 +10,6 @@
 .ptable table {
     margin: 30px auto;
     border-collapse: collapse;
-    font-family: Fjalla One;
 }
 
 html {
@@ -20,12 +19,14 @@ html {
 .ptable {
     margin: 0px 0% 30px 0%;
     background-color:black !important;
+    font-size: 12px;
 }
 
     .ptable th, td {
         padding: 10px;
         background-color: black;
         color: #ffe221;
+        text-align: center;
     }
 
 

@@ -12,13 +12,17 @@ namespace ScorePredictor.Controllers
     {
         public async Task<IActionResult> Leagues(LeagueService leagueService)
         {
-            List<LeagueEntry> leagues = await leagueService.getLeagueTable(2021);
+            List<LeagueEntry> leagues = await leagueService.getLeagueTable();
 
             System.Diagnostics.Debug.WriteLine("------------");
-            System.Diagnostics.Debug.WriteLine(leagues[0]);
+            System.Diagnostics.Debug.WriteLine(leagues.GetType());
             System.Diagnostics.Debug.WriteLine("------------");
 
-            return View();
+            foreach(LeagueEntry entry in leagues)
+            {
+                System.Diagnostics.Debug.WriteLine(entry.name);
+            }
+            return View(leagues);
         }
     }
 }

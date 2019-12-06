@@ -12,7 +12,7 @@ namespace ScorePredictor.Data
 {
     public class LeagueService
     {
-        public async Task<List<LeagueEntry>> getLeagueTable(int leagueCode = 2021)
+        public async Task<List<LeagueEntry>> getLeagueTable(int leagueCode = 2017)
         {
 
             HttpClient client = new HttpClient();

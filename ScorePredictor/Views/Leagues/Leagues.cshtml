@@ -1,6 +1,6 @@
-﻿@page
-@*@model List<LeagueEntry>*@
+﻿@model List<LeagueEntry>
 @section Styles {
+    <link href="https://fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet">
     <link href="@Url.Content("~/css/leagues.css")" rel="stylesheet" type="text/css" />
 }
 
@@ -8,7 +8,7 @@
     <h1 class="headin">Standings</h1>
     <table>
         <tr class="col">
-            <th></th>
+            <th>Pos</th>
             <th>Team</th>
             <th>GP</th>
             <th>W</th>
@@ -19,8 +19,20 @@
             <th>GA</th>
             <th>PTS</th>
         </tr>
-        @*@foreach(LeagueEntry entry in @Model)
+        @foreach (LeagueEntry entry in Model)
         {
-        }*@
+            <tr class="wpos">
+                <td>@entry.position</td>
+                <td>@entry.name</td>
+                <td>@entry.matchesPlayed</td>
+                <td>@entry.won</td>
+                <td>@entry.drawn</td>
+                <td>@entry.lost</td>
+                <td>@entry.goalDifference</td>
+                <td>@entry.goalsFor</td>
+                <td>@entry.goalsAgainst</td>
+                <td>@entry.points</td>
+            </tr>
+        }
     </table>
 </div>
