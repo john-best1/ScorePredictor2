@@ -1,3 +1,26 @@
 ﻿@page
+@*@model List<LeagueEntry>*@
+@section Styles {
+    <link href="@Url.Content("~/css/leagues.css")" rel="stylesheet" type="text/css" />
+}
 
-<h1>Leagues</h1>
+<div class="ptable">
+    <h1 class="headin">Standings</h1>
+    <table>
+        <tr class="col">
+            <th></th>
+            <th>Team</th>
+            <th>GP</th>
+            <th>W</th>
+            <th>D</th>
+            <th>L</th>
+            <th>GD</th>
+            <th>GF</th>
+            <th>GA</th>
+            <th>PTS</th>
+        </tr>
+        @*@foreach(LeagueEntry entry in @Model)
+        {
+        }*@
+    </table>
+</div>

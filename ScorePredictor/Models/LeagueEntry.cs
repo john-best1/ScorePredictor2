@@ -8,7 +8,7 @@ namespace ScorePredictor.Models
 {
     public class LeagueEntry
     {
-        public int id { get; set; }
+        //public int id { get; set; }
         public int position { get; set; }
         public string name { get; set; }
         public int matchesPlayed { get; set; }

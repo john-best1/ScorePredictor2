@@ -1,0 +1,78 @@
+﻿* {
+
+    margin: 0;
+    border: 0;
+    padding: 0;
+    background-color: black;
+}
+
+
+.ptable table {
+    margin: 30px auto;
+    border-collapse: collapse;
+    font-family: Fjalla One;
+}
+
+html {
+    background-color: black;
+}
+
+.ptable {
+    margin: 0px 0% 30px 0%;
+    background-color:black !important;
+}
+
+    .ptable th, td {
+        padding: 10px;
+        background-color: black;
+        color: #ffe221;
+    }
+
+
+.headin {
+    text-align: center;
+    text-decoration: none;
+    color: #ffe221;
+    margin: 30px;
+    display: block;
+}
+
+.container{
+    background-color:black !important;
+}
+
+.wpos {
+    text-align: center;
+}
+
+    .wpos td {
+        color: #77ff21;
+    }
+
+.pos {
+    text-align: center;
+}
+
+    .pos td {
+        color: #ff7b21;
+    }
+
+table .col {
+    border-bottom: 1px solid #FFFFFF;
+}
+
+.wpos:hover {
+    background-color: #77ff21;
+}
+
+    .wpos:hover td {
+        color: mediumpurple;
+    }
+
+.pos:hover {
+    background-color: #ff7b21;
+}
+
+    .pos:hover td {
+        color: mediumpurple;
+    }
