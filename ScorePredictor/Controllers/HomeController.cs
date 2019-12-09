@@ -4,21 +4,21 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using ScorePredictor.Data;
 using ScorePredictor.Models;
 
 namespace ScorePredictor.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        public async Task<IActionResult> Index(FixtureService fixtureService)
         {
+            List<FixtureList> fixtureLists = await fixtureService.getDaysFixtures();
             return View();
         }
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
-
             return View();
         }
 

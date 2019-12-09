@@ -7,7 +7,7 @@
 
 
 .ptable table {
-    font-family: Fjalla One;
+    font-family: cursive;
     margin: 10px auto;
     border-collapse: collapse;
 }
@@ -31,7 +31,7 @@ html {
 
 
 .headin {
-    font-family: Fjalla One;
+    font-family: fantasy;
     text-align: center;
     text-decoration: none;
     color: #ffe221;
@@ -86,7 +86,11 @@ table .col {
     color: white;
     padding: 16px;
     font-size: 16px;
-    border: none;
+    border: 2px solid silver;
+    font-family:fantasy;
+    color:greenyellow;
+    background-color:#1082ef;
+    border-radius: 12px;
 }
 
 .dropdown {
@@ -98,17 +102,20 @@ table .col {
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #f1f1f1;
-    min-width: 160px;
+    background-color: silver;
+    min-width: 140px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
+    border-radius:12px;
 }
 
     .dropdown-content a {
         color: black;
-        padding: 12px 16px;
+        padding: 5px 16px;
         text-decoration: none;
         display: block;
+        border-radius:12px;
+        font-family:cursive;
     }
 
         .dropdown-content a:hover {
