@@ -22,6 +22,7 @@ namespace ScorePredictor.Controllers
             {
                 System.Diagnostics.Debug.WriteLine(entry.name);
             }
+            ViewBag.Message = leagueService.leagueName;
             return View(leagues);
         }
     }

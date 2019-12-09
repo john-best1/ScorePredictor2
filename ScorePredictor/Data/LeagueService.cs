@@ -12,9 +12,10 @@ namespace ScorePredictor.Data
 {
     public class LeagueService
     {
-        public async Task<List<LeagueEntry>> getLeagueTable(int leagueCode = 2017)
-        {
 
+        public string leagueName { get; set; }
+        public async Task<List<LeagueEntry>> getLeagueTable(int leagueCode = 2016)
+        {
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("X-Auth-Token", "7830c352850f4acda78aa61d1666d45b");
@@ -24,6 +25,7 @@ namespace ScorePredictor.Data
                 if (response.IsSuccessStatusCode)
                 {
                     JObject jsonObject = JObject.Parse(await response.Content.ReadAsStringAsync());
+                    leagueName = jsonObject["competition"]["area"]["name"].ToString() + " - " + jsonObject["competition"]["name"].ToString();
                     JArray standings = (JArray)jsonObject["standings"];
                     List<LeagueEntry> leagueEntries = new List<LeagueEntry>();
                     for (int i = 0; i < standings[0]["table"].Count(); i++)
