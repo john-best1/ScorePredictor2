@@ -5,25 +5,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ScorePredictor.Data;
 using ScorePredictor.Models;
+using ScorePredictor.ViewModels;
 
 namespace ScorePredictor.Controllers
 {
     public class LeaguesController : Controller
     {
-        public async Task<IActionResult> Leagues(LeagueService leagueService)
+        public async Task<IActionResult> Leagues(LeagueService leagueService, int leagueCode = 2021, int leagueTypeCode = 0)
         {
-            List<LeagueEntry> leagues = await leagueService.getLeagueTable();
-
-            System.Diagnostics.Debug.WriteLine("------------");
-            System.Diagnostics.Debug.WriteLine(leagues.GetType());
-            System.Diagnostics.Debug.WriteLine("------------");
-
-            foreach(LeagueEntry entry in leagues)
-            {
-                System.Diagnostics.Debug.WriteLine(entry.name);
-            }
-            ViewBag.Message = leagueService.leagueName;
-            return View(leagues);
+            LeaguesViewModel viewModel = new LeaguesViewModel(leagueCode, leagueTypeCode);
+            List<LeagueEntry> leagues = await leagueService.getLeagueTable(leagueCode, leagueTypeCode);
+            viewModel.leagues = leagues;
+            viewModel.shortLeagueTitle = leagueService.shortLeagueName;
+            viewModel.longLeagueTitle = leagueService.longLeagueName;
+            return View(viewModel);
         }
     }
 }

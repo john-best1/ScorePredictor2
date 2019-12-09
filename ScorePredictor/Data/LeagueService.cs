@@ -12,9 +12,9 @@ namespace ScorePredictor.Data
 {
     public class LeagueService
     {
-
-        public string leagueName { get; set; }
-        public async Task<List<LeagueEntry>> getLeagueTable(int leagueCode = 2016)
+        public string shortLeagueName { get; set; }
+        public string longLeagueName { get; set; }
+        public async Task<List<LeagueEntry>> getLeagueTable(int leagueCode = 2016, int leagueTypeCode = 0)
         {
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -25,23 +25,24 @@ namespace ScorePredictor.Data
                 if (response.IsSuccessStatusCode)
                 {
                     JObject jsonObject = JObject.Parse(await response.Content.ReadAsStringAsync());
-                    leagueName = jsonObject["competition"]["area"]["name"].ToString() + " - " + jsonObject["competition"]["name"].ToString();
+                    shortLeagueName = jsonObject["competition"]["name"].ToString();
+                    longLeagueName = jsonObject["competition"]["area"]["name"].ToString() + " - " + shortLeagueName;
                     JArray standings = (JArray)jsonObject["standings"];
                     List<LeagueEntry> leagueEntries = new List<LeagueEntry>();
-                    for (int i = 0; i < standings[0]["table"].Count(); i++)
+                    for (int i = 0; i < standings[leagueTypeCode]["table"].Count(); i++)
                     {
                         LeagueEntry entry = new LeagueEntry
                         {
-                            position = int.Parse(standings[0]["table"][i]["position"].ToString()),
-                            name = standings[0]["table"][i]["team"]["name"].ToString(),
-                            matchesPlayed = int.Parse(standings[0]["table"][i]["playedGames"].ToString()),
-                            won = int.Parse(standings[0]["table"][i]["won"].ToString()),
-                            drawn = int.Parse(standings[0]["table"][i]["draw"].ToString()),
-                            lost = int.Parse(standings[0]["table"][i]["lost"].ToString()),
-                            goalsFor = int.Parse(standings[0]["table"][i]["goalsFor"].ToString()),
-                            goalsAgainst = int.Parse(standings[0]["table"][i]["goalsAgainst"].ToString()),
-                            goalDifference = int.Parse(standings[0]["table"][i]["goalDifference"].ToString()),
-                            points = int.Parse(standings[0]["table"][i]["points"].ToString())
+                            position = int.Parse(standings[leagueTypeCode]["table"][i]["position"].ToString()),
+                            name = standings[leagueTypeCode]["table"][i]["team"]["name"].ToString(),
+                            matchesPlayed = int.Parse(standings[leagueTypeCode]["table"][i]["playedGames"].ToString()),
+                            won = int.Parse(standings[leagueTypeCode]["table"][i]["won"].ToString()),
+                            drawn = int.Parse(standings[leagueTypeCode]["table"][i]["draw"].ToString()),
+                            lost = int.Parse(standings[leagueTypeCode]["table"][i]["lost"].ToString()),
+                            goalsFor = int.Parse(standings[leagueTypeCode]["table"][i]["goalsFor"].ToString()),
+                            goalsAgainst = int.Parse(standings[leagueTypeCode]["table"][i]["goalsAgainst"].ToString()),
+                            goalDifference = int.Parse(standings[leagueTypeCode]["table"][i]["goalDifference"].ToString()),
+                            points = int.Parse(standings[leagueTypeCode]["table"][i]["points"].ToString())
                         };
                         leagueEntries.Add(entry);
                     }

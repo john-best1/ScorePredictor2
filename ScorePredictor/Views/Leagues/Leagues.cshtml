@@ -1,11 +1,30 @@
-﻿@model List<LeagueEntry>
+﻿@model LeaguesViewModel
 @section Styles {
     <link href="https://fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet">
     <link href="@Url.Content("~/css/leagues.css")" rel="stylesheet" type="text/css" />
 }
 
 <div class="ptable col-md-offset-7">
-    <h1 class="headin">@ViewBag.Message</h1>
+    <h1 class="headin">@Model.longLeagueTitle</h1>
+
+    <div class="dropdown">
+        <button class="dropbtn">@Model.leagueType</button>
+        <div class="dropdown-content">
+            <a asp-controller="Leagues" asp-action="Leagues" asp-route-leagueCode="@Model.leagueCode" asp-route-leagueTypeCode="0">Overall</a>
+            <a asp-controller="Leagues" asp-action="Leagues" asp-route-leagueCode="@Model.leagueCode" asp-route-leagueTypeCode="1">Home</a>
+            <a asp-controller="Leagues" asp-action="Leagues" asp-route-leagueCode="@Model.leagueCode" asp-route-leagueTypeCode="2">Away</a>
+        </div>
+    </div>
+
+    <div class="dropdown" style="margin-left:100px">
+        <button class="dropbtn">@Model.shortLeagueTitle</button>
+        <div class="dropdown-content">
+            <a asp-controller="Leagues" asp-action="Leagues" asp-route-leagueCode="2021" asp-route-leagueTypeCode="@Model.leagueTypeCode">Premier League</a>
+            <a asp-controller="Leagues" asp-action="Leagues" asp-route-leagueCode="2016" asp-route-leagueTypeCode="@Model.leagueTypeCode">Championship</a>
+            <a asp-controller="Leagues" asp-action="Leagues" asp-route-leagueCode="2017" asp-route-leagueTypeCode="@Model.leagueTypeCode">Primeira Liga</a>
+        </div>
+    </div>
+
     <table>
         <tr class="col">
             <th>Pos</th>
@@ -19,7 +38,7 @@
             <th>GA</th>
             <th>PTS</th>
         </tr>
-        @foreach (LeagueEntry entry in Model)
+        @foreach (LeagueEntry entry in Model.leagues)
         {
             <tr class="wpos">
                 <td>@entry.position</td>
@@ -35,4 +54,5 @@
             </tr>
         }
     </table>
+
 </div>
