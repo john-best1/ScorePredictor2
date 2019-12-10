@@ -1,5 +1,29 @@
-﻿@{
+﻿@model FixturesViewModel
+
+@{
     ViewData["Title"] = "Home Page";
+}
+@section Styles {
+    <link href="@Url.Content("~/css/home.css")" rel="stylesheet" type="text/css" />
+}
+@foreach (FixtureList list in @Model.fixtureLists)
+{
+    @if (list != null)
+    {
+        <table>
+            <tr>
+                <th>@list.leagueName</th>
+            </tr>
+            @foreach (Fixture fixture in list.fixtures)
+            {
+                <tr>
+                    <td>@fixture.utcDate</td>
+                    <td>@fixture.homeTeamName V @fixture.awayTeamName</td>
+                    @*<button>Get Prediction</button>*@
+                </tr>
+            }
+        </table>
+    }
 }
 
 

@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ScorePredictor.Data;
 using ScorePredictor.Models;
+using ScorePredictor.ViewModels;
 
 namespace ScorePredictor.Controllers
 {
     public class HomeController : Controller
     {
-        public async Task<IActionResult> Index(FixtureService fixtureService)
+        public async Task<IActionResult> Index(FixtureService fixtureService, string date = "dateFrom=2019-12-14&dateTo=2019-12-14")
         {
-            List<FixtureList> fixtureLists = await fixtureService.getDaysFixtures();
-            return View();
+            FixtureList[] fixtureLists = await fixtureService.getDaysFixtures(date);
+            FixturesViewModel viewModel = new FixturesViewModel { fixtureLists = fixtureLists, date = date };
+            return View(viewModel);
         }
 
         public IActionResult About()
