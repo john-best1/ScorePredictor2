@@ -12,10 +12,16 @@ namespace ScorePredictor.Controllers
 {
     public class HomeController : Controller
     {
-        public async Task<IActionResult> Index(FixtureService fixtureService, string date = "dateFrom=2019-12-14&dateTo=2019-12-14")
+        public async Task<IActionResult> Index(FixtureService fixtureService, DateTime? date = null)
         {
+            if (date == null)
+            {
+                date = DateTime.Now;
+            }
+
             FixtureList[] fixtureLists = await fixtureService.getDaysFixtures(date);
-            FixturesViewModel viewModel = new FixturesViewModel { fixtureLists = fixtureLists, date = date };
+            FixturesViewModel viewModel = new FixturesViewModel { fixtureLists = fixtureLists, date = date};
+
             return View(viewModel);
         }
 

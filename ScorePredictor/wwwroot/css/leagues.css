@@ -129,3 +129,11 @@ table .col {
 .dropdown:hover .dropbtn {
     background-color: #3e8e41;
 }
+
+#content-wrap {
+    padding-bottom: 0.5rem;
+}
+
+#footer{
+    color:greenyellow;
+}

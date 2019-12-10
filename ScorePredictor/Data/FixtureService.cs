@@ -14,13 +14,13 @@ namespace ScorePredictor.Data
     {
         FixtureList[] orderedList = new FixtureList[21];
 
-        public async Task<FixtureList[]> getDaysFixtures(string date)
+        public async Task<FixtureList[]> getDaysFixtures(DateTime? date)
         {
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("X-Auth-Token", "7830c352850f4acda78aa61d1666d45b");
             string competitionPriorityOrder = "?competitions=2021,2016,2030,2014,2077,2002,2004,2019,2121,2015,2142,2084,2003,2017,2009,2145,2137,2013,2008,2024,2119";
-            //string dateString = "&dateFrom=2019-12-14&dateTo=2019-12-14";
+            string dateString = getDateString(date);
             using (HttpResponseMessage response = await client.GetAsync("https://api.football-data.org/v2/matches" + competitionPriorityOrder + "&" + date))
             {
                 if (response.IsSuccessStatusCode)
@@ -63,21 +63,8 @@ namespace ScorePredictor.Data
                             fixtureLists.Add(fixtureList);
                         }
                     }
-
-                    //System.Diagnostics.Debug.WriteLine(fixtureLists);
-                    //int[] priorityOrder = { 2021, 2016, 2030, 2014, 2077, 2002, 2004, 2019, 2121, 2015, 2142, 2084, 2003, 2017, 2009, 2145, 2137, 2013, 2008, 2024, 2119 };
-                    //priorityOrder.Select(i => fixtureLists[i].fixtures[0].leagueId).ToList();
-                    //System.Diagnostics.Debug.WriteLine(priorityOrder);
-                    foreach(FixtureList list in fixtureLists)
-                    {
-                        System.Diagnostics.Debug.WriteLine(list.fixtures[0].leagueName);
-
-                    }
                     reorderFixtureLists(fixtureLists);
 
-                    System.Diagnostics.Debug.WriteLine("--------------");
-                    System.Diagnostics.Debug.WriteLine(orderedList);
-                    System.Diagnostics.Debug.WriteLine("--------------");
                     return orderedList;
                 }
                 else
@@ -85,6 +72,12 @@ namespace ScorePredictor.Data
                     throw new Exception(response.ReasonPhrase);
                 }
             }
+        }
+
+        private string getDateString(DateTime? date)
+        {
+            string dateString = date.ToString();
+            return dateString;
         }
 
         public void reorderFixtureLists(List<FixtureList> list)

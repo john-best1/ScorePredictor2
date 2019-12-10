@@ -11,6 +11,6 @@ namespace ScorePredictor.ViewModels
     {
         public FixtureList[] fixtureLists { get; set; }
 
-        public string date { get; set; }
+        public DateTime? date { get; set; }
     }
 }
