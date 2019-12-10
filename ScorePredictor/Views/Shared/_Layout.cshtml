@@ -18,37 +18,37 @@
     @RenderSection("Styles", required: false)
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top" style="">
-        <div class="container" style="height:100%">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">ScorePredictor</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Fixtures </a></li>
-                    <li><a asp-area="" asp-controller="Leagues" asp-action="Leagues">Leagues </a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Help</a></li>
-                </ul>
-            </div>
+    <div id="page-container">
+        <div id="content-wrap">
+            <nav class="navbar navbar-inverse navbar-fixed-top" style="">
+                <div class="container" style="height:100%">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">ScorePredictor</a>
+                    </div>
+                    <div class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li><a asp-area="" asp-controller="Home" asp-action="Index">Fixtures </a></li>
+                            <li><a asp-area="" asp-controller="Leagues" asp-action="Leagues">Leagues </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <partial name="_CookieConsentPartial" />
         </div>
-    </nav>
-
-    <partial name="_CookieConsentPartial" />
-
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2019 - ScorePredictor</p>
-        </footer>
+        <div class="container body-content">
+            @RenderBody()
+            <footer id="footer">
+                <hr />
+                <p>&copy; 2019 - ScorePredictor</p>
+            </footer>
+        </div>
     </div>
-
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>

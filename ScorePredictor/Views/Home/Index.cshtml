@@ -10,20 +10,21 @@
 {
     @if (list != null)
     {
-        <table>
+        <table class="col-lg-8 col-lg-offset-2 fixtureList">
             <tr>
-                <th>@list.leagueName</th>
+                <th class="header" colspan="2">@list.leagueName</th>
             </tr>
             @foreach (Fixture fixture in list.fixtures)
             {
                 <tr>
-                    <td>@fixture.utcDate</td>
+                    <td class="time">@fixture.utcDate</td>
                     <td>@fixture.homeTeamName V @fixture.awayTeamName</td>
                     @*<button>Get Prediction</button>*@
                 </tr>
             }
         </table>
     }
+    <br />
 }
 
 

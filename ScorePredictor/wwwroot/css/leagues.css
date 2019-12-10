@@ -87,10 +87,10 @@ table .col {
     padding: 16px;
     font-size: 16px;
     border: 2px solid silver;
-    font-family:fantasy;
-    color:greenyellow;
-    background-color:#1082ef;
     border-radius: 12px;
+    font-family: fantasy;
+    color: greenyellow;
+    background-color: #1082ef;
 }
 
 .dropdown {
