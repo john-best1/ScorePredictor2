@@ -6,26 +6,47 @@
 @section Styles {
     <link href="@Url.Content("~/css/home.css")" rel="stylesheet" type="text/css" />
 }
-@foreach (FixtureList list in @Model.fixtureLists)
+
+
+@if (@Model.fixtureLists.Any())
 {
-    @if (list != null)
+<table class="col-lg-8 col-lg-offset-2">
+    @foreach (FixtureList list in @Model.fixtureLists)
     {
-        <div>
+        @if (list != null)
+        {
+            @*<button data-toggle="collapse" class="col-lg-8 col-lg-offset-2 test" data-target="#@list.fixtures[0].leagueId">@list.leagueName</button>*@
+            @*<div class="collapse" id="@list.fixtures[0].leagueId">*@
+            <tr class="head" data-toggle="collapse" data-target=".fixtures_@list.fixtures[0].leagueId"><th class="head-content" colspan="2">@list.leagueName</th></tr>
+            @for (int i = 0; i < list.fixtures.Count; i++)
+            {
+                <tr class="collapse fixtures_@list.fixtures[0].leagueId">
+                    <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
+                    <td>@list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName</td>
+                    @*<button>Get Prediction</button>*@
+                </tr>
+            }
+         }
+     }
+    </table>
+}
+
+
+        @*<div>
             <button data-toggle="collapse" class="col-lg-8 col-lg-offset-2 test" data-target="#@list.fixtures[0].leagueId">@list.leagueName</button>
             <div class="collapse" id="@list.fixtures[0].leagueId">
-                <table class="col-lg-8 col-lg-offset-2">
+                <table>
                     @for (int i = 0; i < list.fixtures.Count; i++)
                     {
                         <tr>
                             <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
                             <td>@list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName</td>
                             @*<button>Get Prediction</button>*@
-                        </tr>
-                    }
-                </table>
-            </div>
-        </div>
-    }
-}
+        @*</tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            }*@
 
 

@@ -9,7 +9,6 @@ td, tr {
     color:black;
     padding: 5px;
 }
-
 h3 {
     font-size: 14px;
 }
@@ -18,7 +17,18 @@ h3 {
     width:15%;
     padding-left: 10px;
 }
-button {
+th {
     padding: 10px;
     background-color: #1082ef;
+    cursor: pointer;
+}
+    th:hover {
+        background-color: #43e2f8;
+        color:red;
+    }
+.collapse{
+    padding-bottom:8px;
+}
+
+.head {
 }

@@ -21,7 +21,8 @@ namespace ScorePredictor.Data
             client.DefaultRequestHeaders.Add("X-Auth-Token", "7830c352850f4acda78aa61d1666d45b");
             string competitionPriorityOrder = "?competitions=2021,2016,2030,2014,2077,2002,2004,2019,2121,2015,2142,2084,2003,2017,2009,2145,2137,2013,2008,2024,2119";
             string dateString = getDateString(date);
-            using (HttpResponseMessage response = await client.GetAsync("https://api.football-data.org/v2/matches" + competitionPriorityOrder + "&" + date))
+
+            using (HttpResponseMessage response = await client.GetAsync("https://api.football-data.org/v2/matches" + competitionPriorityOrder + "&" + dateString))
             {
                 if (response.IsSuccessStatusCode)
                 {
@@ -77,6 +78,8 @@ namespace ScorePredictor.Data
         private string getDateString(DateTime? date)
         {
             string dateString = date.ToString();
+            dateString = "dateFrom=" + dateString.Substring(6, 4) + "-" + dateString.Substring(0, 2) + "-" + dateString.Substring(3, 2) + "&dateTo=" +
+                dateString.Substring(6, 4) + "-" + dateString.Substring(0, 2) + "-" + dateString.Substring(3, 2);
             return dateString;
         }
 

@@ -16,7 +16,7 @@ namespace ScorePredictor.Controllers
         {
             if (date == null)
             {
-                date = DateTime.Now;
+                date = DateTime.Now.AddDays(2);
             }
 
             FixtureList[] fixtureLists = await fixtureService.getDaysFixtures(date);
