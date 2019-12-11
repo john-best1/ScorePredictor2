@@ -5,9 +5,9 @@
 
 td, tr {
     background-color: silver;
-    border: 1px solid black;
+    border: 2px solid black;
     color:black;
-    padding: 5px;
+    padding: 8px;
 }
 h3 {
     font-size: 14px;
@@ -30,7 +30,6 @@ th {
 .collapse{
     padding-bottom:8px;
 }
-
 .head:hover td{
     background-color: #43e2f8;
     cursor:pointer;
@@ -64,7 +63,7 @@ th:after {
     height: 35px;
 }
 
-.details button{
+.btn{
     float:right;
 }
 .details{

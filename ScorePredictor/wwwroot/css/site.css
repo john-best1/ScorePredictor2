@@ -36,10 +36,13 @@ nav{
     vertical-align: middle;
     padding-top: 20px;
 }
+
 .navbar-inverse .navbar-nav li a {
     color: white;
 }
-
+.navbar-inverse .navbar-nav li a:hover {
+    color: greenyellow;
+}
 .navbar-inverse .navbar-brand {
     font-family: fantasy;
     font-size: 40px;

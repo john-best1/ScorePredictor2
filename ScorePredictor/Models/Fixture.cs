@@ -10,7 +10,7 @@ namespace ScorePredictor.Models
     {
         public string utcDate { get; set; }
 
-        public int matchId { get; set; }
+        public string matchId { get; set; }
 
         public int homeTeamId { get; set; }
 

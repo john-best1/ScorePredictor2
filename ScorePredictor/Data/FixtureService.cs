@@ -35,7 +35,7 @@ namespace ScorePredictor.Data
                         string competitionId = allMatches[i]["competition"]["id"].ToString();
                         Fixture fixture = new Fixture
                         {
-                            matchId = int.Parse(allMatches[i]["id"].ToString()),
+                            matchId = allMatches[i]["id"].ToString(),
                             homeTeamId = int.Parse(allMatches[i]["homeTeam"]["id"].ToString()),
                             homeTeamName = allMatches[i]["homeTeam"]["name"].ToString(),
                             awayTeamId = int.Parse(allMatches[i]["awayTeam"]["id"].ToString()),
@@ -44,6 +44,7 @@ namespace ScorePredictor.Data
                             leagueName = allMatches[i]["competition"]["name"].ToString(),
                             utcDate = allMatches[i]["utcDate"].ToString()
                         };
+                        System.Diagnostics.Debug.WriteLine(fixture.matchId);
                         bool competitionExists = false;
                         foreach (FixtureList list in fixtureLists)
                         {
