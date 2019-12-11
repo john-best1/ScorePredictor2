@@ -11,6 +11,7 @@ namespace ScorePredictor.Models
         public List<Fixture> fixtures { get; set; }
         public string leagueName { get; set; }
         public string utcDate { get; set; }
+        public string imageUrl { get; set; }
 
     }
 

@@ -16,19 +16,57 @@ h3 {
 .time{
     width:15%;
     padding-left: 10px;
+    text-align:center;
 }
 th {
     padding: 10px;
     background-color: #1082ef;
     cursor: pointer;
 }
-    th:hover {
+    /*th:hover {
         background-color: #43e2f8;
         color:red;
-    }
+    }*/
 .collapse{
     padding-bottom:8px;
 }
 
-.head {
+.head:hover td{
+    background-color: #43e2f8;
+    cursor:pointer;
+}
+.head:hover th {
+    background-color: #43e2f8;
+    color:red;
+}
+
+th:after {
+    content: '\02795';
+    font-size: 13px;
+    color: white;
+    float: right;
+    margin-left: 5px;
+}
+.active{
+
+}
+    .active:after {
+        content: '\2796';
+    }
+.flag {
+    width: 15%;
+    background-color: #1082ef;
+    border: none;
+    text-align: center;
+}
+.flag img{
+    width:50%;
+    height: 35px;
+}
+
+.details button{
+    float:right;
+}
+.details{
+    border:none;
 }

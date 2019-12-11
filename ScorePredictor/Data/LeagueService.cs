@@ -56,12 +56,3 @@ namespace ScorePredictor.Data
         }
     }
 }
-
-
-//var request = new HttpRequestMessage()
-//{
-//    RequestUri = new Uri("https://api.football-data.org/v2/competitions/" + leagueCode + "/standings"),
-//    Method = HttpMethod.Get,
-//};
-//request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue({ 'X-Auth-Token', '7830c352850f4acda78aa61d1666d45b' }))
-//var task = client.SendAsync

@@ -4,6 +4,44 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="wwwroot\images\american-flag-small.jpg" />
+    <Content Remove="wwwroot\images\argentinian-flag-small.jpg" />
+    <Content Remove="wwwroot\images\australian-flag-small.jpg" />
+    <Content Remove="wwwroot\images\belgian-flag-small.jpg" />
+    <Content Remove="wwwroot\images\brazilian-flag-small.jpg" />
+    <Content Remove="wwwroot\images\dutch-flag-small.jpg" />
+    <Content Remove="wwwroot\images\english-flag-small.jpg" />
+    <Content Remove="wwwroot\images\french-flag-small.jpg" />
+    <Content Remove="wwwroot\images\german-flag-small.jpg" />
+    <Content Remove="wwwroot\images\italian-flag-small.jpg" />
+    <Content Remove="wwwroot\images\japanese-flag-small.jpg" />
+    <Content Remove="wwwroot\images\portuguese-flag-small.jpg" />
+    <Content Remove="wwwroot\images\russian-flag-small.jpg" />
+    <Content Remove="wwwroot\images\scotland-flag-large.jpg" />
+    <Content Remove="wwwroot\images\spanish-flag-small - Copy.jpg" />
+    <Content Remove="wwwroot\images\spanish-flag-small.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\american-flag-small.jpg" />
+    <None Include="wwwroot\images\argentinian-flag-small.jpg" />
+    <None Include="wwwroot\images\australian-flag-small.jpg" />
+    <None Include="wwwroot\images\belgian-flag-small.jpg" />
+    <None Include="wwwroot\images\brazilian-flag-small.jpg" />
+    <None Include="wwwroot\images\dutch-flag-small.jpg" />
+    <None Include="wwwroot\images\english-flag-small.jpg" />
+    <None Include="wwwroot\images\french-flag-small.jpg" />
+    <None Include="wwwroot\images\german-flag-small.jpg" />
+    <None Include="wwwroot\images\italian-flag-small.jpg" />
+    <None Include="wwwroot\images\japanese-flag-small.jpg" />
+    <None Include="wwwroot\images\portuguese-flag-small.jpg" />
+    <None Include="wwwroot\images\russian-flag-small.jpg" />
+    <None Include="wwwroot\images\scotland-flag-large.jpg" />
+    <None Include="wwwroot\images\spanish-flag-small - Copy.jpg" />
+    <None Include="wwwroot\images\spanish-flag-small.jpg" />
+  </ItemGroup>
+
 
 
   <ItemGroup>

@@ -94,68 +94,89 @@ namespace ScorePredictor.Data
                     System.Diagnostics.Debug.WriteLine(i.fixtures[0].leagueId);
                     switch (i.fixtures[0].leagueId)
                     {
-                        case 2021:
+                        case 2021:  //eng
                             orderedList[0] = i;
+                            i.imageUrl = "/images/english-flag-small.jpg";
                             break;
-                        case 2016:
+                        case 2016:  //eng
                             orderedList[1] = i;
+                            i.imageUrl = "/images/english-flag-small.jpg";
                             break;
-                        case 2030:
+                        case 2030:  //eng
                             orderedList[2] = i;
+                            i.imageUrl = "/images/english-flag-small.jpg";
                             break;
-                        case 2014:
+                        case 2014:  //spain
                             orderedList[3] = i;
+                            i.imageUrl = "/images/spanish-flag-small.jpg";
                             break;
-                        case 2077:
+                        case 2077:  //spain
                             orderedList[4] = i;
+                            i.imageUrl = "/images/spanish-flag-small.jpg";
                             break;
-                        case 2002:
+                        case 2002:  //germany
                             orderedList[5] = i;
+                            i.imageUrl = "/images/german-flag-small.jpg";
                             break;
-                        case 2004:
+                        case 2004:  //germany
                             orderedList[6] = i;
+                            i.imageUrl = "/images/german-flag-small.jpg";
                             break;
-                        case 2019:
+                        case 2019:  //italy
                             orderedList[7] = i;
+                            i.imageUrl = "/images/italian-flag-small.jpg";
                             break;
-                        case 2121:
+                        case 2121:  //italy
                             orderedList[8] = i;
+                            i.imageUrl = "/images/italian-flag-small.jpg";
                             break;
-                        case 2015:
+                        case 2015:  //france
                             orderedList[9] = i;
+                            i.imageUrl = "/images/french-flag-small.jpg";
                             break;
-                        case 2142:
+                        case 2142:  //france
                             orderedList[10] = i;
+                            i.imageUrl = "/images/french-flag-small.jpg";
                             break;
-                        case 2084:
+                        case 2084:  //scotland
                             orderedList[11] = i;
+                            i.imageUrl = "/images/scotland-flag-large.jpg";
                             break;
-                        case 2003:
+                        case 2003:  //netherlands
                             orderedList[12] = i;
+                            i.imageUrl = "/images/dutch-flag-small.jpg";
                             break;
-                        case 2017:
+                        case 2017:  //portugal
                             orderedList[13] = i;
+                            i.imageUrl = "/images/portuguese-flag-small.jpg";
                             break;
-                        case 2009:
+                        case 2009:  //belgium
                             orderedList[14] = i;
+                            i.imageUrl = "/images/belgian-flag-small.jpg";
                             break;
-                        case 2145:
+                        case 2145:  //US
                             orderedList[15] = i;
+                            i.imageUrl = "/images/american-flag-small.jpg";
                             break;
-                        case 2137:
+                        case 2137:  //Russia
                             orderedList[16] = i;
+                            i.imageUrl = "/images/russian-flag-small.jpg";
                             break;
-                        case 2013:
+                        case 2013:  //Brazil
                             orderedList[17] = i;
+                            i.imageUrl = "/images/brazilian-flag-small.jpg";
                             break;
-                        case 2008:
+                        case 2008:  //Australia
                             orderedList[18] = i;
+                            i.imageUrl = "/images/australian-flag-small.jpg";
                             break;
-                        case 2024:
+                        case 2024:  //Argentina
                             orderedList[19] = i;
+                            i.imageUrl = "/images/argentinian-flag-small.jpg";
                             break;
-                        case 2119:
+                        case 2119:  //Japan
                             orderedList[20] = i;
+                            i.imageUrl = "/images/japanese-flag-small.jpg";
                             break;
                         default:
                             break;
