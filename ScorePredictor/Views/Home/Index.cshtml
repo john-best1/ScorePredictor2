@@ -34,7 +34,8 @@
                     <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
                     <td class="details">@list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName</td>
                     <td class="details">
-                        <a class="btn btn-default" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId">Match Details</a>
+                        <a class="btn btn-default" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
+                           asp-route-flagUrl="@list.imageUrl">Match Details</a>
                     </td>
                     @*<button>Get Prediction</button>*@
                 </tr>

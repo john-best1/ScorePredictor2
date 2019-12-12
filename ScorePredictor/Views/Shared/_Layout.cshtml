@@ -38,17 +38,19 @@
                         </ul>
                     </div>
                 </div>
+
             </nav>
+            <div class="container body-content">
+                @RenderBody()
+                <footer id="footer" style="left:0px">
+                    <hr />
+                    <p>&copy; 2019 - ScorePredictor</p>
+                </footer>
+            </div>
             <partial name="_CookieConsentPartial" />
         </div>
-        <div class="container body-content">
-            @RenderBody()
-            <footer id="footer">
-                <hr />
-                <p>&copy; 2019 - ScorePredictor</p>
-            </footer>
-        </div>
     </div>
+
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>

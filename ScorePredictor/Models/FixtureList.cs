@@ -12,6 +12,7 @@ namespace ScorePredictor.Models
         public string leagueName { get; set; }
         public string utcDate { get; set; }
         public string imageUrl { get; set; }
+        public int leagueId { get; set; }
 
     }
 

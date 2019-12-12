@@ -25,5 +25,11 @@ namespace ScorePredictor.Models
         public string LeagueName { get; set; }
 
         public int LeagueId { get; set; }
+
+        public string ImageUrl { get; set; }
+
+        public MatchStats HomeStats { get; set; }
+
+        public MatchStats AwayStats { get; set; }
     }
 }

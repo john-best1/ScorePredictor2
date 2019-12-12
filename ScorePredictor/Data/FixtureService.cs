@@ -44,7 +44,13 @@ namespace ScorePredictor.Data
                             leagueName = allMatches[i]["competition"]["name"].ToString(),
                             utcDate = allMatches[i]["utcDate"].ToString()
                         };
-                        System.Diagnostics.Debug.WriteLine(fixture.matchId);
+                        if(fixture.leagueId == 2084)
+                        {
+                            fixture.leagueName = "SPL";
+                        }else if(fixture.leagueId == 2013)
+                        {
+                            fixture.leagueName = "Série_A";
+                        }
                         bool competitionExists = false;
                         foreach (FixtureList list in fixtureLists)
                         {
@@ -92,9 +98,13 @@ namespace ScorePredictor.Data
                 foreach(FixtureList i in list)
                 {
                     //priorityOrder = { 2021, 2016, 2030, 2014, 2077, 2002, 2004, 2019, 2121, 2015, 2142, 2084, 2003, 2017, 2009, 2145, 2137, 2013, 2008, 2024, 2119
-                    System.Diagnostics.Debug.WriteLine(i.fixtures[0].leagueId);
                     switch (i.fixtures[0].leagueId)
                     {
+
+                        case 2084:  //scotland
+                            orderedList[11] = i;
+                            i.imageUrl = "/images/scotland-flag-large.jpg";
+                            break;
                         case 2021:  //eng
                             orderedList[0] = i;
                             i.imageUrl = "/images/english-flag-small.jpg";
@@ -138,10 +148,6 @@ namespace ScorePredictor.Data
                         case 2142:  //france
                             orderedList[10] = i;
                             i.imageUrl = "/images/french-flag-small.jpg";
-                            break;
-                        case 2084:  //scotland
-                            orderedList[11] = i;
-                            i.imageUrl = "/images/scotland-flag-large.jpg";
                             break;
                         case 2003:  //netherlands
                             orderedList[12] = i;

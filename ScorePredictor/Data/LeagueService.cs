@@ -14,12 +14,17 @@ namespace ScorePredictor.Data
     {
         public string shortLeagueName { get; set; }
         public string longLeagueName { get; set; }
-        public async Task<List<LeagueEntry>> getLeagueTable(int leagueCode = 2016, int leagueTypeCode = 0)
+
+        HttpClient client = new HttpClient();
+        public LeagueService()
         {
-            HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("X-Auth-Token", "7830c352850f4acda78aa61d1666d45b");
+        }
 
+
+        public async Task<List<LeagueEntry>> getLeagueTable(int leagueCode = 2016, int leagueTypeCode = 0)
+        {
             using (HttpResponseMessage response = await client.GetAsync("https://api.football-data.org/v2/competitions/" + leagueCode + "/standings"))
             {
                 if (response.IsSuccessStatusCode)
@@ -54,5 +59,44 @@ namespace ScorePredictor.Data
                 }
             }
         }
+
+        public async Task<MatchStats> getStats(int leagueId, int teamId)
+        {
+            System.Diagnostics.Debug.WriteLine(client.DefaultRequestHeaders);
+            using (HttpResponseMessage response = await client.GetAsync("https://api.football-data.org/v2/competitions/" + leagueId + "/standings"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    JObject jsonObject = JObject.Parse(await response.Content.ReadAsStringAsync());
+                    JArray standings = (JArray)jsonObject["standings"];
+                    MatchStats stats = new MatchStats();
+                    for (int i = 0; i < standings[0]["table"].Count(); i++)
+                    {
+                        if (teamId == int.Parse(standings[0]["table"][i]["team"]["id"].ToString()))
+                        {
+                            stats.position = int.Parse(standings[0]["table"][i]["position"].ToString());
+                            stats.name = standings[0]["table"][i]["team"]["name"].ToString();
+                            stats.matchesPlayed = int.Parse(standings[0]["table"][i]["playedGames"].ToString());
+                            stats.won = int.Parse(standings[0]["table"][i]["won"].ToString());
+                            stats.drawn = int.Parse(standings[0]["table"][i]["draw"].ToString());
+                            stats.lost = int.Parse(standings[0]["table"][i]["lost"].ToString());
+                            stats.goalsFor = int.Parse(standings[0]["table"][i]["goalsFor"].ToString());
+                            stats.goalsAgainst = int.Parse(standings[0]["table"][i]["goalsAgainst"].ToString());
+                            stats.goalDifference = int.Parse(standings[0]["table"][i]["goalDifference"].ToString());
+                            stats.points = int.Parse(standings[0]["table"][i]["points"].ToString());
+                            stats.goalsScoredPerGame = stats.goalsFor / stats.matchesPlayed;
+                            stats.goalsConcededPerGame = stats.goalsAgainst / stats.matchesPlayed;
+                            break;
+                        }
+                    }
+                    return stats;
+                }
+                else
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+            }
+        }
+
     }
 }

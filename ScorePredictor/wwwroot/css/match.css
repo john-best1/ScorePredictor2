@@ -3,10 +3,31 @@
 }
 
 .header{
-    background-color:purple;
+    /*background-color:purple;*/
     text-align: center;
 }
 
 h1 {
     font-family: fantasy;
+}
+.container{
+    font-family:cursive;
+}
+
+.flag {
+    vertical-align: middle;
+    width: 12%;
+    border-radius: 20%;
+    margin-top: 10px;
+}
+.teamone{
+    text-align:center;
+    font-family:cursive;
+}
+.teamtwo {
+    text-align: center;
+    font-family: cursive;
+}
+.alt{
+    color:#23d41c;
 }

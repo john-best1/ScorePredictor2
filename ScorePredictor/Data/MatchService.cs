@@ -13,6 +13,7 @@ namespace ScorePredictor.Data
     public class MatchService
     {
         Match match = new Match();
+        LeagueService leagueService = new LeagueService();
         public async Task<Match> getMatch(int matchId)
         {
             HttpClient client = new HttpClient();
@@ -26,6 +27,11 @@ namespace ScorePredictor.Data
                     JObject jsonObject = JObject.Parse(await response.Content.ReadAsStringAsync());
 
                     populateMatch(jsonObject);
+
+                    match.HomeStats = await leagueService.getStats(match.LeagueId, match.HomeTeamId);
+                    match.AwayStats = await leagueService.getStats(match.LeagueId, match.AwayTeamId);
+                    getWDLString(match.HomeStats);
+                    getWDLString(match.AwayStats);
                     return match;
                 }
                 else
@@ -33,6 +39,14 @@ namespace ScorePredictor.Data
                     throw new Exception(response.ReasonPhrase);
                 }
             }
+        }
+
+        private void getWDLString(MatchStats stats)
+        {
+            string won = Math.Round((double)stats.won / stats.matchesPlayed * 100.0, 0).ToString();
+            string drawn = Math.Round((double)stats.drawn / stats.matchesPlayed * 100.0, 0).ToString();
+            string lost = Math.Round((double)stats.lost / stats.matchesPlayed * 100.0, 0).ToString();
+            stats.WDL = won + "/" + drawn + "/" + lost;
         }
 
         private void populateMatch(JObject jsonObject)
