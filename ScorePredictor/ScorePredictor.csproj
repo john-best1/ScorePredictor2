@@ -4,24 +4,6 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Content Remove="wwwroot\images\american-flag-small.jpg" />
-    <Content Remove="wwwroot\images\argentinian-flag-small.jpg" />
-    <Content Remove="wwwroot\images\australian-flag-small.jpg" />
-    <Content Remove="wwwroot\images\belgian-flag-small.jpg" />
-    <Content Remove="wwwroot\images\brazilian-flag-small.jpg" />
-    <Content Remove="wwwroot\images\dutch-flag-small.jpg" />
-    <Content Remove="wwwroot\images\english-flag-small.jpg" />
-    <Content Remove="wwwroot\images\french-flag-small.jpg" />
-    <Content Remove="wwwroot\images\german-flag-small.jpg" />
-    <Content Remove="wwwroot\images\italian-flag-small.jpg" />
-    <Content Remove="wwwroot\images\japanese-flag-small.jpg" />
-    <Content Remove="wwwroot\images\portuguese-flag-small.jpg" />
-    <Content Remove="wwwroot\images\russian-flag-small.jpg" />
-    <Content Remove="wwwroot\images\scotland-flag-large.jpg" />
-    <Content Remove="wwwroot\images\spanish-flag-small - Copy.jpg" />
-    <Content Remove="wwwroot\images\spanish-flag-small.jpg" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="wwwroot\images\american-flag-small.jpg" />
@@ -45,6 +27,7 @@
 
 
   <ItemGroup>
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />
     <PackageReference Include="jQuery" Version="3.4.1" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
