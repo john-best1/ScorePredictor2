@@ -1,5 +1,6 @@
-﻿*{
-    color:greenyellow;
+﻿* {
+    color: greenyellow;
+
 }
 
 .header{
@@ -11,7 +12,6 @@ h1 {
     font-family: fantasy;
 }
 .container{
-    font-family:cursive;
 }
 
 .flag {
@@ -20,14 +20,18 @@ h1 {
     border-radius: 20%;
     margin-top: 10px;
 }
-.teamone{
-    text-align:center;
-    font-family:cursive;
+.teamone {
+    text-align: center;
+    font-family: arial;
 }
 .teamtwo {
     text-align: center;
-    font-family: cursive;
+
 }
-.alt{
-    color:#23d41c;
+    .teamone h4 {
+
+    }
+.alt {
+    color: #23d41c;
+    font-family: arial;
 }

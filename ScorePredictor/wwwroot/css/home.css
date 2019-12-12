@@ -1,5 +1,5 @@
 ﻿* {
-    font-family: cursive;
+    font-family: arial;
     color: greenyellow;
 }
 
@@ -60,7 +60,7 @@ th:after {
 }
 .flag img{
     width:50%;
-    height: 35px;
+    height: 30px;
 }
 
 .btn{
