@@ -21,7 +21,7 @@ body {
     min-height: 80px;
 }
 nav{
-    border-color: yellow !important;
+    border-color: white !important;
 }
 
 .navbar-nav li:not(:first-child):before {
