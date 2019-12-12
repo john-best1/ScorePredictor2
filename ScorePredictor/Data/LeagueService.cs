@@ -84,8 +84,8 @@ namespace ScorePredictor.Data
                             stats.goalsAgainst = int.Parse(standings[0]["table"][i]["goalsAgainst"].ToString());
                             stats.goalDifference = int.Parse(standings[0]["table"][i]["goalDifference"].ToString());
                             stats.points = int.Parse(standings[0]["table"][i]["points"].ToString());
-                            stats.goalsScoredPerGame = stats.goalsFor / stats.matchesPlayed;
-                            stats.goalsConcededPerGame = stats.goalsAgainst / stats.matchesPlayed;
+                            stats.goalsScoredPerGame = Math.Round((double)stats.goalsFor / stats.matchesPlayed, 1);
+                            stats.goalsConcededPerGame = Math.Round((double)stats.goalsAgainst / stats.matchesPlayed, 1);
                             break;
                         }
                     }
