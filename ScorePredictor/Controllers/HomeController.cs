@@ -12,12 +12,22 @@ namespace ScorePredictor.Controllers
 {
     public class HomeController : Controller
     {
-        public async Task<IActionResult> Index(FixtureService fixtureService, DateTime? date = null)
+        public async Task<IActionResult> Index(FixtureService fixtureService, string dateString = "")
         {
-            if (date == null)
+            DateTime date;
+            System.Diagnostics.Debug.WriteLine("-------------");
+            System.Diagnostics.Debug.WriteLine(dateString);
+            System.Diagnostics.Debug.WriteLine("-------------");
+            if (dateString == "")
             {
-                date = DateTime.Now.AddDays(2);
+                date = DateTime.Now;
             }
+            else
+            {
+                date = DateTime.Parse(dateString.Substring(4,11));
+            }
+
+            System.Diagnostics.Debug.WriteLine(date);
 
             FixtureList[] fixtureLists = await fixtureService.getDaysFixtures(date);
             FixturesViewModel viewModel = new FixturesViewModel { fixtureLists = fixtureLists, date = date};

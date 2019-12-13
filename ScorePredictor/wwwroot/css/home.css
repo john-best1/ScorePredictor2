@@ -39,17 +39,19 @@ th {
     color:red;
 }
 
-th:after {
+th :after{
+    color: greenyellow;
+}
+.head th:after {
     content: '\02795';
     font-size: 13px;
-    color: white;
     float: right;
     margin-left: 5px;
 }
-.active{
-
+.head .active {
+    color: greenyellow;
 }
-    .active:after {
+    .head .active:after {
         content: '\2796';
     }
 .flag {
@@ -78,6 +80,28 @@ th:after {
 .datepicker {
     float:right;
     border:none;
-    color:greenyellow;
+    color:black;
     font-family:fantasy;
 }
+input:hover {
+    background-color: lightgrey;
+    cursor: pointer;
+}
+
+.ui-datepicker-month, .ui-datepicker-year, .myDatePicker{
+    color: black;
+}
+
+input {
+    text-align: center;
+    border-bottom: solid red 2px;
+}
+
+.hasDatePicker{
+    color:black;
+}
+
+.ui-widget-content .ui-state-default:hover{
+    background: lightgray;
+}
+

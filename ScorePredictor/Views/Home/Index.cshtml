@@ -3,11 +3,15 @@
 @{
     ViewData["Title"] = "Home Page";
 }
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<link href="~/css/jquery-ui.min.css" rel="stylesheet" />
 @section Styles {
     <link href="@Url.Content("~/css/home.css")" rel="stylesheet" type="text/css" />
 }
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
     $("document").ready(function () {
         $(".head").click(function () {
@@ -16,56 +20,59 @@
     });
 </script>
 
+
+
 @if (@Model.fixtureLists.Any())
 {
-<table class="col-lg-8 col-lg-offset-2">
-    <tr class="toprow" style="width:100%">
-        <td></td><td></td>     @* STYLE HACK *@
-        <td class="datepicker">DatePicker</td>
-    </tr>
-    @foreach (FixtureList list in @Model.fixtureLists)
-    {
-        @if (list != null)
+    <table class="col-lg-8 col-lg-offset-2">
+        <tr class="toprow" style="width:100%">
+            <td></td>
+            <td></td>     @* STYLE HACK *@
+            <td class="datepicker">
+                <input label="Date: " type="text" id="myDatepicker"
+                       placeholder="@Model.date.DayOfWeek    @Model.date.Day/@Model.date.Month/@Model.date.Year" />
+            </td>
+        </tr>
+        @foreach (FixtureList list in @Model.fixtureLists)
         {
-            @*<button data-toggle="collapse" class="col-lg-8 col-lg-offset-2 test" data-target="#@list.fixtures[0].leagueId">@list.leagueName</button>*@
-            @*<div class="collapse" id="@list.fixtures[0].leagueId">*@
-            <tr class="head" data-toggle="collapse" data-target=".fixtures_@list.fixtures[0].leagueId">
-                <td class="flag"><img src="@list.imageUrl"></td>
-                <th colspan="2">@list.leagueName</th>
-            </tr>
-            @for (int i = 0; i < list.fixtures.Count; i++)
+            @if (list != null)
             {
-                <tr class="collapse fixtures_@list.fixtures[0].leagueId">
-                    <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
-                    <td class="details">@list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName</td>
-                    <td class="details">
-                        <a class="btn btn-default" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
-                           asp-route-flagUrl="@list.imageUrl">Match Details</a>
-                    </td>
-                    @*<button>Get Prediction</button>*@
+                <tr class="head" data-toggle="collapse" data-target=".fixtures_@list.fixtures[0].leagueId">
+                    <td class="flag"><img src="@list.imageUrl"></td>
+                    <th colspan="2">@list.leagueName</th>
                 </tr>
+                @for (int i = 0; i < list.fixtures.Count; i++)
+                {
+                    <tr class="collapse fixtures_@list.fixtures[0].leagueId">
+                        <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
+                        <td class="details">@list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName</td>
+                        <td class="details">
+                            <a class="btn btn-default" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
+                               asp-route-flagUrl="@list.imageUrl">Match Details</a>
+                        </td>
+                        @*<button>Get Prediction</button>*@
+                    </tr>
+                }
             }
         }
-    }
-    @*<li><a asp-area="" asp-controller="Leagues" asp-action="Leagues">Leagues </a></li>*@
-</table>
-}
+    </table>
 
-        @*<div>
-            <button data-toggle="collapse" class="col-lg-8 col-lg-offset-2 test" data-target="#@list.fixtures[0].leagueId">@list.leagueName</button>
-            <div class="collapse" id="@list.fixtures[0].leagueId">
-                <table>
-                    @for (int i = 0; i < list.fixtures.Count; i++)
-                    {
-                        <tr>
-                            <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
-                            <td>@list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName</td>
-                            @*<button>Get Prediction</button>*@
-        @*</tr>
-                            }
-                        </table>
-                    </div>
-                </div>
-            }*@
+    <script>
+        $("#myDatepicker").datepicker({
+            onSelect: function () {
+                date = new Date(this.value);
+                const monthNames = ["January", "February", "March", "April", "May", "June",
+              "July", "August", "September", "October", "November", "December"
+            ];
+                url = "?dateString=" + date.toString();
+                console.log(url);
+                index = window.location.href.indexOf("/");
+                window.location.href = window.location.href.substring(0, index) + url;
+                console.log(window.location.href);
+                window.open("/" + date);
+            }
+        });
+    </script>
+}
 
 
