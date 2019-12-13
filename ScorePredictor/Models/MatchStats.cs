@@ -21,5 +21,6 @@ namespace ScorePredictor.Models
         public double goalsScoredPerGame { get; set; }
         public double goalsConcededPerGame { get; set; }
         public string WDL { get; set; }
+        public int[] overallLastSix { get; set; }
     }
 }

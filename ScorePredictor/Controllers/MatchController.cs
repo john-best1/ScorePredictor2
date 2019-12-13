@@ -16,6 +16,7 @@ namespace ScorePredictor.Controllers
         {
             Match match = await matchService.getMatch(matchId);
             match.ImageUrl = flagUrl;
+            match = await matchService.getRecentForm(match);
             MatchViewModel viewModel = new MatchViewModel(match);
             return View(viewModel);
         }
