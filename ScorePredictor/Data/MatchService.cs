@@ -89,11 +89,11 @@ namespace ScorePredictor.Data
             //1 = home win, 2 = away win, 3 = draw, 4 = loss
             int[] results = new int[6];
             int added = 0;
-            for(int i = 0; i < allMatches.Count; i++)
+            for(int i = 1; i <= allMatches.Count; i++)
             {
-                if(int.Parse(allMatches[i]["homeTeam"]["id"].ToString()) == teamId)
+                if(int.Parse(allMatches[allMatches.Count - i]["homeTeam"]["id"].ToString()) == teamId)
                 {
-                    switch(allMatches[i]["score"]["winner"].ToString())
+                    switch(allMatches[allMatches.Count - i]["score"]["winner"].ToString())
                     {
                         case "HOME_TEAM":
                             results[5 - added] = 1;
@@ -109,9 +109,9 @@ namespace ScorePredictor.Data
                             break;
                     }
                 }
-                else if (int.Parse(allMatches[i]["awayTeam"]["id"].ToString()) == teamId)
+                else if (int.Parse(allMatches[allMatches.Count - i]["awayTeam"]["id"].ToString()) == teamId)
                 {
-                    switch (allMatches[i]["score"]["winner"].ToString())
+                    switch (allMatches[allMatches.Count - i]["score"]["winner"].ToString())
                     {
                         case "AWAY_TEAM":
                             results[5 - added] = 2;
