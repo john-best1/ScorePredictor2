@@ -6,6 +6,7 @@
 @section Styles {
     <link href="@Url.Content("~/css/home.css")" rel="stylesheet" type="text/css" />
 }
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
     $("document").ready(function () {
@@ -18,6 +19,10 @@
 @if (@Model.fixtureLists.Any())
 {
 <table class="col-lg-8 col-lg-offset-2">
+    <tr class="toprow" style="width:100%">
+        <td></td><td></td>     @* STYLE HACK *@
+        <td class="datepicker">DatePicker</td>
+    </tr>
     @foreach (FixtureList list in @Model.fixtureLists)
     {
         @if (list != null)
@@ -26,7 +31,7 @@
             @*<div class="collapse" id="@list.fixtures[0].leagueId">*@
             <tr class="head" data-toggle="collapse" data-target=".fixtures_@list.fixtures[0].leagueId">
                 <td class="flag"><img src="@list.imageUrl"></td>
-                <th colspan="2" class="head-content">@list.leagueName</th>
+                <th colspan="2">@list.leagueName</th>
             </tr>
             @for (int i = 0; i < list.fixtures.Count; i++)
             {

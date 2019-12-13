@@ -69,3 +69,15 @@ th:after {
 .details{
     border:none;
 }
+.toprow td{
+    background-color:black;
+}
+.toprow{
+    background-color:black;
+}
+.datepicker {
+    float:right;
+    border:none;
+    color:greenyellow;
+    font-family:fantasy;
+}
