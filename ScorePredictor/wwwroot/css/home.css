@@ -105,3 +105,9 @@ input {
     background: lightgray;
 }
 
+.nofixtures{
+    text-align:center;
+    background-color:black;
+    color:greenyellow;
+    font-family:fantasy;
+}

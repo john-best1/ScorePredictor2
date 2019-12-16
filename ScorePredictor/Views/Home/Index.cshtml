@@ -20,19 +20,19 @@
     });
 </script>
 
+<table class="col-lg-8 col-lg-offset-2">
+    <tr class="toprow" style="width:100%">
+        <td></td>
+        <td></td>     @* STYLE HACK *@
+        <td class="datepicker">
+            <input label="Date: " type="text" id="myDatepicker"
+                   placeholder="@Model.date.DayOfWeek    @Model.date.Day/@Model.date.Month/@Model.date.Year" />
+        </td>
+    </tr>
 
+    @if (@Model.fixtureLists.Any(i => i != null))
+    {
 
-@if (@Model.fixtureLists.Any())
-{
-    <table class="col-lg-8 col-lg-offset-2">
-        <tr class="toprow" style="width:100%">
-            <td></td>
-            <td></td>     @* STYLE HACK *@
-            <td class="datepicker">
-                <input label="Date: " type="text" id="myDatepicker"
-                       placeholder="@Model.date.DayOfWeek    @Model.date.Day/@Model.date.Month/@Model.date.Year" />
-            </td>
-        </tr>
         @foreach (FixtureList list in @Model.fixtureLists)
         {
             @if (list != null)
@@ -55,15 +55,22 @@
                 }
             }
         }
-    </table>
+    }
+    else
+    {
+        <tr>
+            <td class="nofixtures"><h1>No Fixtures, Select Another Date</h1></td>
+        </tr>
+    }
+</table>
+
 
     <script>
         $("#myDatepicker").datepicker({
+            minDate: '-7D',
+            maxDate: '+3D',
             onSelect: function () {
                 date = new Date(this.value);
-                const monthNames = ["January", "February", "March", "April", "May", "June",
-              "July", "August", "September", "October", "November", "December"
-            ];
                 url = "?dateString=" + date.toString();
                 console.log(url);
                 index = window.location.href.indexOf("/");
@@ -73,6 +80,5 @@
             }
         });
     </script>
-}
 
 
