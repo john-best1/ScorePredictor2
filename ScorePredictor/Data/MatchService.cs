@@ -31,7 +31,7 @@ namespace ScorePredictor.Data
                     populateMatch(jsonObject);
 
                     match.HomeStats = await leagueService.getStats(match.LeagueId, match.HomeTeamId);
-                    match.AwayStats = await leagueService.getStats(match.LeagueId, match.AwayTeamId);
+                    match.AwayStats = await leagueService.getStats(match.LeagueId, match.AwayTeamId, false);
                     getWDLString(match.HomeStats);
                     getWDLString(match.AwayStats);
                     return match;
@@ -51,8 +51,9 @@ namespace ScorePredictor.Data
                 {
                     JObject jsonObject = JObject.Parse(await response.Content.ReadAsStringAsync());
                     JArray allCompetitionMatches = (JArray)jsonObject["matches"];
-                    match.HomeStats.overallLastSix = (populateOverallLast6(match.LeagueId, match.HomeTeamId, allCompetitionMatches));
-                    match.AwayStats.overallLastSix = (populateOverallLast6(match.LeagueId, match.AwayTeamId, allCompetitionMatches));
+                    getTeamForm(match.HomeStats, match.HomeTeamId, allCompetitionMatches);
+                    getTeamForm(match.AwayStats, match.AwayTeamId, allCompetitionMatches, false);
+                    formStrings(match.HomeStats, match.AwayStats);
                     return match;
                 }
                 else
@@ -68,6 +69,36 @@ namespace ScorePredictor.Data
             string drawn = Math.Round((double)stats.drawn / stats.matchesPlayed * 100.0, 0).ToString();
             string lost = Math.Round((double)stats.lost / stats.matchesPlayed * 100.0, 0).ToString();
             stats.WDL = won + "/" + drawn + "/" + lost;
+            won = Math.Round((double)stats.homeOrAwayWon / stats.homeOrAwayMatchesPlayed * 100.0, 0).ToString();
+            drawn = Math.Round((double)stats.homeOrAwayDrawn / stats.homeOrAwayMatchesPlayed * 100.0, 0).ToString();
+            lost = Math.Round((double)stats.homeOrAwayLost / stats.homeOrAwayMatchesPlayed * 100.0, 0).ToString();
+            stats.homeOrAwayWDL = won + "/" + drawn + "/" + lost;
+        }
+
+        private void formStrings(MatchStats home, MatchStats away)
+        {
+            home.overallFormString = getWDLStringFromArray(home.overallLastSix);
+            away.overallFormString = getWDLStringFromArray(away.overallLastSix);
+        }
+
+        private string getWDLStringFromArray(int[] results)
+        {
+            string wdl = "";
+            foreach(int result in results)
+            {
+                if (result == 1 || result == 2)
+                {
+                    wdl += "W";
+                }else if(result == 3 || result == 4)
+                {
+                    wdl += "D";
+                }
+                else
+                {
+                    wdl += "L";
+                }
+            }
+            return wdl;
         }
 
         private void populateMatch(JObject jsonObject)
@@ -84,11 +115,13 @@ namespace ScorePredictor.Data
             match.LeagueName = jsonObject["match"]["competition"]["name"].ToString();
         }
 
-        public int[] populateOverallLast6(int leagueId, int teamId, JArray allMatches)
+        public void getTeamForm(MatchStats stats, int teamId, JArray allMatches, bool home = true)
         {
-            //1 = home win, 2 = away win, 3 = draw, 4 = loss
+            //1 = home win, 2 = away win, 3 = home draw, 4 = away draw, 5 = loss
             int[] results = new int[6];
+            int[] homeOrAwayResults = new int[6];
             int added = 0;
+            int homeOrAwayAdded = 0;
             for(int i = 1; i <= allMatches.Count; i++)
             {
                 if(int.Parse(allMatches[allMatches.Count - i]["homeTeam"]["id"].ToString()) == teamId)
@@ -96,16 +129,40 @@ namespace ScorePredictor.Data
                     switch(allMatches[allMatches.Count - i]["score"]["winner"].ToString())
                     {
                         case "HOME_TEAM":
-                            results[5 - added] = 1;
-                            added++;
+                            if (added < 6)
+                            {
+                                results[5 - added] = 1;
+                                added++;
+                            }
+                            if (home && homeOrAwayAdded < 6)
+                            {
+                                homeOrAwayResults[5 - homeOrAwayAdded] = 1;
+                                homeOrAwayAdded++;
+                            }
                             break;
                         case "DRAW":
-                            results[5 - added] = 3;
-                            added++;
+                            if(added < 6)
+                            {
+                                results[5 - added] = 3;
+                                added++;
+                            }
+                            if (home && homeOrAwayAdded < 6)
+                            {
+                                homeOrAwayResults[5 - homeOrAwayAdded] = 3;
+                                homeOrAwayAdded++;
+                            }
                             break;
                         default:
-                            results[5 - added] = 4;
-                            added++;
+                            if(added < 6)
+                            {
+                                results[5 - added] = 5;
+                                added++;
+                            }
+                            if (home && homeOrAwayAdded < 6)
+                            {
+                                homeOrAwayResults[5 - homeOrAwayAdded] = 5;
+                                homeOrAwayAdded++;
+                            }
                             break;
                     }
                 }
@@ -114,22 +171,49 @@ namespace ScorePredictor.Data
                     switch (allMatches[allMatches.Count - i]["score"]["winner"].ToString())
                     {
                         case "AWAY_TEAM":
-                            results[5 - added] = 2;
-                            added++;
+                            if(added < 6)
+                            {
+                                results[5 - added] = 2;
+                                added++;
+                            }
+                            if (!home && homeOrAwayAdded < 6)
+                            {
+                                homeOrAwayResults[5 - homeOrAwayAdded] = 2;
+                                homeOrAwayAdded++;
+                            }
                             break;
                         case "DRAW":
-                            results[5 - added] = 3;
-                            added++;
+                            if(added < 6)
+                            {
+                                results[5 - added] = 4;
+                                added++;
+                            }
+                            if (!home && homeOrAwayAdded < 6)
+                            {
+                                homeOrAwayResults[5 - homeOrAwayAdded] = 4;
+                                homeOrAwayAdded++;
+                            }
                             break;
                         default:
-                            results[5 - added] = 4;
-                            added++;
+                            if(added < 6)
+                            {
+                                results[5 - added] = 5;
+                                added++;
+                            }
+                            if (!home && homeOrAwayAdded < 6)
+                            {
+                                homeOrAwayResults[5 - homeOrAwayAdded] = 5;
+                                homeOrAwayAdded++;
+                            }
                             break;
                     }
                 }
-                if (added == 6) break;
+                if (added == 6 && homeOrAwayAdded == 6) break;
             }
-            return results;
+            stats.overallLastSix = results;
+            stats.overallFormString = getWDLStringFromArray(results);
+            stats.homeOrAwayLastSix = homeOrAwayResults;
+            stats.homeOrAwayFormString = getWDLStringFromArray(homeOrAwayResults);
         }
     }
 }

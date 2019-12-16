@@ -60,9 +60,12 @@ namespace ScorePredictor.Data
             }
         }
 
-        public async Task<MatchStats> getStats(int leagueId, int teamId)
+        public async Task<MatchStats> getStats(int leagueId, int teamId, bool home = true)
         {
-            System.Diagnostics.Debug.WriteLine(client.DefaultRequestHeaders);
+            int homeOrAway;
+            if (home) homeOrAway = 1;
+            else homeOrAway = 2;
+
             using (HttpResponseMessage response = await client.GetAsync("https://api.football-data.org/v2/competitions/" + leagueId + "/standings"))
             {
                 if (response.IsSuccessStatusCode)
@@ -74,7 +77,7 @@ namespace ScorePredictor.Data
                     {
                         if (teamId == int.Parse(standings[0]["table"][i]["team"]["id"].ToString()))
                         {
-                            stats.position = int.Parse(standings[0]["table"][i]["position"].ToString());
+                            stats.position = AddOrdinal(int.Parse(standings[0]["table"][i]["position"].ToString()));
                             stats.name = standings[0]["table"][i]["team"]["name"].ToString();
                             stats.matchesPlayed = int.Parse(standings[0]["table"][i]["playedGames"].ToString());
                             stats.won = int.Parse(standings[0]["table"][i]["won"].ToString());
@@ -89,6 +92,18 @@ namespace ScorePredictor.Data
                             break;
                         }
                     }
+                    for (int i = 0; i < standings[homeOrAway]["table"].Count(); i++)
+                    {
+                        if (teamId == int.Parse(standings[homeOrAway]["table"][i]["team"]["id"].ToString()))
+                        {
+                            stats.HomeOrAwayPosition = AddOrdinal(int.Parse(standings[homeOrAway]["table"][i]["position"].ToString()));
+                            stats.homeOrAwayWon = int.Parse(standings[homeOrAway]["table"][i]["won"].ToString());
+                            stats.homeOrAwayDrawn = int.Parse(standings[homeOrAway]["table"][i]["draw"].ToString());
+                            stats.homeOrAwayLost = int.Parse(standings[homeOrAway]["table"][i]["lost"].ToString());
+                            stats.homeOrAwayMatchesPlayed = int.Parse(standings[homeOrAway]["table"][i]["playedGames"].ToString());
+                            break;
+                        }
+                    }
                     return stats;
                 }
                 else
@@ -96,6 +111,32 @@ namespace ScorePredictor.Data
                     throw new Exception(response.ReasonPhrase);
                 }
             }
+        }
+
+        public static string AddOrdinal(int num)
+        {
+            if (num <= 0) return num.ToString();
+
+            switch (num % 100)
+            {
+                case 11:
+                case 12:
+                case 13:
+                    return num + "th";
+            }
+
+            switch (num % 10)
+            {
+                case 1:
+                    return num + "st";
+                case 2:
+                    return num + "nd";
+                case 3:
+                    return num + "rd";
+                default:
+                    return num + "th";
+            }
+
         }
 
     }

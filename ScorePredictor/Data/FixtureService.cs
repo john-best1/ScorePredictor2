@@ -73,12 +73,6 @@ namespace ScorePredictor.Data
                     }
 
                     reorderFixtureLists(fixtureLists);
-                    System.Diagnostics.Debug.WriteLine("-------------");
-                    foreach (FixtureList list in fixtureLists)
-                    {
-                        System.Diagnostics.Debug.WriteLine(list.leagueName);
-                    }
-                    System.Diagnostics.Debug.WriteLine("-------------");
                     return orderedList;
                 }
                 else

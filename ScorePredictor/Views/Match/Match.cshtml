@@ -16,11 +16,11 @@
             <h4 class="alt">W/D/L%: @Model.match.HomeStats.WDL</h4>
             <h4>Average Goals Scored Per Game: @Model.match.HomeStats.goalsScoredPerGame</h4>
             <h4 class="alt">Average Goals Conceded Per Game: @Model.match.HomeStats.goalsConcededPerGame</h4>
-            <h4>@Model.match.HomeStats.overallLastSix</h4>
-            @foreach (int i in @Model.match.HomeStats.overallLastSix)
-            {
-                <h5>@i</h5>
-            }
+            <h4>Overall Form: @Model.match.HomeStats.overallFormString</h4>
+            <h4 class="alt">Home Table Position: @Model.match.HomeStats.HomeOrAwayPosition</h4>
+            <h4>Home Form: @Model.match.HomeStats.homeOrAwayFormString</h4>
+            <h4 class="alt">Home W/D/L%: @Model.match.HomeStats.homeOrAwayWDL</h4>
+
         </div>
         <div class="col-lg-6 teamtwo">
             <h1 class="team">@Model.match.AwayTeamName</h1>
@@ -28,10 +28,10 @@
             <h4 class="alt">W/D/L%: @Model.match.AwayStats.WDL</h4>
             <h4>Average Goals Scored Per Game: @Model.match.AwayStats.goalsScoredPerGame</h4>
             <h4 class="alt">Average Goals Conceded Per Game: @Model.match.AwayStats.goalsConcededPerGame</h4>
-            @foreach(int i in @Model.match.AwayStats.overallLastSix)
-            {
-                <h5>@i</h5>
-            }
+            <h4>Overall Form: @Model.match.AwayStats.overallFormString</h4>
+            <h4 class="alt">Away Table Position: @Model.match.AwayStats.HomeOrAwayPosition</h4>
+            <h4>Away Form: @Model.match.AwayStats.homeOrAwayFormString</h4>
+            <h4 class="alt">Away W/D/L%: @Model.match.AwayStats.homeOrAwayWDL</h4>
         </div>
     </div>
 </div>
