@@ -64,15 +64,21 @@ namespace ScorePredictor.Data
                         if (!competitionExists || !fixtureLists.Any())
                         {
                             FixtureList fixtureList = new FixtureList();
-                            fixtureList.leagueName = allMatches[i]["competition"]["name"].ToString();
+                            fixtureList.leagueName = fixture.leagueName;
                             fixtureList.utcDate = allMatches[i]["utcDate"].ToString();
                             fixtureList.fixtures = new List<Fixture>();
                             fixtureList.fixtures.Add(fixture);
                             fixtureLists.Add(fixtureList);
                         }
                     }
-                    reorderFixtureLists(fixtureLists);
 
+                    reorderFixtureLists(fixtureLists);
+                    System.Diagnostics.Debug.WriteLine("-------------");
+                    foreach (FixtureList list in fixtureLists)
+                    {
+                        System.Diagnostics.Debug.WriteLine(list.leagueName);
+                    }
+                    System.Diagnostics.Debug.WriteLine("-------------");
                     return orderedList;
                 }
                 else
@@ -85,8 +91,23 @@ namespace ScorePredictor.Data
         private string getDateString(DateTime? date)
         {
             string dateString = date.ToString();
-            dateString = "dateFrom=" + dateString.Substring(6, 4) + "-" + dateString.Substring(0, 2) + "-" + dateString.Substring(3, 2) + "&dateTo=" +
-                dateString.Substring(6, 4) + "-" + dateString.Substring(0, 2) + "-" + dateString.Substring(3, 2);
+
+            string day;
+            string month = dateString.Substring(0, 2);
+            string year;
+            if (dateString[4] == '/')
+            {
+                day = "0" + dateString[3];
+                year = dateString.Substring(5, 4);
+
+            }
+            else
+            {
+                day = dateString.Substring(3,2);
+                year = dateString.Substring(6, 4);
+            }
+            dateString = "dateFrom=" + year + "-" + month + "-" + day + "&dateTo=" +
+                year + "-" + month + "-" + day;
             return dateString;
         }
 
@@ -100,14 +121,10 @@ namespace ScorePredictor.Data
                     //priorityOrder = { 2021, 2016, 2030, 2014, 2077, 2002, 2004, 2019, 2121, 2015, 2142, 2084, 2003, 2017, 2009, 2145, 2137, 2013, 2008, 2024, 2119
                     switch (i.fixtures[0].leagueId)
                     {
-
-                        case 2084:  //scotland
-                            orderedList[11] = i;
-                            i.imageUrl = "/images/scotland-flag-large.jpg";
-                            break;
                         case 2021:  //eng
                             orderedList[0] = i;
                             i.imageUrl = "/images/english-flag-small.jpg";
+                            System.Diagnostics.Debug.WriteLine(i);
                             break;
                         case 2016:  //eng
                             orderedList[1] = i;
@@ -116,6 +133,10 @@ namespace ScorePredictor.Data
                         case 2030:  //eng
                             orderedList[2] = i;
                             i.imageUrl = "/images/english-flag-small.jpg";
+                            break;
+                        case 2084:  //scotland
+                            orderedList[11] = i;
+                            i.imageUrl = "/images/scotland-flag-large.jpg";
                             break;
                         case 2014:  //spain
                             orderedList[3] = i;

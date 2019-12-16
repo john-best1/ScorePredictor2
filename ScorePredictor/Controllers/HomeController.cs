@@ -15,9 +15,6 @@ namespace ScorePredictor.Controllers
         public async Task<IActionResult> Index(FixtureService fixtureService, string dateString = "")
         {
             DateTime date;
-            System.Diagnostics.Debug.WriteLine("-------------");
-            System.Diagnostics.Debug.WriteLine(dateString);
-            System.Diagnostics.Debug.WriteLine("-------------");
             if (dateString == "")
             {
                 date = DateTime.Now;
