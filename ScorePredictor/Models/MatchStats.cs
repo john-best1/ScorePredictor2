@@ -31,5 +31,6 @@ namespace ScorePredictor.Models
         public int[] homeOrAwayLastSix { get; set; }
         public string overallFormString { get; set; }
         public string homeOrAwayFormString { get; set; }
+        public double PredictionPoints { get; set; }
     }
 }

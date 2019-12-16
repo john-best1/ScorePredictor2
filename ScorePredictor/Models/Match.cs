@@ -31,5 +31,9 @@ namespace ScorePredictor.Models
         public MatchStats HomeStats { get; set; }
 
         public MatchStats AwayStats { get; set; }
+
+        public int predictedResult { get; set; }
+
+        public string predictionString { get; set; }
     }
 }

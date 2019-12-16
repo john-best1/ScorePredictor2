@@ -54,6 +54,7 @@ namespace ScorePredictor.Data
                     getTeamForm(match.HomeStats, match.HomeTeamId, allCompetitionMatches);
                     getTeamForm(match.AwayStats, match.AwayTeamId, allCompetitionMatches, false);
                     formStrings(match.HomeStats, match.AwayStats);
+                    generatePrediction(match);
                     return match;
                 }
                 else
@@ -61,6 +62,90 @@ namespace ScorePredictor.Data
                     throw new Exception(response.ReasonPhrase);
                 }
             }
+        }
+
+        private void generatePrediction(Match match)
+        {
+            match.HomeStats.PredictionPoints = 2.5 + calculatePoints(match.HomeStats.overallLastSix);
+            match.AwayStats.PredictionPoints = calculatePoints(match.AwayStats.overallLastSix);
+
+            match.predictedResult = predictResult(match.HomeStats.PredictionPoints, match.AwayStats.PredictionPoints);
+            predictionString(match);
+        }
+
+        private void predictionString(Match match)
+        {
+            switch (match.predictedResult)
+            {
+                case 1:
+                    match.predictionString = "STRONG HOME WIN";
+                    break;
+                case 2:
+                    match.predictionString = "HOME WIN";
+                    break;
+                case 3:
+                    match.predictionString = "DRAW";
+                    break;
+                case 4:
+                    match.predictionString = "STRONG AWAY WIN";
+                    break;
+                case 5:
+                    match.predictionString = "AWAY WIN";
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private int predictResult(double homePoints, double awayPoints)
+        {
+           // 1 = strong home win, 2 = regular home win, 3 = draw, 4 = strong away win, 5 = regular away win
+            if(homePoints - awayPoints > 9.0)
+            {
+                return 1;
+            }
+            else if (homePoints - awayPoints > 2.5)
+            {
+                return 2;
+            }
+            else if(awayPoints - homePoints > 9.0)
+            {
+                return 4;
+            }
+            else if(awayPoints - homePoints > 2.5)
+            {
+                return 5;
+            }
+            else
+            {
+                return 3;
+            }
+        }
+
+        private double calculatePoints(int[] last6)
+        {
+            double total = 0;
+            foreach(int result in last6)
+            {
+                switch (result)
+                {
+                    case 1:
+                        total += 3;
+                        break;
+                    case 2:
+                        total += 4.5;
+                        break;
+                    case 3:
+                        total += 1;
+                        break;
+                    case 4:
+                        total += 1.5;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return total;
         }
 
         private void getWDLString(MatchStats stats)

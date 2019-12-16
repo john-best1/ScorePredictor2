@@ -20,6 +20,7 @@
             <h4 class="alt">Home Table Position: @Model.match.HomeStats.HomeOrAwayPosition</h4>
             <h4>Home Form: @Model.match.HomeStats.homeOrAwayFormString</h4>
             <h4 class="alt">Home W/D/L%: @Model.match.HomeStats.homeOrAwayWDL</h4>
+            <h4>@Model.match.HomeStats.PredictionPoints Prediction Points</h4>
 
         </div>
         <div class="col-lg-6 teamtwo">
@@ -32,6 +33,11 @@
             <h4 class="alt">Away Table Position: @Model.match.AwayStats.HomeOrAwayPosition</h4>
             <h4>Away Form: @Model.match.AwayStats.homeOrAwayFormString</h4>
             <h4 class="alt">Away W/D/L%: @Model.match.AwayStats.homeOrAwayWDL</h4>
+            <h4>@Model.match.AwayStats.PredictionPoints Prediction points</h4>
         </div>
+    </div>
+    <div class="col-lg-12" style="text-align:center; color:gold">
+        <h1>Prediction</h1>
+        <h1>@Model.match.predictionString</h1>
     </div>
 </div>
