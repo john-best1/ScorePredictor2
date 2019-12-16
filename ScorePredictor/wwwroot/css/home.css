@@ -105,9 +105,14 @@ input {
     background: lightgray;
 }
 
-.nofixtures{
+.nofixturesrow td{
     text-align:center;
+    float:right;
+}
+
+.nofixtures{
     background-color:black;
     color:greenyellow;
     font-family:fantasy;
+    width:100%;
 }

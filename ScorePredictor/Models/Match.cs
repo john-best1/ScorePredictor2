@@ -35,5 +35,7 @@ namespace ScorePredictor.Models
         public int predictedResult { get; set; }
 
         public string predictionString { get; set; }
+
+        public int[] predictedScore { get; set; }
     }
 }

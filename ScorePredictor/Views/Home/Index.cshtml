@@ -50,7 +50,6 @@
                             <a class="btn btn-default" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
                                asp-route-flagUrl="@list.imageUrl">Match Details</a>
                         </td>
-                        @*<button>Get Prediction</button>*@
                     </tr>
                 }
             }
@@ -58,8 +57,8 @@
     }
     else
     {
-        <tr>
-            <td class="nofixtures"><h1>No Fixtures, Select Another Date</h1></td>
+        <tr class="nofixturesrow">
+            <td class="nofixtures"><h2>No Fixtures, Select Another Date</h2></td>
         </tr>
     }
 </table>
@@ -75,8 +74,6 @@
                 console.log(url);
                 index = window.location.href.indexOf("/");
                 window.location.href = window.location.href.substring(0, index) + url;
-                //console.log(window.location.href);
-                //window.open("/" + date);
             }
         });
     </script>

@@ -32,5 +32,9 @@ namespace ScorePredictor.Models
         public string overallFormString { get; set; }
         public string homeOrAwayFormString { get; set; }
         public double PredictionPoints { get; set; }
+        public int overallLast6Scored { get; set; }
+        public int overallLast6Conceded { get; set; }
+        public int homeOrAwayLast6Scored { get; set; }
+        public int homeOrAwayLast6Conceded { get; set; }
     }
 }
