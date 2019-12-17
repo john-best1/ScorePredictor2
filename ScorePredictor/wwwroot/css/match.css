@@ -39,6 +39,12 @@ h1 {
     color: #23d41c;
     font-family: arial;
 }
-.predictedscore, .predictedresult{
+.predictedresult{
     color:white;
+}
+
+.prediction {
+    padding-top: 50px;
+    text-align: center;
+    color: deeppink;
 }
