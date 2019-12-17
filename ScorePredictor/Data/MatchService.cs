@@ -117,6 +117,7 @@ namespace ScorePredictor.Data
                     }
                 }
             }
+
             //strong home win
             else if(match.predictedResult == 1)
             {
@@ -150,6 +151,92 @@ namespace ScorePredictor.Data
                         {
                             homeGoals = awayGoals + 2;
                         }
+                    }
+                }
+            }
+
+            //strong away win
+            else if (match.predictedResult == 4)
+            {
+                if (homeGoals > decimalHomeGoals)
+                {
+                    homeGoals--;
+                }
+                if (awayGoals < decimalAwayGoals)
+                {
+                    awayGoals++;
+                }
+                if (homeGoals == awayGoals)
+                {
+                    homeGoals--;
+                    awayGoals++;
+                }
+                else if (awayGoals - homeGoals == 1)
+                {
+                    awayGoals++;
+                }
+                else
+                {
+                    if (awayGoals <= homeGoals)
+                    {
+                        if (awayGoals > 0)
+                        {
+                            homeGoals = awayGoals - 1;
+                            awayGoals++;
+                        }
+                        else
+                        {
+                            awayGoals = homeGoals + 2;
+                        }
+                    }
+                }
+            }
+
+            //regular away win
+            if (match.predictedResult == 5 && awayGoals <= homeGoals)
+            {
+                if (homeGoals > decimalHomeGoals)
+                {
+                    homeGoals--;
+                }
+                if (awayGoals < decimalAwayGoals)
+                {
+                    homeGoals++;
+                }
+                if (match.predictedResult == 5 && awayGoals <= homeGoals)
+                {
+                    if (homeGoals > decimalHomeGoals)
+                    {
+                        homeGoals = awayGoals - 1;
+                    }
+                    else
+                    {
+                        awayGoals = homeGoals + 1;
+                    }
+                }
+            }
+
+            //draw
+            else if(match.predictedResult == 3 && homeGoals != awayGoals)
+            {
+                System.Diagnostics.Debug.WriteLine("---------\n" + homeGoals + " " + decimalHomeGoals + "\n----------");
+                if(homeGoals > decimalHomeGoals && homeGoals > 0)
+                {
+                    homeGoals--;
+                }
+                if(homeGoals != awayGoals && awayGoals < decimalAwayGoals)
+                {
+                    awayGoals++;
+                }
+                if(homeGoals != awayGoals)
+                {
+                    if (homeGoals > awayGoals)
+                    {
+                        awayGoals = homeGoals;
+                    }
+                    else
+                    {
+                        homeGoals = awayGoals;
                     }
                 }
             }
@@ -308,8 +395,8 @@ namespace ScorePredictor.Data
                             {
                                 results[5 - added] = 1;
                                 added++;
-                                homeOrAwayGoalsScored += int.Parse(allMatches[allMatches.Count - i]["score"]["fullTime"]["homeTeam"].ToString());
-                                homeOrAwayGoalsConceded += int.Parse(allMatches[allMatches.Count - i]["score"]["fullTime"]["awayTeam"].ToString());
+                                overallGoalsScored += int.Parse(allMatches[allMatches.Count - i]["score"]["fullTime"]["homeTeam"].ToString());
+                                overallGoalsConceded += int.Parse(allMatches[allMatches.Count - i]["score"]["fullTime"]["awayTeam"].ToString());
                             }
                             if (home && homeOrAwayAdded < 6)
                             {
@@ -324,8 +411,8 @@ namespace ScorePredictor.Data
                             {
                                 results[5 - added] = 3;
                                 added++;
-                                homeOrAwayGoalsScored += int.Parse(allMatches[allMatches.Count - i]["score"]["fullTime"]["homeTeam"].ToString());
-                                homeOrAwayGoalsConceded += int.Parse(allMatches[allMatches.Count - i]["score"]["fullTime"]["awayTeam"].ToString());
+                                overallGoalsScored += int.Parse(allMatches[allMatches.Count - i]["score"]["fullTime"]["homeTeam"].ToString());
+                                overallGoalsConceded += int.Parse(allMatches[allMatches.Count - i]["score"]["fullTime"]["awayTeam"].ToString());
                             }
                             if (home && homeOrAwayAdded < 6)
                             {
@@ -340,8 +427,8 @@ namespace ScorePredictor.Data
                             {
                                 results[5 - added] = 5;
                                 added++;
-                                homeOrAwayGoalsScored += int.Parse(allMatches[allMatches.Count - i]["score"]["fullTime"]["homeTeam"].ToString());
-                                homeOrAwayGoalsConceded += int.Parse(allMatches[allMatches.Count - i]["score"]["fullTime"]["awayTeam"].ToString());
+                                overallGoalsScored += int.Parse(allMatches[allMatches.Count - i]["score"]["fullTime"]["homeTeam"].ToString());
+                                overallGoalsConceded += int.Parse(allMatches[allMatches.Count - i]["score"]["fullTime"]["awayTeam"].ToString());
                             }
                             if (home && homeOrAwayAdded < 6)
                             {
