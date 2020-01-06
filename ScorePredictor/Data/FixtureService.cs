@@ -87,19 +87,37 @@ namespace ScorePredictor.Data
             string dateString = date.ToString();
 
             string day;
-            string month = dateString.Substring(0, 2);
+            string month;
             string year;
-            if (dateString[4] == '/')
+            if (dateString[1] == '/') //month less than 10
             {
-                day = "0" + dateString[3];
-                year = dateString.Substring(5, 4);
+                month = "0" + dateString.Substring(0, 1);
+                if(dateString[3] == '/') //day < 10
+                {
+                    day = "0" + dateString[2];
+                    year = dateString.Substring(4, 4);
+                }
+                else // day>=10
+                {
+                    day = dateString.Substring(2, 2);
+                    year = dateString.Substring(5, 4);
+                }
+            }
+            else //month >=10
+            {
+                month = dateString.Substring(0, 2);
+                if (dateString[4] == '/') //day < 10
+                {
+                    day = "0" + dateString[3];
+                    year = dateString.Substring(5, 4);
+                }
+                else // day >= 10
+                {
+                    day = dateString.Substring(3, 2);
+                    year = dateString.Substring(6, 4);
+                }
+            }
 
-            }
-            else
-            {
-                day = dateString.Substring(3,2);
-                year = dateString.Substring(6, 4);
-            }
             dateString = "dateFrom=" + year + "-" + month + "-" + day + "&dateTo=" +
                 year + "-" + month + "-" + day;
             return dateString;

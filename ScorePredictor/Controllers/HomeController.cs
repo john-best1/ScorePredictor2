@@ -14,6 +14,7 @@ namespace ScorePredictor.Controllers
     {
         public async Task<IActionResult> Index(FixtureService fixtureService, string dateString = "")
         {
+
             DateTime date;
             if (dateString == "")
             {
