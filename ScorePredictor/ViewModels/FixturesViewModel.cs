@@ -12,5 +12,7 @@ namespace ScorePredictor.ViewModels
         public FixtureList[] fixtureLists { get; set; }
 
         public DateTime date { get; set; }
+
+        public bool finishedMatches { get; set; } = false;
     }
 }

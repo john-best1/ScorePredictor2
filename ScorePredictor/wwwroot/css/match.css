@@ -48,3 +48,13 @@ h1 {
     text-align: center;
     color: deeppink;
 }
+
+.scorecomparison{
+    padding-top:50px;
+}
+.predictedscore{
+    color:deeppink;
+}
+.actualresult{
+    color:white;
+}

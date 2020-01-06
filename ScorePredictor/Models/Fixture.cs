@@ -23,5 +23,12 @@ namespace ScorePredictor.Models
         public int leagueId { get; set; }
 
         public string leagueName { get; set; }
+
+        public bool finished { get; set; }
+
+        public int homeScore { get; set; }
+        
+        public int awayScore { get; set; }
     }
+
 }

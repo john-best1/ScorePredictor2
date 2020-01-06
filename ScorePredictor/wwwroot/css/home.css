@@ -20,7 +20,6 @@ h3 {
 }
 th {
     padding: 10px;
-    background-color: #1082ef;
     cursor: pointer;
 }
     /*th:hover {
@@ -30,9 +29,16 @@ th {
 .collapse{
     padding-bottom:8px;
 }
+.head {
+    background-color: #1082ef;
+}
 .head:hover td{
     background-color: #43e2f8;
     cursor:pointer;
+}
+.matchtype{
+    color: deeppink;
+    font-size: 20px;
 }
 .head:hover th {
     background-color: #43e2f8;

@@ -22,8 +22,15 @@
 
 <table class="col-lg-8 col-lg-offset-2">
     <tr class="toprow" style="width:100%">
-        <td></td>
         <td></td>     @* STYLE HACK *@
+        @if (Model.finishedMatches)
+        {
+            <th class="matchtype">Results</th>
+        }
+        else
+        {
+            <th class="matchtype">Fixtures</th>
+        }
         <td class="datepicker">
             <input label="Date: " type="text" id="myDatepicker"
                    placeholder="@Model.date.DayOfWeek    @Model.date.Day/@Model.date.Month/@Model.date.Year" />
@@ -33,27 +40,58 @@
     @if (@Model.fixtureLists.Any(i => i != null))
     {
 
-        @foreach (FixtureList list in @Model.fixtureLists)
+        @if (Model.finishedMatches)
         {
-            @if (list != null)
+            @foreach (FixtureList list in @Model.fixtureLists)
             {
-                <tr class="head" data-toggle="collapse" data-target=".fixtures_@list.fixtures[0].leagueId">
-                    <td class="flag"><img src="@list.imageUrl"></td>
-                    <th colspan="2">@list.leagueName</th>
-                </tr>
-                @for (int i = 0; i < list.fixtures.Count; i++)
+                @if (list != null)
                 {
-                    <tr class="collapse fixtures_@list.fixtures[0].leagueId">
-                        <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
-                        <td class="details">@list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName</td>
-                        <td class="details">
-                            <a class="btn btn-primary" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
-                               asp-route-flagUrl="@list.imageUrl">Match Details</a>
-                        </td>
+                    <tr class="head" data-toggle="collapse" data-target=".fixtures_@list.fixtures[0].leagueId">
+                        <td class="flag"><img src="@list.imageUrl"></td>
+                        <th class="leaguetitle" colspan="2">@list.leagueName</th>
                     </tr>
+                    @for (int i = 0; i < list.fixtures.Count; i++)
+                    {
+                        <tr class="collapse fixtures_@list.fixtures[0].leagueId">
+                            <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
+                            <td class="details">
+                                @list.fixtures[i].homeTeamName [@list.fixtures[i].homeScore]
+                                V [@list.fixtures[i].awayScore] @list.fixtures[i].awayTeamName
+                            </td>
+                            <td class="details">
+                                <a class="btn btn-primary" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
+                                   asp-route-flagUrl="@list.imageUrl">Result Details</a>
+                            </td>
+                        </tr>
+                    }
                 }
             }
         }
+        else
+        {
+            @foreach (FixtureList list in @Model.fixtureLists)
+            {
+                @if (list != null)
+                {
+                    <tr class="head" data-toggle="collapse" data-target=".fixtures_@list.fixtures[0].leagueId">
+                        <td class="flag"><img src="@list.imageUrl"></td>
+                        <th colspan="2">@list.leagueName</th>
+                    </tr>
+                    @for (int i = 0; i < list.fixtures.Count; i++)
+                    {
+                        <tr class="collapse fixtures_@list.fixtures[0].leagueId">
+                            <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
+                            <td class="details">@list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName</td>
+                            <td class="details">
+                                <a class="btn btn-primary" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
+                                   asp-route-flagUrl="@list.imageUrl">Prediction</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+
     }
     else
     {

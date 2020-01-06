@@ -37,5 +37,15 @@ namespace ScorePredictor.Models
         public string predictionString { get; set; }
 
         public int[] predictedScore { get; set; }
+
+        public bool finished { get; set; } = false;
+
+        public int homeGoals {get;set;}
+
+        public int awayGoals { get; set; }
+
+        public List<Goal> homeGoalScorers { get; set; } = new List<Goal>();
+
+        public List<Goal> awayGoalScorers { get; set; } = new List<Goal>();
     }
 }

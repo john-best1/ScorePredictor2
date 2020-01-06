@@ -44,6 +44,12 @@ namespace ScorePredictor.Data
                             leagueName = allMatches[i]["competition"]["name"].ToString(),
                             utcDate = allMatches[i]["utcDate"].ToString()
                         };
+                        if(date < DateTime.Today)
+                        {
+                            fixture.finished = true;
+                            fixture.homeScore = int.Parse(allMatches[i]["score"]["fullTime"]["homeTeam"].ToString());
+                            fixture.awayScore = int.Parse(allMatches[i]["score"]["fullTime"]["awayTeam"].ToString());
+                        }
                         if(fixture.leagueId == 2084)
                         {
                             fixture.leagueName = "SPL";

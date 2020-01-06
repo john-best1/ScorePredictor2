@@ -2,42 +2,71 @@
 @section Styles{
     <link href="~/css/match.css" rel="stylesheet" />
 }
-<div class="container">
-    <div class="header col-lg-12">
-        <img class="flag" src="@Model.match.ImageUrl" style="border: 1px white solid" />
-        <h1>@Model.match.LeagueName</h1>
-        <h3>@Model.match.Stadium</h3>
-        <h4>@Model.match.UtcDate.Replace(":00","")</h4>
-    </div>
-    <div class="row">
-        <div class="col-lg-6 teamone">
-            <h1 class="team">@Model.match.HomeTeamName</h1>
-            <h4>League Position: @Model.match.HomeStats.position</h4>
-            <h4 class="alt">W/D/L%: @Model.match.HomeStats.WDL</h4>
-            <h4>Average Scored Per Game: @Model.match.HomeStats.goalsScoredPerGame</h4>
-            <h4 class="alt">Average Conceded Per Game: @Model.match.HomeStats.goalsConcededPerGame</h4>
-            <h4>Last 6 Results: @Model.match.HomeStats.overallFormString</h4>
-            <h4 class="alt">Home Table Position: @Model.match.HomeStats.HomeOrAwayPosition</h4>
-            <h4>Last 6 Home Results: @Model.match.HomeStats.homeOrAwayFormString</h4>
-            <h4 class="alt">Home W/D/L%: @Model.match.HomeStats.homeOrAwayWDL</h4>
-            <h4>@Model.match.HomeStats.PredictionPoints Prediction Points</h4>
+    <div class="container">
+        <div class="header col-lg-12">
+            <img class="flag" src="@Model.match.ImageUrl" style="border: 1px white solid" />
+            <h1>@Model.match.LeagueName</h1>
+            <h3>@Model.match.Stadium</h3>
+            <h4>@Model.match.UtcDate.Replace(":00", "")</h4>
+        </div>
+        @if (!Model.match.finished)
+        {
+            <div class="row">
+                <div class="col-lg-6 teamone">
+                    <h1 class="team">@Model.match.HomeTeamName</h1>
+                    <h4>League Position: @Model.match.HomeStats.position</h4>
+                    <h4 class="alt">W/D/L%: @Model.match.HomeStats.WDL</h4>
+                    <h4>Average Scored Per Game: @Model.match.HomeStats.goalsScoredPerGame</h4>
+                    <h4 class="alt">Average Conceded Per Game: @Model.match.HomeStats.goalsConcededPerGame</h4>
+                    <h4>Last 6 Results: @Model.match.HomeStats.overallFormString</h4>
+                    <h4 class="alt">Home Table Position: @Model.match.HomeStats.HomeOrAwayPosition</h4>
+                    <h4>Last 6 Home Results: @Model.match.HomeStats.homeOrAwayFormString</h4>
+                    <h4 class="alt">Home W/D/L%: @Model.match.HomeStats.homeOrAwayWDL</h4>
+                    <h4>@Model.match.HomeStats.PredictionPoints Prediction Points</h4>
 
-        </div>
-        <div class="col-lg-6 teamtwo">
-            <h1 class="team">@Model.match.AwayTeamName</h1>
-            <h4>League Position: @Model.match.AwayStats.position</h4>
-            <h4 class="alt">W/D/L%: @Model.match.AwayStats.WDL</h4>
-            <h4>Average Scored Per Game: @Model.match.AwayStats.goalsScoredPerGame</h4>
-            <h4 class="alt">Average Conceded Per Game: @Model.match.AwayStats.goalsConcededPerGame</h4>
-            <h4>Last 6 Results: @Model.match.AwayStats.overallFormString</h4>
-            <h4 class="alt">Away Table Position: @Model.match.AwayStats.HomeOrAwayPosition</h4>
-            <h4>Last 6 Away Results: @Model.match.AwayStats.homeOrAwayFormString</h4>
-            <h4 class="alt">Away W/D/L%: @Model.match.AwayStats.homeOrAwayWDL</h4>
-            <h4>@Model.match.AwayStats.PredictionPoints Prediction points</h4>
-        </div>
+                </div>
+                <div class="col-lg-6 teamtwo">
+                    <h1 class="team">@Model.match.AwayTeamName</h1>
+                    <h4>League Position: @Model.match.AwayStats.position</h4>
+                    <h4 class="alt">W/D/L%: @Model.match.AwayStats.WDL</h4>
+                    <h4>Average Scored Per Game: @Model.match.AwayStats.goalsScoredPerGame</h4>
+                    <h4 class="alt">Average Conceded Per Game: @Model.match.AwayStats.goalsConcededPerGame</h4>
+                    <h4>Last 6 Results: @Model.match.AwayStats.overallFormString</h4>
+                    <h4 class="alt">Away Table Position: @Model.match.AwayStats.HomeOrAwayPosition</h4>
+                    <h4>Last 6 Away Results: @Model.match.AwayStats.homeOrAwayFormString</h4>
+                    <h4 class="alt">Away W/D/L%: @Model.match.AwayStats.homeOrAwayWDL</h4>
+                    <h4>@Model.match.AwayStats.PredictionPoints Prediction points</h4>
+                </div>
+            </div>
+            <div class="col-lg-12 prediction">
+                <h1 class="predictiontitle">Prediction</h1>
+                <h1 class="predictedresult">@Model.match.predictionString &nbsp;&nbsp; @Model.match.predictedScore[0] - @Model.match.predictedScore[1]</h1>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-lg-6 teamone">
+                    <h1 class="team">@Model.match.HomeTeamName</h1>
+                    <h1>@Model.match.homeGoals</h1>
+                    @foreach(Goal goal in Model.match.homeGoalScorers)
+                    {
+                        <h5>@goal.minute'  &nbsp; @goal.scorer &nbsp; @goal.assist</h5>
+                    }
+                </div>
+                <div class="col-lg-6 teamtwo">
+                    <h1 class="team">@Model.match.AwayTeamName</h1>
+                    <h1>@Model.match.awayGoals</h1>
+                    @foreach (Goal goal in Model.match.awayGoalScorers)
+                    {
+                        <h5>@goal.minute'  &nbsp; @goal.scorer &nbsp; @goal.assist</h5>
+                    }
+                </div>
+            </div>
+            <div class="scorecomparison col-lg-4 col-lg-offset-4">
+                <h1 class="predictedscore">Predicted Score: </h1>
+                <h1 class="actualresult">Actual Score: &nbsp;&nbsp;@Model.match.homeGoals - @Model.match.awayGoals</h1>
+            </div>
+        }
+
     </div>
-    <div class="col-lg-12 prediction">
-        <h1 class="predictiontitle">Prediction</h1>
-        <h1 class="predictedresult">@Model.match.predictionString &nbsp;&nbsp; @Model.match.predictedScore[0] - @Model.match.predictedScore[1]</h1>
-    </div>
-</div>

@@ -89,10 +89,6 @@ namespace ScorePredictor.Data
             //double decimalHomeGoals = match.HomeStats.homeOrAwayLast6Scored / 6.0;
             //double decimalAwayGoals = match.AwayStats.homeOrAwayLast6Scored / 6.0;
 
-            System.Diagnostics.Debug.WriteLine("----------------");
-            System.Diagnostics.Debug.WriteLine(match.predictedResult + " " + homeGoals + " " + awayGoals + " " + (homeGoals <= awayGoals));
-            System.Diagnostics.Debug.WriteLine("----------------");
-
 
             //regular home win
             if (match.predictedResult == 2 && homeGoals <= awayGoals)
@@ -371,6 +367,44 @@ namespace ScorePredictor.Data
             match.UtcDate = jsonObject["match"]["utcDate"].ToString();
             match.LeagueId = int.Parse(jsonObject["match"]["competition"]["id"].ToString());
             match.LeagueName = jsonObject["match"]["competition"]["name"].ToString();
+
+            if (jsonObject["match"]["status"].ToString() == "FINISHED")
+            {
+                match.finished = true;
+                match.homeGoals = int.Parse(jsonObject["match"]["score"]["fullTime"]["homeTeam"].ToString());
+                match.awayGoals = int.Parse(jsonObject["match"]["score"]["fullTime"]["awayTeam"].ToString());
+                JArray goals = (JArray)jsonObject["match"]["goals"];
+                for (int i = 0; i < goals.Count; i++)
+                {
+                    if (int.Parse(goals[i]["team"]["id"].ToString()) == match.HomeTeamId)
+                    {
+                        Goal goal = new Goal
+                        {
+                            minute = int.Parse(goals[i]["minute"].ToString()),
+                            scorer = goals[i]["scorer"]["name"].ToString()
+                        };
+
+                        if (goals[i]["assist"].ToString() != "")
+                        {
+                            goal.assist = "(" + goals[i]["assist"]["name"].ToString() + ")";
+                        }
+                        match.homeGoalScorers.Add(goal);
+                    }
+                    else if(int.Parse(goals[i]["team"]["id"].ToString()) == match.AwayTeamId)
+                    {
+                        Goal goal = new Goal
+                        {
+                            minute = int.Parse(goals[i]["minute"].ToString()),
+                            scorer = goals[i]["scorer"]["name"].ToString()
+                        };
+                        if (goals[i]["assist"].ToString() != "")
+                        {
+                            goal.assist = "(" + goals[i]["assist"]["name"].ToString() + ")";
+                        }
+                        match.awayGoalScorers.Add(goal);
+                    }
+                }
+            }
         }
 
         public void getTeamForm(MatchStats stats, int teamId, JArray allMatches, bool home = true)
