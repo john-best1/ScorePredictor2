@@ -107,7 +107,7 @@ namespace ScorePredictor.Data
                 } //homeGoals 3, awaygoals2;
                 if (match.predictedResult == 2 && homeGoals <= awayGoals)
                 {
-                    if(awayGoals > decimalAwayGoals)
+                    if(awayGoals > decimalAwayGoals && homeGoals > 0)
                     {
                         awayGoals = homeGoals - 1;
                     }
@@ -205,7 +205,7 @@ namespace ScorePredictor.Data
                 }
                 if (match.predictedResult == 5 && awayGoals <= homeGoals)
                 {
-                    if (homeGoals > decimalHomeGoals)
+                    if (homeGoals > decimalHomeGoals && awayGoals > 0)
                     {
                         homeGoals = awayGoals - 1;
                     }
