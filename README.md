@@ -1,0 +1,3 @@
+
+
+score-predictor.azurewebsites.net
