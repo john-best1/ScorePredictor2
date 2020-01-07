@@ -26,9 +26,11 @@ namespace ScorePredictor.Models
 
         public bool finished { get; set; }
 
-        public int homeScore { get; set; }
+        public string homeScore { get; set; }
         
-        public int awayScore { get; set; }
+        public string awayScore { get; set; }
+
+        public bool postponed { get; set; }
     }
 
 }

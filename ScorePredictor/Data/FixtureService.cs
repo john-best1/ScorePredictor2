@@ -33,48 +33,62 @@ namespace ScorePredictor.Data
                     for(int i = 0; i < allMatches.Count; i++)
                     {
                         string competitionId = allMatches[i]["competition"]["id"].ToString();
-                        Fixture fixture = new Fixture
+                        if (allMatches[i]["status"].ToString() != "CANCELLED")
                         {
-                            matchId = allMatches[i]["id"].ToString(),
-                            homeTeamId = int.Parse(allMatches[i]["homeTeam"]["id"].ToString()),
-                            homeTeamName = allMatches[i]["homeTeam"]["name"].ToString(),
-                            awayTeamId = int.Parse(allMatches[i]["awayTeam"]["id"].ToString()),
-                            awayTeamName = allMatches[i]["awayTeam"]["name"].ToString(),
-                            leagueId = int.Parse(allMatches[i]["competition"]["id"].ToString()),
-                            leagueName = allMatches[i]["competition"]["name"].ToString(),
-                            utcDate = allMatches[i]["utcDate"].ToString()
-                        };
-                        if(date < DateTime.Today)
-                        {
-                            fixture.finished = true;
-                            fixture.homeScore = int.Parse(allMatches[i]["score"]["fullTime"]["homeTeam"].ToString());
-                            fixture.awayScore = int.Parse(allMatches[i]["score"]["fullTime"]["awayTeam"].ToString());
-                        }
-                        if(fixture.leagueId == 2084)
-                        {
-                            fixture.leagueName = "SPL";
-                        }else if(fixture.leagueId == 2013)
-                        {
-                            fixture.leagueName = "Série_A";
-                        }
-                        bool competitionExists = false;
-                        foreach (FixtureList list in fixtureLists)
-                        {
-                            if (list.leagueName == fixture.leagueName)
+                            Fixture fixture = new Fixture
                             {
-                                list.fixtures.Add(fixture);
-                                competitionExists = true;
-                                break;
+                                matchId = allMatches[i]["id"].ToString(),
+                                homeTeamId = int.Parse(allMatches[i]["homeTeam"]["id"].ToString()),
+                                homeTeamName = allMatches[i]["homeTeam"]["name"].ToString(),
+                                awayTeamId = int.Parse(allMatches[i]["awayTeam"]["id"].ToString()),
+                                awayTeamName = allMatches[i]["awayTeam"]["name"].ToString(),
+                                leagueId = int.Parse(allMatches[i]["competition"]["id"].ToString()),
+                                leagueName = allMatches[i]["competition"]["name"].ToString(),
+                                utcDate = allMatches[i]["utcDate"].ToString()
+                            };
+                            if (date < DateTime.Today)
+                            {
+                                if (allMatches[i]["status"].ToString() == "FINISHED")
+                                {
+                                    fixture.finished = true;
+                                    fixture.homeScore = allMatches[i]["score"]["fullTime"]["homeTeam"].ToString();
+                                    fixture.awayScore = allMatches[i]["score"]["fullTime"]["awayTeam"].ToString();
+                                }
+                                else
+                                {
+                                    fixture.homeScore = "P";
+                                    fixture.awayScore = "P";
+                                    fixture.postponed = true;
+                                }
+
                             }
-                        }
-                        if (!competitionExists || !fixtureLists.Any())
-                        {
-                            FixtureList fixtureList = new FixtureList();
-                            fixtureList.leagueName = fixture.leagueName;
-                            fixtureList.utcDate = allMatches[i]["utcDate"].ToString();
-                            fixtureList.fixtures = new List<Fixture>();
-                            fixtureList.fixtures.Add(fixture);
-                            fixtureLists.Add(fixtureList);
+                            if (fixture.leagueId == 2084)
+                            {
+                                fixture.leagueName = "SPL";
+                            }
+                            else if (fixture.leagueId == 2013)
+                            {
+                                fixture.leagueName = "Série_A";
+                            }
+                            bool competitionExists = false;
+                            foreach (FixtureList list in fixtureLists)
+                            {
+                                if (list.leagueName == fixture.leagueName)
+                                {
+                                    list.fixtures.Add(fixture);
+                                    competitionExists = true;
+                                    break;
+                                }
+                            }
+                            if (!competitionExists || !fixtureLists.Any())
+                            {
+                                FixtureList fixtureList = new FixtureList();
+                                fixtureList.leagueName = fixture.leagueName;
+                                fixtureList.utcDate = allMatches[i]["utcDate"].ToString();
+                                fixtureList.fixtures = new List<Fixture>();
+                                fixtureList.fixtures.Add(fixture);
+                                fixtureLists.Add(fixtureList);
+                            }
                         }
                     }
 

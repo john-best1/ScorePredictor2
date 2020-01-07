@@ -376,27 +376,36 @@ namespace ScorePredictor.Data
                 JArray goals = (JArray)jsonObject["match"]["goals"];
                 for (int i = 0; i < goals.Count; i++)
                 {
-                    if (int.Parse(goals[i]["team"]["id"].ToString()) == match.HomeTeamId)
+                    if ((int.Parse(goals[i]["team"]["id"].ToString()) == match.HomeTeamId && goals[i]["type"].ToString() == "REGULAR")
+                        || int.Parse(goals[i]["team"]["id"].ToString()) == match.AwayTeamId && goals[i]["type"].ToString() == "OWN")
                     {
                         Goal goal = new Goal
                         {
                             minute = int.Parse(goals[i]["minute"].ToString()),
                             scorer = goals[i]["scorer"]["name"].ToString()
                         };
-
+                        if(goals[i]["type"].ToString() == "OWN")
+                        {
+                            goal.scorer += " (OG)";
+                        }
                         if (goals[i]["assist"].ToString() != "")
                         {
                             goal.assist = "(" + goals[i]["assist"]["name"].ToString() + ")";
                         }
                         match.homeGoalScorers.Add(goal);
                     }
-                    else if(int.Parse(goals[i]["team"]["id"].ToString()) == match.AwayTeamId)
+                    else if((int.Parse(goals[i]["team"]["id"].ToString()) == match.AwayTeamId && goals[i]["type"].ToString() == "REGULAR")
+                        || int.Parse(goals[i]["team"]["id"].ToString()) == match.HomeTeamId && goals[i]["type"].ToString() == "OWN")
                     {
                         Goal goal = new Goal
                         {
                             minute = int.Parse(goals[i]["minute"].ToString()),
                             scorer = goals[i]["scorer"]["name"].ToString()
                         };
+                        if (goals[i]["type"].ToString() == "OWN")
+                        {
+                            goal.scorer += " (OG)";
+                        }
                         if (goals[i]["assist"].ToString() != "")
                         {
                             goal.assist = "(" + goals[i]["assist"]["name"].ToString() + ")";

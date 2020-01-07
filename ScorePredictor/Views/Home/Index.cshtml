@@ -23,14 +23,7 @@
 <table class="col-lg-8 col-lg-offset-2">
     <tr class="toprow" style="width:100%">
         <td></td>     @* STYLE HACK *@
-        @if (Model.finishedMatches)
-        {
-            <th class="matchtype">Results</th>
-        }
-        else
-        {
-            <th class="matchtype">Fixtures</th>
-        }
+        <th class="matchtype">Fixtures</th>
         <td class="datepicker">
             <input label="Date: " type="text" id="myDatepicker"
                    placeholder="@Model.date.DayOfWeek    @Model.date.Day/@Model.date.Month/@Model.date.Year" />
@@ -40,8 +33,6 @@
     @if (@Model.fixtureLists.Any(i => i != null))
     {
 
-        @if (Model.finishedMatches)
-        {
             @foreach (FixtureList list in @Model.fixtureLists)
             {
                 @if (list != null)
@@ -52,47 +43,45 @@
                     </tr>
                     @for (int i = 0; i < list.fixtures.Count; i++)
                     {
-                        <tr class="collapse fixtures_@list.fixtures[0].leagueId">
-                            <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
+                    <tr class="collapse fixtures_@list.fixtures[0].leagueId">
+                        <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
+                        @if (list.fixtures[i].finished)
+                        {
                             <td class="details">
                                 @list.fixtures[i].homeTeamName [@list.fixtures[i].homeScore]
                                 V [@list.fixtures[i].awayScore] @list.fixtures[i].awayTeamName
                             </td>
+                        }
+                        else if (!list.fixtures[i].postponed)
+                        {
                             <td class="details">
+                                @list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="details">
+                                @list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName     [POSTPONED]
+                            </td>
+                        }
+
+                        <td class="details">
+                            @if (list.fixtures[i].finished)
+                            {
                                 <a class="btn btn-primary" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
                                    asp-route-flagUrl="@list.imageUrl">Result Details</a>
-                            </td>
-                        </tr>
-                    }
-                }
-            }
-        }
-        else
-        {
-            @foreach (FixtureList list in @Model.fixtureLists)
-            {
-                @if (list != null)
-                {
-                    <tr class="head" data-toggle="collapse" data-target=".fixtures_@list.fixtures[0].leagueId">
-                        <td class="flag"><img src="@list.imageUrl"></td>
-                        <th colspan="2">@list.leagueName</th>
-                    </tr>
-                    @for (int i = 0; i < list.fixtures.Count; i++)
-                    {
-                        <tr class="collapse fixtures_@list.fixtures[0].leagueId">
-                            <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
-                            <td class="details">@list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName</td>
-                            <td class="details">
+                            }
+                             else if (!list.fixtures[i].postponed)
+                             {
                                 <a class="btn btn-primary" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
-                                   asp-route-flagUrl="@list.imageUrl">Prediction</a>
-                            </td>
-                        </tr>
+                                    asp-route-flagUrl="@list.imageUrl">Prediction</a>
+                             }
+                        </td>
+                    </tr>
                     }
                 }
             }
-        }
-
-    }
+     }
     else
     {
         <tr class="nofixturesrow">
@@ -104,16 +93,16 @@
 
     <script>
         $("#myDatepicker").datepicker({
-            minDate: '-8D',
+    minDate: '-8D',
             maxDate: '+4D',
             onSelect: function () {
-                date = new Date(this.value);
-                url = "?dateString=" + date.toString();
-                console.log(url);
-                index = window.location.href.indexOf("/");
-                window.location.href = window.location.href.substring(0, index) + url;
-            }
-        });
+            date = new Date(this.value);
+            url = "?dateString=" + date.toString();
+            console.log(url);
+            index = window.location.href.indexOf("/");
+            window.location.href = window.location.href.substring(0, index) + url;
+        }
+    });
     </script>
 
 
