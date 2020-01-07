@@ -376,7 +376,7 @@ namespace ScorePredictor.Data
                 JArray goals = (JArray)jsonObject["match"]["goals"];
                 for (int i = 0; i < goals.Count; i++)
                 {
-                    if ((int.Parse(goals[i]["team"]["id"].ToString()) == match.HomeTeamId && goals[i]["type"].ToString() == "REGULAR")
+                    if ((int.Parse(goals[i]["team"]["id"].ToString()) == match.HomeTeamId && goals[i]["type"].ToString() != "OWN")
                         || int.Parse(goals[i]["team"]["id"].ToString()) == match.AwayTeamId && goals[i]["type"].ToString() == "OWN")
                     {
                         Goal goal = new Goal
@@ -394,7 +394,7 @@ namespace ScorePredictor.Data
                         }
                         match.homeGoalScorers.Add(goal);
                     }
-                    else if((int.Parse(goals[i]["team"]["id"].ToString()) == match.AwayTeamId && goals[i]["type"].ToString() == "REGULAR")
+                    else if((int.Parse(goals[i]["team"]["id"].ToString()) == match.AwayTeamId && goals[i]["type"].ToString() != "OWN")
                         || int.Parse(goals[i]["team"]["id"].ToString()) == match.HomeTeamId && goals[i]["type"].ToString() == "OWN")
                     {
                         Goal goal = new Goal

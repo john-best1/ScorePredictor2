@@ -39,7 +39,7 @@ h1 {
     color: #23d41c;
     font-family: arial;
 }
-.predictedresult{
+.footer1{
     color:white;
 }
 
@@ -49,12 +49,6 @@ h1 {
     color: deeppink;
 }
 
-.scorecomparison{
-    padding-top:50px;
-}
-.predictedscore{
+.footer2{
     color:deeppink;
-}
-.actualresult{
-    color:white;
 }
