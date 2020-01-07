@@ -41,4 +41,12 @@
     <PackageReference Include="WinLess.lessc" Version="1.0.13" />
   </ItemGroup>
 
+
+
+  <ItemGroup>
+    <None Update="images\ball.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

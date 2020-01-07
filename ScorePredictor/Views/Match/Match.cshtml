@@ -36,8 +36,7 @@
                     @foreach (Goal goal in Model.match.homeGoalScorers)
                     {
                     <h5>
-                        @goal.minute'
-                        <img src="/images/ball.jpg" /> &nbsp; @goal.scorer <span class="assist">@goal.assist</span>
+                        @goal.minute' <!--<img src="ball.jpg" />--> &nbsp; @goal.scorer <span class="assist">@goal.assist</span>
                     </h5>
                     }
                 }
@@ -62,7 +61,7 @@
                     <h1>@Model.match.awayGoals</h1>
                     @foreach (Goal goal in @Model.match.awayGoalScorers)
                     {
-                        <h5>@goal.minute'  &nbsp; @goal.scorer <span class="assist">@goal.assist</span></h5>
+                    <h5>@goal.minute' <!--<img src="ball.jpg" />-->  &nbsp; @goal.scorer <span class="assist">@goal.assist</span></h5>
                     }
                 }
             </div>
