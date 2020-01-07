@@ -370,50 +370,49 @@ namespace ScorePredictor.Data
 
             if (jsonObject["match"]["status"].ToString() == "FINISHED")
             {
-                match.finished = true;
-                match.homeGoals = int.Parse(jsonObject["match"]["score"]["fullTime"]["homeTeam"].ToString());
-                match.awayGoals = int.Parse(jsonObject["match"]["score"]["fullTime"]["awayTeam"].ToString());
-                JArray goals = (JArray)jsonObject["match"]["goals"];
-                for (int i = 0; i < goals.Count; i++)
+                populateResult(jsonObject);
+            }
+        }
+
+        private void populateResult(JObject jsonObject)
+        {
+            match.finished = true;
+            match.homeGoals = int.Parse(jsonObject["match"]["score"]["fullTime"]["homeTeam"].ToString());
+            match.awayGoals = int.Parse(jsonObject["match"]["score"]["fullTime"]["awayTeam"].ToString());
+            JArray goals = (JArray)jsonObject["match"]["goals"];
+            match.homeGoalScorers = populateGoalScorers(goals, match.HomeTeamId);
+            match.awayGoalScorers = populateGoalScorers(goals, match.AwayTeamId);
+        }
+
+        private List<Goal> populateGoalScorers(JArray goals, int teamId)
+        {
+            List<Goal> goalScorers = new List<Goal>();
+            for (int i = 0; i < goals.Count; i++)
+            {
+                if ((int.Parse(goals[i]["team"]["id"].ToString()) == teamId && goals[i]["type"].ToString() != "OWN")
+                    || int.Parse(goals[i]["team"]["id"].ToString()) != teamId && goals[i]["type"].ToString() == "OWN")
                 {
-                    if ((int.Parse(goals[i]["team"]["id"].ToString()) == match.HomeTeamId && goals[i]["type"].ToString() != "OWN")
-                        || int.Parse(goals[i]["team"]["id"].ToString()) == match.AwayTeamId && goals[i]["type"].ToString() == "OWN")
+                    Goal goal = new Goal
                     {
-                        Goal goal = new Goal
-                        {
-                            minute = int.Parse(goals[i]["minute"].ToString()),
-                            scorer = goals[i]["scorer"]["name"].ToString()
-                        };
-                        if(goals[i]["type"].ToString() == "OWN")
-                        {
-                            goal.scorer += " (OG)";
-                        }
-                        if (goals[i]["assist"].ToString() != "")
-                        {
-                            goal.assist = "(" + goals[i]["assist"]["name"].ToString() + ")";
-                        }
-                        match.homeGoalScorers.Add(goal);
-                    }
-                    else if((int.Parse(goals[i]["team"]["id"].ToString()) == match.AwayTeamId && goals[i]["type"].ToString() != "OWN")
-                        || int.Parse(goals[i]["team"]["id"].ToString()) == match.HomeTeamId && goals[i]["type"].ToString() == "OWN")
+                        minute = int.Parse(goals[i]["minute"].ToString()),
+                        scorer = goals[i]["scorer"]["name"].ToString()
+                    };
+                    if (goals[i]["type"].ToString() == "OWN")
                     {
-                        Goal goal = new Goal
-                        {
-                            minute = int.Parse(goals[i]["minute"].ToString()),
-                            scorer = goals[i]["scorer"]["name"].ToString()
-                        };
-                        if (goals[i]["type"].ToString() == "OWN")
-                        {
-                            goal.scorer += " (OG)";
-                        }
-                        if (goals[i]["assist"].ToString() != "")
-                        {
-                            goal.assist = "(" + goals[i]["assist"]["name"].ToString() + ")";
-                        }
-                        match.awayGoalScorers.Add(goal);
+                        goal.scorer += " (OG)";
                     }
+                    if (goals[i]["type"].ToString() == "PENALTY")
+                    {
+                        goal.scorer += " (Penalty)";
+                    }
+                    if (goals[i]["assist"].ToString() != "")
+                    {
+                        goal.assist = "(" + goals[i]["assist"]["name"].ToString() + ")";
+                    }
+                    goalScorers.Add(goal);
                 }
             }
+            return goalScorers;
         }
 
         public void getTeamForm(MatchStats stats, int teamId, JArray allMatches, bool home = true)
