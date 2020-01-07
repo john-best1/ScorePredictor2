@@ -7,7 +7,12 @@
             <img class="flag" src="@Model.match.ImageUrl" style="border: 1px white solid" />
             <h1>@Model.match.LeagueName</h1>
             <h3>@Model.match.Stadium</h3>
-            <h4>@Model.match.UtcDate.Replace(":00", "")</h4>
+            @{
+                string date = Model.match.UtcDate;
+                int start = date.LastIndexOf(":00");
+                date = date.Substring(0, start) + " " + date.Substring(date.Length - 2, 2);
+                <h4>@date</h4>
+            }
         </div>
         @if (!Model.match.finished)
         {
