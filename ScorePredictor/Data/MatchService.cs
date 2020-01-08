@@ -31,11 +31,12 @@ namespace ScorePredictor.Data
             builder.Password = "databasepassword*1";
             builder.InitialCatalog = "scorepredictordb";
 
-            matchInDatabase = databaseCheck(builder);
             match.MatchId = matchId;
+            matchInDatabase = databaseCheck(builder);
             if (matchInDatabase)
             {
                 getMatchDataFromDatabase(builder);
+                return match;
             }
             else
             {
@@ -111,19 +112,20 @@ namespace ScorePredictor.Data
                         "Where match.MatchId = " + match.MatchId + "; ", connection))
                 {
                     connection.Open();
+
                     connection.Close();
 
                 }
             }
         }
 
-        private bool databaseCheck(SqlConnectionStringBuilder builder, string matchId)
+        private bool databaseCheck(SqlConnectionStringBuilder builder)
         {
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
 
                 using (SqlCommand sqlCommand = new SqlCommand("SELECT COUNT(*) from Match as match " +
-                        "Where match.MatchId = " + matchId + "; ", connection))
+                        "Where match.MatchId = " + match.MatchId + "; ", connection))
                 {
                     connection.Open();
                     int userCount = (int)sqlCommand.ExecuteScalar();
