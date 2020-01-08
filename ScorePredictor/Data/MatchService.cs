@@ -21,7 +21,7 @@ namespace ScorePredictor.Data
         string flagUrl;
 
 
-        public async Task<Match> getMatch(int matchId, string flagUrl)
+        public async Task<Match> getMatch(string matchId, string flagUrl)
         {
             this.flagUrl = flagUrl;
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
@@ -31,11 +31,11 @@ namespace ScorePredictor.Data
             builder.Password = "databasepassword*1";
             builder.InitialCatalog = "scorepredictordb";
 
-            matchInDatabase = databaseCheck(builder, matchId);
+            matchInDatabase = databaseCheck(builder);
+            match.MatchId = matchId;
             if (matchInDatabase)
             {
-                return new Match();
-                //return getMatchFromDatabase(matchId);
+                getMatchDataFromDatabase(builder);
             }
             else
             {
@@ -54,7 +54,7 @@ namespace ScorePredictor.Data
                         getWDLString(match.HomeStats);
                         getWDLString(match.AwayStats);
                         match = await getRecentForm(match);
-                        addMatchToDatabase(builder, match);
+                        addMatchToDatabase(builder);
                         return match;
                     }
                     else
@@ -65,7 +65,7 @@ namespace ScorePredictor.Data
             }
         }
 
-        private void addMatchToDatabase(SqlConnectionStringBuilder builder, Match match)
+        private void addMatchToDatabase(SqlConnectionStringBuilder builder)
         {
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
@@ -102,12 +102,22 @@ namespace ScorePredictor.Data
             }
         }
 
-        private Match getMatchFromDatabase(int matchId)
+        private void getMatchDataFromDatabase(SqlConnectionStringBuilder builder)
         {
-            throw new NotImplementedException();
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+
+                using (SqlCommand sqlCommand = new SqlCommand("SELECT COUNT(*) from Match as match " +
+                        "Where match.MatchId = " + match.MatchId + "; ", connection))
+                {
+                    connection.Open();
+                    connection.Close();
+
+                }
+            }
         }
 
-        private bool databaseCheck(SqlConnectionStringBuilder builder, int matchId)
+        private bool databaseCheck(SqlConnectionStringBuilder builder, string matchId)
         {
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {

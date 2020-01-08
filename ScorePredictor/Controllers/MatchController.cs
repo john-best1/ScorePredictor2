@@ -12,7 +12,7 @@ namespace ScorePredictor.Controllers
 {
     public class MatchController : Controller
     {
-        public async Task<IActionResult> Match(MatchService matchService, LeagueService leagueService,int matchId, string flagUrl, bool matchFinished)
+        public async Task<IActionResult> Match(MatchService matchService, LeagueService leagueService,string matchId, string flagUrl, bool matchFinished)
         {
             Match match = await matchService.getMatch(matchId, flagUrl);
             MatchViewModel viewModel = new MatchViewModel(match);
