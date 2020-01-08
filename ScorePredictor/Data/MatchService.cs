@@ -2,6 +2,7 @@
 using ScorePredictor.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -16,31 +17,114 @@ namespace ScorePredictor.Data
         LeagueService leagueService = new LeagueService();
         HttpClient client = new HttpClient();
         int season = 2019;   //change this every season
+        bool matchInDatabase = false;
+        string flagUrl;
 
-        public async Task<Match> getMatch(int matchId)
+
+        public async Task<Match> getMatch(int matchId, string flagUrl)
         {
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.Add("X-Auth-Token", "7830c352850f4acda78aa61d1666d45b");
+            this.flagUrl = flagUrl;
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 
-            using (HttpResponseMessage response = await client.GetAsync("https://api.football-data.org/v2/matches/" + matchId))
+            builder.DataSource = "scorepredictordb.database.windows.net";
+            builder.UserID = "jbest";
+            builder.Password = "databasepassword*1";
+            builder.InitialCatalog = "scorepredictordb";
+
+            matchInDatabase = databaseCheck(builder, matchId);
+            if (matchInDatabase)
             {
-                if (response.IsSuccessStatusCode)
+                return new Match();
+                //return getMatchFromDatabase(matchId);
+            }
+            else
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("X-Auth-Token", "7830c352850f4acda78aa61d1666d45b");
+                using (HttpResponseMessage response = await client.GetAsync("https://api.football-data.org/v2/matches/" + matchId))
                 {
-                    JObject jsonObject = JObject.Parse(await response.Content.ReadAsStringAsync());
+                    if (response.IsSuccessStatusCode)
+                    {
+                        JObject jsonObject = JObject.Parse(await response.Content.ReadAsStringAsync());
 
-                    populateMatch(jsonObject);
+                        populateMatch(jsonObject);
 
-                    match.HomeStats = await leagueService.getStats(match.LeagueId, match.HomeTeamId);
-                    match.AwayStats = await leagueService.getStats(match.LeagueId, match.AwayTeamId, false);
-                    getWDLString(match.HomeStats);
-                    getWDLString(match.AwayStats);
-                    return match;
-                }
-                else
-                {
-                    throw new Exception(response.ReasonPhrase);
+                        match.HomeStats = await leagueService.getStats(match.LeagueId, match.HomeTeamId, match.MatchId);
+                        match.AwayStats = await leagueService.getStats(match.LeagueId, match.AwayTeamId, match.MatchId, false);
+                        getWDLString(match.HomeStats);
+                        getWDLString(match.AwayStats);
+                        match = await getRecentForm(match);
+                        addMatchToDatabase(builder, match);
+                        return match;
+                    }
+                    else
+                    {
+                        throw new Exception(response.ReasonPhrase);
+                    }
                 }
             }
+        }
+
+        private void addMatchToDatabase(SqlConnectionStringBuilder builder, Match match)
+        {
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("insert into Match values(" +
+                "@matchid,@hometeamid,@hometeamname,@awayteamid,@awayteamname,@utcdate,@leaguename,@stadium," +
+                "@leagueid,@imageurl,@predictedresult,@predictionstring,@predictedhomescore,@predictedawayscore," +
+                "@finished,@predictionmade,@resultretrieved, @homegoalsscored, @awaygoalsscored);", connection))
+                {
+                    connection.Open();
+                    cmd.Parameters.AddWithValue("@matchid", match.MatchId);
+                    cmd.Parameters.AddWithValue("@hometeamid", match.HomeTeamId);
+                    cmd.Parameters.AddWithValue("@hometeamname", match.HomeTeamName);
+                    cmd.Parameters.AddWithValue("@awayteamid", match.AwayTeamId);
+                    cmd.Parameters.AddWithValue("@awayteamname", match.AwayTeamName);
+                    cmd.Parameters.AddWithValue("@utcdate", match.UtcDate);
+                    cmd.Parameters.AddWithValue("@leaguename", match.LeagueName);
+                    cmd.Parameters.AddWithValue("@stadium", match.Stadium);
+                    cmd.Parameters.AddWithValue("@leagueid", match.LeagueId);
+                    cmd.Parameters.AddWithValue("@imageurl", match.ImageUrl);
+                    cmd.Parameters.AddWithValue("@predictedresult", match.predictedResult);
+                    cmd.Parameters.AddWithValue("@predictionstring", match.predictionString);
+                    cmd.Parameters.AddWithValue("@predictedhomescore", match.predictedScore[0]);
+                    cmd.Parameters.AddWithValue("@predictedawayscore", match.predictedScore[1]);
+                    cmd.Parameters.AddWithValue("@finished", match.finished);
+                    cmd.Parameters.AddWithValue("@predictionmade", match.predictionMade);
+                    cmd.Parameters.AddWithValue("@resultretrieved", match.resultRetrieved);
+                    cmd.Parameters.AddWithValue("@homegoalsscored", match.homeGoals);
+                    cmd.Parameters.AddWithValue("@awaygoalsscored", match.awayGoals);
+
+
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+        }
+
+        private Match getMatchFromDatabase(int matchId)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool databaseCheck(SqlConnectionStringBuilder builder, int matchId)
+        {
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+
+                using (SqlCommand sqlCommand = new SqlCommand("SELECT COUNT(*) from Match as match " +
+                        "Where match.MatchId = " + matchId + "; ", connection))
+                {
+                    connection.Open();
+                    int userCount = (int)sqlCommand.ExecuteScalar();
+                    connection.Close();
+                    if (userCount > 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         public async Task<Match> getRecentForm(Match match)
@@ -239,6 +323,7 @@ namespace ScorePredictor.Data
 
             predictedResult[0] = homeGoals;
             predictedResult[1] = awayGoals;
+            match.predictionMade = true;
             return predictedResult;
         }
 
@@ -367,6 +452,7 @@ namespace ScorePredictor.Data
             match.UtcDate = jsonObject["match"]["utcDate"].ToString();
             match.LeagueId = int.Parse(jsonObject["match"]["competition"]["id"].ToString());
             match.LeagueName = jsonObject["match"]["competition"]["name"].ToString();
+            match.ImageUrl = flagUrl;
 
             if (jsonObject["match"]["status"].ToString() == "FINISHED")
             {
@@ -382,6 +468,7 @@ namespace ScorePredictor.Data
             JArray goals = (JArray)jsonObject["match"]["goals"];
             match.homeGoalScorers = populateGoalScorers(goals, match.HomeTeamId);
             match.awayGoalScorers = populateGoalScorers(goals, match.AwayTeamId);
+            match.resultRetrieved = true;
         }
 
         private List<Goal> populateGoalScorers(JArray goals, int teamId)

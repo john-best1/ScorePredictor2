@@ -40,9 +40,13 @@ namespace ScorePredictor.Models
 
         public bool finished { get; set; } = false;
 
-        public int homeGoals {get;set;}
+        public bool predictionMade { get; set; } = false;
 
-        public int awayGoals { get; set; }
+        public bool resultRetrieved { get; set; } = false;
+
+        public int homeGoals { get; set; } = 0;
+
+        public int awayGoals { get; set; } = 0;
 
         public List<Goal> homeGoalScorers { get; set; } = new List<Goal>();
 

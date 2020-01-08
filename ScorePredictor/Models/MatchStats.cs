@@ -8,6 +8,8 @@ namespace ScorePredictor.Models
 {
     public class MatchStats
     {
+        public string matchId { get; set; }
+        public int teamId { get; set; }
         public string position { get; set; }
         public string HomeOrAwayPosition { get; set; }
         public string name { get; set; }

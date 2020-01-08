@@ -14,9 +14,7 @@ namespace ScorePredictor.Controllers
     {
         public async Task<IActionResult> Match(MatchService matchService, LeagueService leagueService,int matchId, string flagUrl, bool matchFinished)
         {
-            Match match = await matchService.getMatch(matchId);
-            match.ImageUrl = flagUrl;
-            match = await matchService.getRecentForm(match);
+            Match match = await matchService.getMatch(matchId, flagUrl);
             MatchViewModel viewModel = new MatchViewModel(match);
             return View(viewModel);
         }

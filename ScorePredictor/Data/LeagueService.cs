@@ -60,7 +60,7 @@ namespace ScorePredictor.Data
             }
         }
 
-        public async Task<MatchStats> getStats(int leagueId, int teamId, bool home = true)
+        public async Task<MatchStats> getStats(int leagueId, int teamId, string matchId, bool home = true)
         {
             int homeOrAway;
             if (home) homeOrAway = 1;
@@ -77,6 +77,8 @@ namespace ScorePredictor.Data
                     {
                         if (teamId == int.Parse(standings[0]["table"][i]["team"]["id"].ToString()))
                         {
+                            stats.teamId = teamId;
+                            stats.matchId = matchId;
                             stats.position = AddOrdinal(int.Parse(standings[0]["table"][i]["position"].ToString()));
                             stats.name = standings[0]["table"][i]["team"]["name"].ToString();
                             stats.matchesPlayed = int.Parse(standings[0]["table"][i]["playedGames"].ToString());
