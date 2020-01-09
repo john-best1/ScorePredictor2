@@ -1,10 +1,4 @@
-﻿* {
-    margin: 0;
-    border: 0;
-    padding: 0;
-    background-color: black;
-}
-.ptable table {
+﻿.ptable table {
     font-family:'verdana';
     margin: 10px auto;
     border-collapse: collapse;

@@ -1,14 +1,10 @@
-﻿* {
-    font-family: arial;
-    color: greenyellow;
-}
-
+﻿
 td, tr {
     background-color: silver;
     border: 2px solid black;
-    color: black;
+    color: greenyellow;
     padding: 8px;
-    background-color: #1082ef;
+    font-family: arial;
 }
 h3 {
     font-size: 14px;
@@ -19,15 +15,12 @@ h3 {
     padding-left: 10px;
     text-align:center;
     background-color: lightgrey;
+    color:black;
 }
 th {
     padding: 10px;
     cursor: pointer;
 }
-    /*th:hover {
-        background-color: #43e2f8;
-        color:red;
-    }*/
 .collapse{
     padding-bottom:8px;
 }
@@ -79,6 +72,7 @@ th :after{
 .details{
     border:none;
     background-color:lightgrey;
+    color:black;
 }
 .toprow td{
     background-color:black;
@@ -97,6 +91,12 @@ input:hover {
     cursor: pointer;
 }
 
+.ui-datepicker-calendar thead tr th{
+    color:black;
+}
+.ui-datepicker-calendar tbody tr {
+    background-color: #1082ef;
+}
 .ui-datepicker-month, .ui-datepicker-year, .myDatePicker{
     color: black;
 }
