@@ -58,18 +58,25 @@
         </tr>
         @foreach (LeagueEntry entry in Model.leagues)
         {
-            <tr class="wpos">
-                <td>@entry.position</td>
+        <tr class="wpos">
+            <td>@entry.position</td>
+            @if (entry.crest != "")
+            {
+                <td class="teamname"><img class="crest" src="@entry.crest" />@entry.name</td>
+            }
+            else
+            {
                 <td class="teamname">@entry.name</td>
-                <td>@entry.matchesPlayed</td>
-                <td>@entry.won</td>
-                <td>@entry.drawn</td>
-                <td>@entry.lost</td>
-                <td>@entry.goalDifference</td>
-                <td>@entry.goalsFor</td>
-                <td>@entry.goalsAgainst</td>
-                <td>@entry.points</td>
-            </tr>
+            }
+            <td>@entry.matchesPlayed</td>
+            <td>@entry.won</td>
+            <td>@entry.drawn</td>
+            <td>@entry.lost</td>
+            <td>@entry.goalDifference</td>
+            <td>@entry.goalsFor</td>
+            <td>@entry.goalsAgainst</td>
+            <td>@entry.points</td>
+        </tr>
         }
     </table>
 

@@ -49,6 +49,10 @@ namespace ScorePredictor.Data
                             goalDifference = int.Parse(standings[leagueTypeCode]["table"][i]["goalDifference"].ToString()),
                             points = int.Parse(standings[leagueTypeCode]["table"][i]["points"].ToString())
                         };
+                        if(leagueCode == 2002 || leagueCode == 2021 || leagueCode == 2019 || leagueCode == 2142)
+                        {
+                            entry.crest = standings[leagueTypeCode]["table"][i]["team"]["crestUrl"].ToString();
+                        }
                         leagueEntries.Add(entry);
                     }
                     return leagueEntries;
