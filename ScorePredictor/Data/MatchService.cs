@@ -30,7 +30,6 @@ namespace ScorePredictor.Data
             builder.UserID = "jbest";
             builder.Password = "databasepassword*1";
             builder.InitialCatalog = "scorepredictordb";
-
             match.MatchId = matchId;
             matchInDatabase = databaseCheck(builder);
             if (matchInDatabase)
@@ -95,6 +94,56 @@ namespace ScorePredictor.Data
                     cmd.Parameters.AddWithValue("@resultretrieved", match.resultRetrieved);
                     cmd.Parameters.AddWithValue("@homegoalsscored", match.homeGoals);
                     cmd.Parameters.AddWithValue("@awaygoalsscored", match.awayGoals);
+
+
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            addStatsToDatabase(builder, match.HomeStats, match.HomeTeamId);
+            addStatsToDatabase(builder, match.AwayStats, match.AwayTeamId);
+        }
+
+        private void addStatsToDatabase(SqlConnectionStringBuilder builder, MatchStats stats, int teamId)
+        {
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("insert into MatchStats values(" +
+                "@position,@homeorawayposition,@name,@matchesplayed,@won,@drawn,@lost,@homeorawaymatchesplayed," +
+                "@homeorawaywon,@homeorawaydrawn,@homeorawaylost,@goalsfor,@goalsagainst,@goaldifference," +
+                "@points,@goalsscoredpergame,@goalsconcededpergame, @wdl, @homeorawaywdl, @overallformstring, @homeorawayformstring," +
+                "@predictionpoints, @overalllast6scored, @overalllast6conceded, @homeorawaylast6scored, @homeorawaylast6conceded," +
+                "@teamid, @matchid);", connection))
+                {
+                    connection.Open();
+                    cmd.Parameters.AddWithValue("@position", stats.position);
+                    cmd.Parameters.AddWithValue("@homeorawayposition", stats.HomeOrAwayPosition);
+                    cmd.Parameters.AddWithValue("@name",stats.name);
+                    cmd.Parameters.AddWithValue("@matchesplayed", stats.matchesPlayed);
+                    cmd.Parameters.AddWithValue("@won", stats.won);
+                    cmd.Parameters.AddWithValue("@drawn", stats.drawn);
+                    cmd.Parameters.AddWithValue("@lost", stats.lost);
+                    cmd.Parameters.AddWithValue("@homeorawaymatchesplayed", stats.homeOrAwayMatchesPlayed);
+                    cmd.Parameters.AddWithValue("@homeorawaywon", stats.homeOrAwayWon);
+                    cmd.Parameters.AddWithValue("@homeorawaydrawn", stats.homeOrAwayDrawn);
+                    cmd.Parameters.AddWithValue("@homeorawaylost", stats.homeOrAwayLost);
+                    cmd.Parameters.AddWithValue("@goalsfor", stats.goalsFor);
+                    cmd.Parameters.AddWithValue("@goalsagainst", stats.goalsAgainst);
+                    cmd.Parameters.AddWithValue("@goaldifference", stats.goalDifference);
+                    cmd.Parameters.AddWithValue("@points", stats.points);
+                    cmd.Parameters.AddWithValue("@goalsscoredpergame", stats.goalsScoredPerGame);
+                    cmd.Parameters.AddWithValue("@goalsconcededpergame", stats.goalsConcededPerGame);
+                    cmd.Parameters.AddWithValue("@wdl", stats.WDL);
+                    cmd.Parameters.AddWithValue("@homeorawaywdl", stats.homeOrAwayWDL);
+                    cmd.Parameters.AddWithValue("@overallformstring", stats.overallFormString);
+                    cmd.Parameters.AddWithValue("@homeorawayformstring", stats.homeOrAwayFormString);
+                    cmd.Parameters.AddWithValue("@predictionpoints", stats.PredictionPoints);
+                    cmd.Parameters.AddWithValue("@overalllast6scored", stats.overallLast6Scored);
+                    cmd.Parameters.AddWithValue("@overalllast6conceded", stats.overallLast6Conceded);
+                    cmd.Parameters.AddWithValue("@homeorawaylast6scored", stats.homeOrAwayLast6Scored);
+                    cmd.Parameters.AddWithValue("@homeorawaylast6conceded", stats.homeOrAwayLast6Conceded);
+                    cmd.Parameters.AddWithValue("@teamid", teamId);
+                    cmd.Parameters.AddWithValue("@matchid", match.MatchId);
 
 
                     cmd.ExecuteNonQuery();
