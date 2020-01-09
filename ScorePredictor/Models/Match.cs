@@ -32,11 +32,11 @@ namespace ScorePredictor.Models
 
         public MatchStats AwayStats { get; set; }
 
-        public int predictedResult { get; set; }
+        public int predictedResult { get; set; } = 0;
 
-        public string predictionString { get; set; }
-
-        public int[] predictedScore { get; set; }
+        public string predictionString { get; set; } = "";
+         
+        public int[] predictedScore { get; set; } = { -1 , -1 };  //hack
 
         public bool finished { get; set; } = false;
 

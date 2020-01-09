@@ -47,13 +47,21 @@ namespace ScorePredictor.Data
                     {
                         JObject jsonObject = JObject.Parse(await response.Content.ReadAsStringAsync());
 
-                        populateMatch(jsonObject, builder);
+                        if (jsonObject["match"]["status"].ToString() == "FINISHED")
+                        {
+                            populateResult(jsonObject);
+                        }
+                        else
+                        {
+                            populateFutureMatch(jsonObject, builder);
 
-                        match.HomeStats = await leagueService.getStats(match.LeagueId, match.HomeTeamId, match.MatchId);
-                        match.AwayStats = await leagueService.getStats(match.LeagueId, match.AwayTeamId, match.MatchId, false);
-                        getWDLString(match.HomeStats);
-                        getWDLString(match.AwayStats);
-                        match = await getRecentForm(match);
+                            match.HomeStats = await leagueService.getStats(match.LeagueId, match.HomeTeamId, match.MatchId);
+                            match.AwayStats = await leagueService.getStats(match.LeagueId, match.AwayTeamId, match.MatchId, false);
+
+                            getWDLString(match.HomeStats);
+                            getWDLString(match.AwayStats);
+                            match = await getRecentForm(match);
+                        }
                         addMatchToDatabase(builder);
                         return match;
                     }
@@ -100,10 +108,16 @@ namespace ScorePredictor.Data
                     connection.Close();
                 }
             }
-            addStatsToDatabase(builder, match.HomeStats, match.HomeTeamId);
-            addStatsToDatabase(builder, match.AwayStats, match.AwayTeamId);
-            addGoalScorersToDatabase(builder, match.homeGoalScorers, match.HomeTeamId);
-            addGoalScorersToDatabase(builder, match.awayGoalScorers, match.AwayTeamId);
+            if (!match.finished)
+            {
+                addStatsToDatabase(builder, match.HomeStats, match.HomeTeamId);
+                addStatsToDatabase(builder, match.AwayStats, match.AwayTeamId);
+            }
+            else
+            {
+                addGoalScorersToDatabase(builder, match.homeGoalScorers, match.HomeTeamId);
+                addGoalScorersToDatabase(builder, match.awayGoalScorers, match.AwayTeamId);
+            }
         }
 
         private void addStatsToDatabase(SqlConnectionStringBuilder builder, MatchStats stats, int teamId)
@@ -214,10 +228,17 @@ namespace ScorePredictor.Data
 
                 }
             }
-            match.HomeStats = getStatsFromDatabase(builder, match.HomeTeamId);
-            match.AwayStats = getStatsFromDatabase(builder, match.AwayTeamId);
-            match.homeGoalScorers = getGoalsFromDatabase(builder, match.HomeTeamId);
-            match.awayGoalScorers = getGoalsFromDatabase(builder, match.AwayTeamId);
+            if (!match.finished)
+            {
+                match.HomeStats = getStatsFromDatabase(builder, match.HomeTeamId);
+                match.AwayStats = getStatsFromDatabase(builder, match.AwayTeamId);
+            }
+            else
+            {
+                match.homeGoalScorers = getGoalsFromDatabase(builder, match.HomeTeamId);
+                match.awayGoalScorers = getGoalsFromDatabase(builder, match.AwayTeamId);
+            }
+            
         }
 
         private List<Goal> getGoalsFromDatabase(SqlConnectionStringBuilder builder, int teamId)
@@ -626,10 +647,9 @@ namespace ScorePredictor.Data
             return wdl;
         }
 
-        private void populateMatch(JObject jsonObject, SqlConnectionStringBuilder builder)
+        private async void populateFutureMatch(JObject jsonObject, SqlConnectionStringBuilder builder)
         {
             match.Stadium = jsonObject["match"]["venue"].ToString();
-
             match.HomeTeamName = jsonObject["match"]["homeTeam"]["name"].ToString();
             match.HomeTeamId = int.Parse(jsonObject["match"]["homeTeam"]["id"].ToString());
             match.AwayTeamName = jsonObject["match"]["awayTeam"]["name"].ToString();
@@ -639,16 +659,20 @@ namespace ScorePredictor.Data
             match.LeagueId = int.Parse(jsonObject["match"]["competition"]["id"].ToString());
             match.LeagueName = jsonObject["match"]["competition"]["name"].ToString();
             match.ImageUrl = flagUrl;
-
-            if (jsonObject["match"]["status"].ToString() == "FINISHED")
-            {
-                populateResult(jsonObject);
-            }
         }
 
         private void populateResult(JObject jsonObject)
         {
             match.finished = true;
+            match.Stadium = jsonObject["match"]["venue"].ToString();
+            match.HomeTeamName = jsonObject["match"]["homeTeam"]["name"].ToString();
+            match.HomeTeamId = int.Parse(jsonObject["match"]["homeTeam"]["id"].ToString());
+            match.AwayTeamName = jsonObject["match"]["awayTeam"]["name"].ToString();
+            match.AwayTeamId = int.Parse(jsonObject["match"]["awayTeam"]["id"].ToString());
+            match.UtcDate = jsonObject["match"]["utcDate"].ToString();
+            match.LeagueId = int.Parse(jsonObject["match"]["competition"]["id"].ToString());
+            match.LeagueName = jsonObject["match"]["competition"]["name"].ToString();
+            match.ImageUrl = flagUrl;
             match.homeGoals = int.Parse(jsonObject["match"]["score"]["fullTime"]["homeTeam"].ToString());
             match.awayGoals = int.Parse(jsonObject["match"]["score"]["fullTime"]["awayTeam"].ToString());
             JArray goals = (JArray)jsonObject["match"]["goals"];
