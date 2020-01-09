@@ -47,7 +47,7 @@ namespace ScorePredictor.Data
                     {
                         JObject jsonObject = JObject.Parse(await response.Content.ReadAsStringAsync());
 
-                        populateMatch(jsonObject);
+                        populateMatch(jsonObject, builder);
 
                         match.HomeStats = await leagueService.getStats(match.LeagueId, match.HomeTeamId, match.MatchId);
                         match.AwayStats = await leagueService.getStats(match.LeagueId, match.AwayTeamId, match.MatchId, false);
@@ -102,6 +102,8 @@ namespace ScorePredictor.Data
             }
             addStatsToDatabase(builder, match.HomeStats, match.HomeTeamId);
             addStatsToDatabase(builder, match.AwayStats, match.AwayTeamId);
+            addGoalScorersToDatabase(builder, match.homeGoalScorers, match.HomeTeamId);
+            addGoalScorersToDatabase(builder, match.awayGoalScorers, match.AwayTeamId);
         }
 
         private void addStatsToDatabase(SqlConnectionStringBuilder builder, MatchStats stats, int teamId)
@@ -152,6 +154,31 @@ namespace ScorePredictor.Data
             }
         }
 
+        private void addGoalScorersToDatabase(SqlConnectionStringBuilder builder, List<Goal> goalScorers, int teamId)
+        {
+            if (goalScorers.Any())
+            {
+                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                {
+                    connection.Open();
+                    foreach(Goal goal in goalScorers)
+                    {
+                        using (SqlCommand cmd = new SqlCommand("insert into Goal values(" +
+                            "@minute, @scorer, @assist, @matchid, @teamid);", connection))
+                        {
+                            cmd.Parameters.AddWithValue("@minute", goal.minute);
+                            cmd.Parameters.AddWithValue("@scorer", goal.scorer);
+                            cmd.Parameters.AddWithValue("@assist", goal.assist);
+                            cmd.Parameters.AddWithValue("@matchid", match.MatchId);
+                            cmd.Parameters.AddWithValue("@teamid", teamId);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+        }
+
         private void getMatchDataFromDatabase(SqlConnectionStringBuilder builder)
         {
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
@@ -189,6 +216,32 @@ namespace ScorePredictor.Data
             }
             match.HomeStats = getStatsFromDatabase(builder, match.HomeTeamId);
             match.AwayStats = getStatsFromDatabase(builder, match.AwayTeamId);
+            match.homeGoalScorers = getGoalsFromDatabase(builder, match.HomeTeamId);
+            match.awayGoalScorers = getGoalsFromDatabase(builder, match.AwayTeamId);
+        }
+
+        private List<Goal> getGoalsFromDatabase(SqlConnectionStringBuilder builder, int teamId)
+        {
+            List<Goal> goals = new List<Goal>();
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                using (SqlCommand sqlCommand = new SqlCommand("SELECT * from Goal as goal " +
+                        "Where goal.MatchId = " + match.MatchId + " AND goal.TeamId = " + teamId + "; ", connection))
+                {
+                    connection.Open();
+                    SqlDataReader reader = sqlCommand.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Goal goal = new Goal();
+                        goal.minute = (int)reader["Minute"];
+                        goal.scorer = reader["Scorer"].ToString();
+                        goal.assist = reader["Assist"].ToString();
+                        goals.Add(goal);
+                    }
+                    connection.Close();
+                }
+            }
+            return goals;
         }
 
         private MatchStats getStatsFromDatabase(SqlConnectionStringBuilder builder, int teamId)
@@ -573,7 +626,7 @@ namespace ScorePredictor.Data
             return wdl;
         }
 
-        private void populateMatch(JObject jsonObject)
+        private void populateMatch(JObject jsonObject, SqlConnectionStringBuilder builder)
         {
             match.Stadium = jsonObject["match"]["venue"].ToString();
 
