@@ -6,8 +6,9 @@
 td, tr {
     background-color: silver;
     border: 2px solid black;
-    color:black;
+    color: black;
     padding: 8px;
+    background-color: #1082ef;
 }
 h3 {
     font-size: 14px;
@@ -17,6 +18,7 @@ h3 {
     width:15%;
     padding-left: 10px;
     text-align:center;
+    background-color: lightgrey;
 }
 th {
     padding: 10px;
@@ -67,7 +69,7 @@ th :after{
     text-align: center;
 }
 .flag img{
-    width:50%;
+    width:50px;
     height: 30px;
 }
 
@@ -76,6 +78,7 @@ th :after{
 }
 .details{
     border:none;
+    background-color:lightgrey;
 }
 .toprow td{
     background-color:black;
