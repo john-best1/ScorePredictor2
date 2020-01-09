@@ -157,15 +157,87 @@ namespace ScorePredictor.Data
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
 
-                using (SqlCommand sqlCommand = new SqlCommand("SELECT COUNT(*) from Match as match " +
+                using (SqlCommand sqlCommand = new SqlCommand("SELECT * from Match as match " +
                         "Where match.MatchId = " + match.MatchId + "; ", connection))
                 {
                     connection.Open();
-
+                    using (SqlDataReader reader = sqlCommand.ExecuteReader())
+                    {
+                        reader.Read();
+                        match.HomeTeamId = (int)reader["HomeTeamId"];
+                        match.HomeTeamName = reader["HomeTeamName"].ToString();
+                        match.AwayTeamId = (int)reader["AwayTeamId"];
+                        match.AwayTeamName = reader["AwayTeamName"].ToString();
+                        match.UtcDate = reader["UTCDate"].ToString();
+                        match.LeagueName = reader["LeagueName"].ToString();
+                        match.Stadium = reader["Stadium"].ToString();
+                        match.LeagueId = (int)reader["LeagueId"];
+                        match.ImageUrl = reader["ImageURL"].ToString();
+                        match.predictedResult = (int)reader["PredictedResult"];
+                        match.predictionString = reader["PredictionString"].ToString();
+                        match.predictedScore =new int[] { (int)reader["PredictedHomeGoals"], (int)reader["PredictedAwayGoals"]};
+                        match.finished = (bool)reader["Finished"];
+                        match.predictionMade = (bool)reader["PredictionMade"];
+                        match.resultRetrieved = (bool)reader["ResultRetrieved"];
+                        match.homeGoals = (int)reader["HomeGoalsResult"];
+                        match.awayGoals = (int)reader["AwayGoalsResult"];
+                        reader.Close();
+                    }
                     connection.Close();
 
                 }
             }
+            match.HomeStats = getStatsFromDatabase(builder, match.HomeTeamId);
+            match.AwayStats = getStatsFromDatabase(builder, match.AwayTeamId);
+        }
+
+        private MatchStats getStatsFromDatabase(SqlConnectionStringBuilder builder, int teamId)
+        {
+            MatchStats stats = new MatchStats();
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+
+                using (SqlCommand sqlCommand = new SqlCommand("SELECT * from MatchStats as stats " +
+                        "Where stats.MatchId = " + match.MatchId + " AND stats.TeamId = " + teamId + "; ", connection))
+                {
+                    connection.Open();
+                    using (SqlDataReader reader = sqlCommand.ExecuteReader())
+                    {
+                        reader.Read();
+                        stats.position = reader["Position"].ToString();
+                        stats.HomeOrAwayPosition = reader["HomeOrAwayPosition"].ToString(); 
+                        stats.name = reader["Name"].ToString(); 
+                        stats.matchesPlayed = (int)reader["MatchesPlayed"]; 
+                        stats.won = (int)reader["Won"]; 
+                        stats.drawn = (int)reader["Drawn"];
+                        stats.lost = (int)reader["Lost"];
+                        stats.homeOrAwayMatchesPlayed = (int)reader["HomeOrAwayMatchesPlayed"];
+                        stats.homeOrAwayWon = (int)reader["HomeOrAwayWon"];
+                        stats.homeOrAwayDrawn = (int)reader["HomeOrAwayDrawn"];
+                        stats.homeOrAwayLost = (int)reader["HomeOrAwayLost"];
+                        stats.goalsFor = (int)reader["GoalsFor"];
+                        stats.goalsAgainst = (int)reader["GoalsAgainst"];
+                        stats.goalDifference = (int)reader["GoalsDifference"];
+                        stats.points = (int)reader["Points"];
+                        stats.goalsScoredPerGame = (double)reader["GoalsScoredPerGame"];
+                        stats.goalsConcededPerGame = (double)reader["GoalsConcededPerGame"];
+                        stats.WDL = reader["WDL"].ToString();
+                        stats.homeOrAwayWDL = reader["HomeOrAwayWDL"].ToString();
+                        stats.overallFormString = reader["OverallFormString"].ToString();
+                        stats.homeOrAwayFormString = reader["HomeOrAwayFormString"].ToString();
+                        stats.PredictionPoints = (double)reader["PredictionPoints"];
+                        stats.overallLast6Scored = (int)reader["OverallLast6Scored"];
+                        stats.overallLast6Conceded = (int)reader["OverallLast6Conceded"];
+                        stats.homeOrAwayLast6Scored = (int)reader["HomeOrAwayLast6Scored"];
+                        stats.homeOrAwayLast6Conceded = (int)reader["HomeOrAwayLast6Conceded"];
+                        stats.teamId = (int)reader["TeamId"];
+                        stats.matchId = reader["MatchId"].ToString();
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return stats;
         }
 
         private bool databaseCheck(SqlConnectionStringBuilder builder)

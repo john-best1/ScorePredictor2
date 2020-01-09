@@ -11,8 +11,6 @@
 h1 {
     font-family: fantasy;
 }
-.container{
-}
 
 .team {
     color: gold;
@@ -30,11 +28,7 @@ h1 {
 }
 .teamtwo {
     text-align: center;
-
 }
-    .teamone h4 {
-
-    }
 .alt {
     color: #23d41c;
     font-family: arial;

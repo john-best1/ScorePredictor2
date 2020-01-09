@@ -68,14 +68,14 @@
         </div>
         @if (!@Model.match.finished)
         {
-            <div class="col-lg-4 col-lg-offset-4 prediction">
+            <div class="col-lg-6 col-lg-offset-3 prediction">
                 <h1 class="footer1">Prediction</h1>
                 <h1 class="footer2">@Model.match.predictionString &nbsp;&nbsp; @Model.match.predictedScore[0] - @Model.match.predictedScore[1]</h1>
             </div>
         }
         else
         {
-            <div class="prediction col-lg-4 col-lg-offset-4">
+            <div class="prediction col-lg-6 col-lg-offset-3">
                 <h1 class="footer1">Prediction : </h1>
                 <h1 class="footer2">Final Score: &nbsp;&nbsp;@Model.match.homeGoals - @Model.match.awayGoals</h1>
             </div>
