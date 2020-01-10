@@ -20,18 +20,19 @@
     });
 </script>
 
-<table class="col-lg-8 col-lg-offset-2">
-    <tr class="toprow" style="width:100%">
-        <td></td>     @* STYLE HACK *@
-        <th class="matchtype">Fixtures</th>
-        <td class="datepicker">
-            <input label="Date: " type="text" id="myDatepicker"
-                   placeholder="@Model.date.DayOfWeek    @Model.date.Day/@Model.date.Month/@Model.date.Year" />
-        </td>
-    </tr>
+<div class="fixtureswrapper">
+    <table class="col-lg-8 col-lg-offset-2">
+        <tr class="toprow" style="width:100%">
+            <td></td>     @* STYLE HACK *@
+            <th class="matchtype">Fixtures</th>
+            <td class="datepicker">
+                <input label="Date: " type="text" id="myDatepicker"
+                       placeholder="@Model.date.DayOfWeek    @Model.date.Day/@Model.date.Month/@Model.date.Year" />
+            </td>
+        </tr>
 
-    @if (@Model.fixtureLists.Any(i => i != null))
-    {
+        @if (@Model.fixtureLists.Any(i => i != null))
+        {
 
             @foreach (FixtureList list in @Model.fixtureLists)
             {
@@ -43,52 +44,64 @@
                     </tr>
                     @for (int i = 0; i < list.fixtures.Count; i++)
                     {
-                    <tr class="collapse fixtures_@list.fixtures[0].leagueId">
-                        <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
-                        @if (list.fixtures[i].finished)
-                        {
-                            <td class="details">
-                                @list.fixtures[i].homeTeamName [@list.fixtures[i].homeScore]
-                                V [@list.fixtures[i].awayScore] @list.fixtures[i].awayTeamName
-                            </td>
-                        }
-                        else if (!list.fixtures[i].postponed)
-                        {
-                            <td class="details">
-                                @list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName
-                            </td>
-                        }
-                        else
-                        {
-                            <td class="details">
-                                @list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName     [POSTPONED]
-                            </td>
-                        }
-
-                        <td class="details">
+                        <tr class="collapse fixtures_@list.fixtures[0].leagueId">
+                            <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
                             @if (list.fixtures[i].finished)
                             {
-                                <a class="btn btn-primary" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
-                                   asp-route-flagUrl="@list.imageUrl">Result Details</a>
+                                <td class="details">
+                                    @list.fixtures[i].homeTeamName [@list.fixtures[i].homeScore]
+                                    V [@list.fixtures[i].awayScore] @list.fixtures[i].awayTeamName
+                                </td>
                             }
-                             else if (!list.fixtures[i].postponed)
-                             {
-                                <a class="btn btn-primary" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
-                                    asp-route-flagUrl="@list.imageUrl">Prediction</a>
-                             }
-                        </td>
-                    </tr>
+                            else if (!list.fixtures[i].postponed)
+                            {
+                                <td class="details">
+                                    @list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="details">
+                                    @list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName     [POSTPONED]
+                                </td>
+                            }
+
+                            <td class="details">
+                                @if (list.fixtures[i].finished)
+                                {
+                                    <a class="btn btn-primary" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
+                                       asp-route-flagUrl="@list.imageUrl">Result Details</a>
+                                }
+                                else if (!list.fixtures[i].postponed)
+                                {
+                                    <a class="btn btn-primary" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
+                                       asp-route-flagUrl="@list.imageUrl">Prediction</a>
+                                }
+                            </td>
+                        </tr>
+
                     }
                 }
             }
-     }
-    else
-    {
-        <tr class="nofixturesrow">
-            <td class="nofixtures"><h2>No Fixtures, Select Another Date</h2></td>
-        </tr>
-    }
-</table>
+            <tr class="predictionstats">
+                <td></td>
+                <td>Total Correct Predictions : @Model.predictionStats.totalCorrect/@Model.predictionStats.totalPredictions (%@Model.predictionStats.correctPercentage)</td>
+                <td>Total Correct Scores : @Model.predictionStats.totalCorrectScore/@Model.predictionStats.totalPredictions (%@Model.predictionStats.correctScorePercentage)</td>
+            </tr>
+        }
+        else
+        {
+            <tr class="nofixturesrow">
+                <td class="nofixtures"><h2>No Fixtures, Select Another Date</h2></td>
+            </tr>
+        }
+    </table>
+
+</div>
+
+
+
+
 
 
     <script>

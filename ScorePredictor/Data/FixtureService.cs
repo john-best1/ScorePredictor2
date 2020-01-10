@@ -2,6 +2,7 @@
 using ScorePredictor.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -100,6 +101,54 @@ namespace ScorePredictor.Data
                     throw new Exception(response.ReasonPhrase);
                 }
             }
+        }
+
+        public PredictionStats getPredictionStats(PredictionStats predictionStats)
+        {
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+
+            builder.DataSource = "scorepredictordb.database.windows.net";
+            builder.UserID = "jbest";
+            builder.Password = "databasepassword*1";
+            builder.InitialCatalog = "scorepredictordb";
+
+            {
+                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("Select * From PredictionTally; ", connection))
+                    {
+                        connection.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            reader.Read();
+                            predictionStats.totalPredictions = (int)reader["TotalPredictions"];
+                            predictionStats.totalCorrect = (int)reader["TotalCorrect"];
+                            predictionStats.totalCorrectScore = (int)reader["TotalCorrectScores"];
+                            reader.Close();
+                            connection.Close();
+                        }
+                    }
+                }
+            }
+
+            if(predictionStats.totalCorrect > 0)
+            {
+                predictionStats.correctPercentage = (double)predictionStats.totalCorrect / (double)predictionStats.totalPredictions * 100;
+            }
+            else
+            {
+                predictionStats.correctPercentage = 0;
+            }
+            if(predictionStats.totalCorrectScore > 0)
+            {
+                predictionStats.correctScorePercentage = (double)predictionStats.totalCorrectScore / (double)predictionStats.totalPredictions * 100;
+            }
+            else
+            {
+                predictionStats.correctScorePercentage = 0;
+            }
+            
+            return predictionStats;
         }
 
         private string getDateString(DateTime? date)

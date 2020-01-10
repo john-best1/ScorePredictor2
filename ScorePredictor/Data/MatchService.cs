@@ -647,7 +647,7 @@ namespace ScorePredictor.Data
             return wdl;
         }
 
-        private async void populateFutureMatch(JObject jsonObject, SqlConnectionStringBuilder builder)
+        private void populateFutureMatch(JObject jsonObject, SqlConnectionStringBuilder builder)
         {
             match.Stadium = jsonObject["match"]["venue"].ToString();
             match.HomeTeamName = jsonObject["match"]["homeTeam"]["name"].ToString();
