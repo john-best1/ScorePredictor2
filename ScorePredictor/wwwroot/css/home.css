@@ -1,104 +1,120 @@
-﻿
+﻿﻿* {
+    font-family: arial;
+}
+
 td, tr {
     background-color: silver;
     border: 2px solid black;
-    color: greenyellow;
+    color: black;
     padding: 8px;
-    font-family: arial;
+    background-color: #1082ef;
 }
+
 h3 {
     font-size: 14px;
 }
-
-.time{
-    width:15%;
-    padding-left: 10px;
-    text-align:center;
-    background-color: lightgrey;
-    color:black;
+.head th{
+    color:greenyellow;
 }
+.time {
+    width: 15%;
+    padding-left: 10px;
+    text-align: center;
+    background-color: lightgrey;
+}
+
 th {
     padding: 10px;
     cursor: pointer;
 }
-.collapse{
-    padding-bottom:8px;
+/*th:hover {
+        background-color: #43e2f8;
+        color:red;
+    }*/
+.collapse {
+    padding-bottom: 8px;
 }
+
 .head {
     background-color: #1082ef;
+}
 
-}
-.head:hover td{
-    background-color: #43e2f8;
-    cursor:pointer;
-}
-.matchtype{
+    .head:hover td {
+        background-color: #43e2f8;
+        cursor: pointer;
+    }
+
+.matchtype {
     color: deeppink;
     font-size: 20px;
 }
+
 .head:hover th {
     background-color: #43e2f8;
-    color:red;
+    color: red;
 }
 
-th :after{
+th :after {
     color: greenyellow;
 }
+
 .head th:after {
     content: '\02795';
     font-size: 13px;
     float: right;
     margin-left: 5px;
 }
+
 .head .active {
     color: greenyellow;
 }
+
     .head .active:after {
         content: '\2796';
     }
+
 .flag {
     width: 15%;
     background-color: #1082ef;
     border: none;
     text-align: center;
 }
-.flag img{
-    width:50px;
-    height: 30px;
+
+    .flag img {
+        width: 50px;
+        height: 30px;
+    }
+
+.btn {
+    float: right;
 }
 
-.btn{
-    float:right;
+.details {
+    border: none;
+    background-color: lightgrey;
 }
-.details{
-    border:none;
-    background-color:lightgrey;
-    color:black;
+
+.toprow td {
+    background-color: black;
 }
-.toprow td{
-    background-color:black;
+
+.toprow {
+    background-color: black;
 }
-.toprow{
-    background-color:black;
-}
+
 .datepicker {
-    float:right;
-    border:none;
-    color:black;
-    font-family:fantasy;
+    float: right;
+    border: none;
+    color: black;
+    font-family: fantasy;
 }
+
 input:hover {
     background-color: lightgrey;
     cursor: pointer;
 }
 
-.ui-datepicker-calendar thead tr th{
-    color:black;
-}
-.ui-datepicker-calendar tbody tr {
-    background-color: #1082ef;
-}
-.ui-datepicker-month, .ui-datepicker-year, .myDatePicker{
+.ui-datepicker-month, .ui-datepicker-year, .myDatePicker {
     color: black;
 }
 
@@ -107,43 +123,22 @@ input {
     border-bottom: solid red 2px;
 }
 
-.hasDatePicker{
-    color:black;
+.hasDatePicker {
+    color: black;
 }
 
-.ui-widget-content .ui-state-default:hover{
+.ui-widget-content .ui-state-default:hover {
     background: lightgray;
 }
 
-.nofixturesrow td{
-    text-align:center;
-    float:right;
+.nofixturesrow td {
+    text-align: center;
+    float: right;
 }
 
-.nofixtures{
-    background-color:black;
-    color:greenyellow;
-    font-family:fantasy;
-    width:100%;
-}
-.predictionstats td {
-    padding-top: 50px;
+.nofixtures {
     background-color: black;
     color: greenyellow;
+    font-family: fantasy;
+    width: 100%;
 }
-.predictionstats2 td {
-    background-color: black;
-    color: greenyellow;
-}
-.correctpredictions{
-    text-align:right;
-}
-.leaguetitle{
-    min-width:600px;
-}
-.detailsbutton{
-    width:60px;
-    background-color:lightgrey;
-    border:none;
-}
-

@@ -66,7 +66,7 @@
                                 </td>
                             }
 
-                            <td class="detailsbutton">
+                            <td class="details">
                                 @if (list.fixtures[i].finished)
                                 {
                                     <a class="btn btn-primary" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
@@ -83,12 +83,12 @@
                     }
                 }
             }
-            <tr class="predictionstats">
-                <td class="correctpredictions" colspan="3">Correct Predictions : @Model.predictionStats.totalCorrect/@Model.predictionStats.totalPredictions (%@Model.predictionStats.correctPercentage)</td>
+            @*<tr class="predictionstats">
+                <td class="correctpredictions" colspan="2">Correct Predictions : @Model.predictionStats.totalCorrect/@Model.predictionStats.totalPredictions (%@Model.predictionStats.correctPercentage)</td>
             </tr>
             <tr class="predictionstats2">
-                <td class="correctpredictions" colspan="3">Correct Scores : @Model.predictionStats.totalCorrectScore/@Model.predictionStats.totalPredictions (%@Model.predictionStats.correctScorePercentage)</td>
-            </tr>
+                <td class="correctpredictions" colspan="2">Correct Scores : @Model.predictionStats.totalCorrectScore/@Model.predictionStats.totalPredictions (%@Model.predictionStats.correctScorePercentage)</td>
+            </tr>*@
         }
         else
         {
