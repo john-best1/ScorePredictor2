@@ -142,3 +142,8 @@ input {
     font-family: fantasy;
     width: 100%;
 }
+.predictionstats td{
+    color:greenyellow;
+    background-color:black;
+    padding-top:5px;
+}
