@@ -133,7 +133,7 @@ namespace ScorePredictor.Data
 
             if(predictionStats.totalCorrect > 0)
             {
-                predictionStats.correctPercentage = (double)predictionStats.totalCorrect / (double)predictionStats.totalPredictions * 100;
+                predictionStats.correctPercentage = Math.Round((double)predictionStats.totalCorrect / (double)predictionStats.totalPredictions * 100, 2);
             }
             else
             {
@@ -141,7 +141,7 @@ namespace ScorePredictor.Data
             }
             if(predictionStats.totalCorrectScore > 0)
             {
-                predictionStats.correctScorePercentage = (double)predictionStats.totalCorrectScore / (double)predictionStats.totalPredictions * 100;
+                predictionStats.correctScorePercentage = Math.Round((double)predictionStats.totalCorrectScore / (double)predictionStats.totalPredictions * 100,2);
             }
             else
             {

@@ -51,5 +51,7 @@ namespace ScorePredictor.Models
         public List<Goal> homeGoalScorers { get; set; } = new List<Goal>();
 
         public List<Goal> awayGoalScorers { get; set; } = new List<Goal>();
+
+        public bool predictionResultRecorded { get; set; } = false;
     }
 }

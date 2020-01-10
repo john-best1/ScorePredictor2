@@ -35,6 +35,28 @@ namespace ScorePredictor.Data
             if (matchInDatabase)
             {
                 getMatchDataFromDatabase(builder);
+
+                if (DateTime.Parse(match.UtcDate).AddHours(2) < DateTime.Now && !match.predictionResultRecorded)
+                {
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Add("X-Auth-Token", "7830c352850f4acda78aa61d1666d45b");
+                    using (HttpResponseMessage response = await client.GetAsync("https://api.football-data.org/v2/matches/" + matchId))
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            JObject jsonObject = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                            if (jsonObject["match"]["status"].ToString() == "FINISHED")
+                            {
+                                populateResult(jsonObject);
+                                updateMatchInDatabase(builder);
+                                incrementPredictions(builder);
+                                addGoalScorersToDatabase(builder, match.homeGoalScorers, match.HomeTeamId);
+                                addGoalScorersToDatabase(builder, match.awayGoalScorers, match.AwayTeamId);
+                            }
+                        }
+                    }
+                }
                 return match;
             }
             else
@@ -72,6 +94,33 @@ namespace ScorePredictor.Data
                 }
             }
         }
+        private void recordPredictionStatAdded(SqlConnectionStringBuilder builder) {
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("UPDATE Match set PredictionResultRecorded = 1 WHERE MatchId = " + match.MatchId + "; ", connection))
+                {
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+        }
+        private void updateMatchInDatabase(SqlConnectionStringBuilder builder)
+        {
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("UPDATE Match set finished = 1, " +
+                     "HomeGoalsResult = " + match.homeGoals + ", AwayGoalsResult = " + match.awayGoals + ", " + 
+                     "ResultRetrieved = 1 " + 
+                     "WHERE MatchId = " + match.MatchId + "; ", connection))
+                {
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+
+        }
 
         private void addMatchToDatabase(SqlConnectionStringBuilder builder)
         {
@@ -80,7 +129,7 @@ namespace ScorePredictor.Data
                 using (SqlCommand cmd = new SqlCommand("insert into Match values(" +
                 "@matchid,@hometeamid,@hometeamname,@awayteamid,@awayteamname,@utcdate,@leaguename,@stadium," +
                 "@leagueid,@imageurl,@predictedresult,@predictionstring,@predictedhomescore,@predictedawayscore," +
-                "@finished,@predictionmade,@resultretrieved, @homegoalsscored, @awaygoalsscored);", connection))
+                "@finished,@predictionmade,@resultretrieved, @homegoalsscored, @awaygoalsscored, @resultpredictionmade);", connection))
                 {
                     connection.Open();
                     cmd.Parameters.AddWithValue("@matchid", match.MatchId);
@@ -102,7 +151,14 @@ namespace ScorePredictor.Data
                     cmd.Parameters.AddWithValue("@resultretrieved", match.resultRetrieved);
                     cmd.Parameters.AddWithValue("@homegoalsscored", match.homeGoals);
                     cmd.Parameters.AddWithValue("@awaygoalsscored", match.awayGoals);
-
+                    if (!match.finished && !match.predictionResultRecorded && match.predictionMade)
+                    {
+                        cmd.Parameters.AddWithValue("@resultpredictionmade", 1);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@resultpredictionmade", 0);
+                    }
 
                     cmd.ExecuteNonQuery();
                     connection.Close();
@@ -117,7 +173,39 @@ namespace ScorePredictor.Data
             {
                 addGoalScorersToDatabase(builder, match.homeGoalScorers, match.HomeTeamId);
                 addGoalScorersToDatabase(builder, match.awayGoalScorers, match.AwayTeamId);
+                if (!match.predictionResultRecorded && match.predictionMade)
+                {
+                    incrementPredictions(builder);
+                }
             }
+        }
+
+        private void incrementPredictions(SqlConnectionStringBuilder builder)
+        {
+            // 1,2 =home win, 3 = draw, 4,5 = away win
+            String query = "UPDATE PredictionTally SET TotalPredictions = TotalPredictions + 1";
+            if(match.predictedScore[0] == match.homeGoals && match.predictedScore[1] == match.awayGoals)
+            {
+                query += ", TotalCorrect = TotalCorrect + 1, TotalCorrectScores = TotalCorrectScores + 1 ";
+            }
+            else if ((match.homeGoals == match.awayGoals && match.predictedResult == 3)||
+                ((match.homeGoals > match.awayGoals) && (match.predictedResult == 1 || ((match.homeGoals > match.awayGoals) && match.predictedResult == 2)))||
+                ((match.homeGoals < match.awayGoals) && (match.predictedResult == 4 || ((match.homeGoals < match.awayGoals) && match.predictedResult == 5))))
+            {
+                query += ", TotalCorrect = TotalCorrect + 1 ";
+            }
+            using(SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                using(SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+
+            match.predictionResultRecorded = true;
+            recordPredictionStatAdded(builder);
         }
 
         private void addStatsToDatabase(SqlConnectionStringBuilder builder, MatchStats stats, int teamId)
@@ -160,8 +248,7 @@ namespace ScorePredictor.Data
                     cmd.Parameters.AddWithValue("@homeorawaylast6conceded", stats.homeOrAwayLast6Conceded);
                     cmd.Parameters.AddWithValue("@teamid", teamId);
                     cmd.Parameters.AddWithValue("@matchid", match.MatchId);
-
-
+                    
                     cmd.ExecuteNonQuery();
                     connection.Close();
                 }
@@ -222,6 +309,7 @@ namespace ScorePredictor.Data
                         match.resultRetrieved = (bool)reader["ResultRetrieved"];
                         match.homeGoals = (int)reader["HomeGoalsResult"];
                         match.awayGoals = (int)reader["AwayGoalsResult"];
+                        match.predictionResultRecorded = (bool)reader["PredictionResultRecorded"];
                         reader.Close();
                     }
                     connection.Close();
