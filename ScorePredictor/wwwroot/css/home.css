@@ -26,6 +26,7 @@ th {
 }
 .head {
     background-color: #1082ef;
+
 }
 .head:hover td{
     background-color: #43e2f8;
@@ -135,7 +136,14 @@ input {
     color: greenyellow;
 }
 .correctpredictions{
-    min-width:500px;
     text-align:right;
+}
+.leaguetitle{
+    min-width:600px;
+}
+.detailsbutton{
+    width:60px;
+    background-color:lightgrey;
+    border:none;
 }
 
