@@ -126,8 +126,16 @@ input {
     width:100%;
 }
 .predictionstats td {
-    padding-top: 100px;
+    padding-top: 50px;
     background-color: black;
-    color: deeppink;
+    color: greenyellow;
+}
+.predictionstats2 td {
+    background-color: black;
+    color: greenyellow;
+}
+.correctpredictions{
+    min-width:500px;
+    text-align:right;
 }
 

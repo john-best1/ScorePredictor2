@@ -84,9 +84,10 @@
                 }
             }
             <tr class="predictionstats">
-                <td></td>
-                <td>Total Correct Predictions : @Model.predictionStats.totalCorrect/@Model.predictionStats.totalPredictions (%@Model.predictionStats.correctPercentage)</td>
-                <td>Total Correct Scores : @Model.predictionStats.totalCorrectScore/@Model.predictionStats.totalPredictions (%@Model.predictionStats.correctScorePercentage)</td>
+                <td class="correctpredictions" colspan="3">Correct Predictions : @Model.predictionStats.totalCorrect/@Model.predictionStats.totalPredictions (%@Model.predictionStats.correctPercentage)</td>
+            </tr>
+            <tr class="predictionstats2">
+                <td class="correctpredictions" colspan="3">Correct Scores : @Model.predictionStats.totalCorrectScore/@Model.predictionStats.totalPredictions (%@Model.predictionStats.correctScorePercentage)</td>
             </tr>
         }
         else
