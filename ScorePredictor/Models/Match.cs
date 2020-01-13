@@ -38,7 +38,7 @@ namespace ScorePredictor.Models
          
         public int[] predictedScore { get; set; } = { -1 , -1 };  //hack
 
-        public bool finished { get; set; } = false;
+        public bool finished { get; set; }
 
         public bool predictionMade { get; set; } = false;
 

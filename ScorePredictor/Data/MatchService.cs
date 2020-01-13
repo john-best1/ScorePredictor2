@@ -48,6 +48,7 @@ namespace ScorePredictor.Data
 
                             if (jsonObject["match"]["status"].ToString() == "FINISHED")
                             {
+                                match.finished = true;
                                 populateResult(jsonObject);
                                 updateMatchInDatabase(builder);
                                 incrementPredictions(builder);
@@ -107,9 +108,18 @@ namespace ScorePredictor.Data
         }
         private void updateMatchInDatabase(SqlConnectionStringBuilder builder)
         {
+            int finishedBoolean;
+            if (match.finished)
+            {
+                finishedBoolean = 1;
+            }
+            else
+            {
+                finishedBoolean = 0;
+            }
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("UPDATE Match set finished = 1, " +
+                using (SqlCommand cmd = new SqlCommand("UPDATE Match set finished = " + finishedBoolean + ", "+
                      "HomeGoalsResult = " + match.homeGoals + ", AwayGoalsResult = " + match.awayGoals + ", " + 
                      "ResultRetrieved = 1 " + 
                      "WHERE MatchId = " + match.MatchId + "; ", connection))
