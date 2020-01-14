@@ -17,7 +17,6 @@ namespace ScorePredictor.Data
         LeagueService leagueService = new LeagueService();
         HttpClient client = new HttpClient();
         int season = 2019;   //change this every season
-        bool matchInDatabase = false;
         string flagUrl;
 
 
@@ -31,7 +30,8 @@ namespace ScorePredictor.Data
             builder.Password = "databasepassword*1";
             builder.InitialCatalog = "scorepredictordb";
             match.MatchId = matchId;
-            matchInDatabase = databaseCheck(builder);
+            match.ImageUrl = flagUrl;
+            bool matchInDatabase = databaseCheck(builder);
             if (matchInDatabase)
             {
                 getMatchDataFromDatabase(builder);
