@@ -23,7 +23,7 @@ namespace ScorePredictor.Data
             return won + "/" + drawn + "/" + lost;
         }
         // returns a "WDLLDW" type string from an array like [1,3,4,2,3,1](representing last 6 results/home or away results)
-        private static string getWDLStringFromArray(int[] results)
+        public static string getWDLStringFromArray(int[] results)
         {
             string wdl = "";
             foreach (int result in results)

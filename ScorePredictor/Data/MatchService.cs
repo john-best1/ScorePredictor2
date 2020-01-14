@@ -36,45 +36,5 @@ namespace ScorePredictor.Data
             return await database.getMatch(match);
         }
 
-
-        private void recordPredictionStatAdded(SqlConnectionStringBuilder builder) {
-            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand("UPDATE Match set PredictionResultRecorded = 1 WHERE MatchId = " + match.MatchId + "; ", connection))
-                {
-                    connection.Open();
-                    cmd.ExecuteNonQuery();
-                    connection.Close();
-                }
-            }
-        }
-
-        private void incrementPredictions(SqlConnectionStringBuilder builder)
-        {
-            // 1,2 =home win, 3 = draw, 4,5 = away win
-            String query = "UPDATE PredictionTally SET TotalPredictions = TotalPredictions + 1";
-            if(match.predictedScore[0] == match.homeGoals && match.predictedScore[1] == match.awayGoals)
-            {
-                query += ", TotalCorrect = TotalCorrect + 1, TotalCorrectScores = TotalCorrectScores + 1 ";
-            }
-            else if ((match.homeGoals == match.awayGoals && match.predictedResult == 3)||
-                ((match.homeGoals > match.awayGoals) && (match.predictedResult == 1 || ((match.homeGoals > match.awayGoals) && match.predictedResult == 2)))||
-                ((match.homeGoals < match.awayGoals) && (match.predictedResult == 4 || ((match.homeGoals < match.awayGoals) && match.predictedResult == 5))))
-            {
-                query += ", TotalCorrect = TotalCorrect + 1 ";
-            }
-            using(SqlConnection connection = new SqlConnection(builder.ConnectionString))
-            {
-                using(SqlCommand cmd = new SqlCommand(query, connection))
-                {
-                    connection.Open();
-                    cmd.ExecuteNonQuery();
-                    connection.Close();
-                }
-            }
-
-            match.predictionResultRecorded = true;
-            recordPredictionStatAdded(builder);
-        }
     }
 }

@@ -52,7 +52,7 @@ namespace ScorePredictor.Data
                                 match.finished = true;
                                 match = populateFinishedMatch(jsonObject, match);
                                 updateFinishedMatchInDatabase(match);
-                                //incrementPredictions(builder);
+                                incrementPredictions(match);
                                 addGoalScorersToDatabase(match.homeGoalScorers, match.HomeTeamId, match.MatchId);
                                 addGoalScorersToDatabase(match.awayGoalScorers, match.AwayTeamId, match.MatchId);
                             }
@@ -73,7 +73,7 @@ namespace ScorePredictor.Data
                         //if match is finished, get from api as a finished match
                         if (jsonObject["match"]["status"].ToString() == "FINISHED")
                         {
-                            populateFutureMatch(jsonObject, match);
+                            populateFinishedMatch(jsonObject, match);
                         }
                         else
                         // else get a scheduled match object
@@ -83,10 +83,11 @@ namespace ScorePredictor.Data
                             match.HomeStats = await leagueService.getStats(match.LeagueId, match.HomeTeamId, match.MatchId);
                             match.AwayStats = await leagueService.getStats(match.LeagueId, match.AwayTeamId, match.MatchId, false);
 
-                            MatchUtilities.getWDLString(match.HomeStats);
-                            MatchUtilities.getWDLString(match.AwayStats);
+                            match.HomeStats.homeOrAwayWDL =  MatchUtilities.getWDLString(match.HomeStats);
+                            match.AwayStats.homeOrAwayWDL =  MatchUtilities.getWDLString(match.AwayStats);
                             match = await getRecentFormFromApi(match);
                         }
+                        match = Predictor.generatePrediction(match);
                         addMatchToDatabase(match);
                         return match;
                     }
@@ -123,7 +124,7 @@ namespace ScorePredictor.Data
 
                         MatchUtilities.getWDLString(match.HomeStats);
                         MatchUtilities.getWDLString(match.AwayStats);
-                        match = await getRecentFormFromfApi(match);
+                        match = await getRecentFormFromApi(match);
                     }
                     Predictor.generatePrediction(match);
                     addMatchToDatabase(match);
@@ -191,7 +192,7 @@ namespace ScorePredictor.Data
                 addGoalScorersToDatabase(match.awayGoalScorers, match.AwayTeamId, match.MatchId);
                 if (!match.predictionResultRecorded && match.predictionMade)
                 {
-                    //increment predictions count
+                    incrementPredictions(match);
                 }
             }
         }
@@ -302,8 +303,6 @@ namespace ScorePredictor.Data
                     JArray allCompetitionMatches = (JArray)jsonObject["matches"];
                     match.HomeStats = MatchUtilities.getTeamForm(match.HomeStats, match.HomeTeamId, allCompetitionMatches);
                     match.AwayStats = MatchUtilities.getTeamForm(match.AwayStats, match.AwayTeamId, allCompetitionMatches, false);
-                    match.HomeStats.overallFormString = MatchUtilities.getWDLString(match.HomeStats);
-                    match.AwayStats.overallFormString = MatchUtilities.getWDLString(match.AwayStats);
                     return match;
                 }
                 else
@@ -534,6 +533,49 @@ namespace ScorePredictor.Data
                 }
             }
             return goalScorers;
+        }
+
+
+
+        private void recordPredictionStatAdded(string matchId)
+        {
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("UPDATE Match set PredictionResultRecorded = 1 WHERE MatchId = " + matchId + "; ", connection))
+                {
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+        }
+
+        private void incrementPredictions(Match match)
+        {
+            // 1,2 =home win, 3 = draw, 4,5 = away win
+            String query = "UPDATE PredictionTally SET TotalPredictions = TotalPredictions + 1";
+            if (match.predictedScore[0] == match.homeGoals && match.predictedScore[1] == match.awayGoals)
+            {
+                query += ", TotalCorrect = TotalCorrect + 1, TotalCorrectScores = TotalCorrectScores + 1 ";
+            }
+            else if ((match.homeGoals == match.awayGoals && match.predictedResult == 3) ||
+                ((match.homeGoals > match.awayGoals) && (match.predictedResult == 1 || ((match.homeGoals > match.awayGoals) && match.predictedResult == 2))) ||
+                ((match.homeGoals < match.awayGoals) && (match.predictedResult == 4 || ((match.homeGoals < match.awayGoals) && match.predictedResult == 5))))
+            {
+                query += ", TotalCorrect = TotalCorrect + 1 ";
+            }
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+
+            match.predictionResultRecorded = true;
+            recordPredictionStatAdded(match.MatchId);
         }
     }
 }
