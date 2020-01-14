@@ -12,36 +12,95 @@ namespace ScorePredictor.Data
 {
     public class MatchDatabase
     {
+        SqlConnectionStringBuilder builder;
         LeagueService leagueService = new LeagueService();
         HttpClient client = new HttpClient();
         int season = 2019;   //change this every season
 
-        // returns a match object, either from databse or API
-        public async Task<Match> getMatch(Match match)
+        public MatchDatabase()
         {
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+            builder = new SqlConnectionStringBuilder();
             builder.DataSource = "scorepredictordb.database.windows.net";
             builder.UserID = "jbest";
             builder.Password = "databasepassword*1";
             builder.InitialCatalog = "scorepredictordb";
 
-            if (databaseCheck(builder, match))
-            {
-                //get from database and return
-                match = getMatchFromDatabase(builder, match);
-            }
-            else
-            {
-                match = await getMatchFromApi(builder, match);
-            }
-
-
-            return match;
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("X-Auth-Token", "7830c352850f4acda78aa61d1666d45b");
         }
 
 
-        // match hasn't been generated before so isn't in database, get it from api instead
-        private async Task<Match> getMatchFromApi(SqlConnectionStringBuilder builder, Match match)
+
+        // returns a match object, either from databse or API
+        public async Task<Match> getMatch(Match match)
+        {
+            //check if match is in database already
+            if (databaseCheck(match))
+            {
+                match = getMatchFromDatabase(match);
+                //if match is in database as an unfinished match, check if it has since finished and update
+                if (DateTime.Parse(match.UtcDate).AddHours(2) < DateTime.Now && !match.predictionResultRecorded)
+                {
+                    using (HttpResponseMessage response = await client.GetAsync("https://api.football-data.org/v2/matches/" + match.MatchId))
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            JObject jsonObject = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                            if (jsonObject["match"]["status"].ToString() == "FINISHED")
+                            {
+                                match.finished = true;
+                                match = populateFinishedMatch(jsonObject, match);
+                                updateFinishedMatchInDatabase(match);
+                                //incrementPredictions(builder);
+                                addGoalScorersToDatabase(match.homeGoalScorers, match.HomeTeamId, match.MatchId);
+                                addGoalScorersToDatabase(match.awayGoalScorers, match.AwayTeamId, match.MatchId);
+                            }
+                        }
+                    }
+                }
+                return match;
+            }
+            else
+            // match not in database, get from api instead
+            {
+                using (HttpResponseMessage response = await client.GetAsync("https://api.football-data.org/v2/matches/" + match.MatchId))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        JObject jsonObject = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                        //if match is finished, get from api as a finished match
+                        if (jsonObject["match"]["status"].ToString() == "FINISHED")
+                        {
+                            populateFutureMatch(jsonObject, match);
+                        }
+                        else
+                        // else get a scheduled match object
+                        {
+                            populateFutureMatch(jsonObject, match);
+
+                            match.HomeStats = await leagueService.getStats(match.LeagueId, match.HomeTeamId, match.MatchId);
+                            match.AwayStats = await leagueService.getStats(match.LeagueId, match.AwayTeamId, match.MatchId, false);
+
+                            MatchUtilities.getWDLString(match.HomeStats);
+                            MatchUtilities.getWDLString(match.AwayStats);
+                            match = await getRecentFormFromApi(match);
+                        }
+                        addMatchToDatabase(match);
+                        return match;
+                    }
+                    else
+                    {
+                        throw new Exception(response.ReasonPhrase);
+                    }
+                }
+            }
+        }
+
+
+        // match hasn't been generated before so isn't in database, get it from api instead, generate prediction then add to database
+        private async Task<Match> getMatchFromApi(Match match)
         {
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("X-Auth-Token", "7830c352850f4acda78aa61d1666d45b");
@@ -57,16 +116,17 @@ namespace ScorePredictor.Data
                     }
                     else
                     {
-                        match = populateFutureMatch(jsonObject, builder, match);
+                        match = populateFutureMatch(jsonObject, match);
 
                         match.HomeStats = await leagueService.getStats(match.LeagueId, match.HomeTeamId, match.MatchId);
                         match.AwayStats = await leagueService.getStats(match.LeagueId, match.AwayTeamId, match.MatchId, false);
 
                         MatchUtilities.getWDLString(match.HomeStats);
                         MatchUtilities.getWDLString(match.AwayStats);
-                        match = await getRecentFormFromApi(match);
+                        match = await getRecentFormFromfApi(match);
                     }
-                    addMatchToDatabase(builder, match);
+                    Predictor.generatePrediction(match);
+                    addMatchToDatabase(match);
                     return match;
                 }
                 else
@@ -78,7 +138,7 @@ namespace ScorePredictor.Data
 
 
         // first time match is generated or first time since match has finished. Add it to database
-        private void addMatchToDatabase(SqlConnectionStringBuilder builder, Match match)
+        private void addMatchToDatabase(Match match)
         {
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
@@ -122,13 +182,13 @@ namespace ScorePredictor.Data
             }
             if (!match.finished)
             {
-                addStatsToDatabase(builder, match.HomeStats, match.HomeTeamId, match.MatchId);
-                addStatsToDatabase(builder, match.AwayStats, match.AwayTeamId, match.MatchId);
+                addStatsToDatabase(match.HomeStats, match.HomeTeamId, match.MatchId);
+                addStatsToDatabase(match.AwayStats, match.AwayTeamId, match.MatchId);
             }
             else
             {
-                addGoalScorersToDatabase(builder, match.homeGoalScorers, match.HomeTeamId, match.MatchId);
-                addGoalScorersToDatabase(builder, match.awayGoalScorers, match.AwayTeamId, match.MatchId);
+                addGoalScorersToDatabase(match.homeGoalScorers, match.HomeTeamId, match.MatchId);
+                addGoalScorersToDatabase(match.awayGoalScorers, match.AwayTeamId, match.MatchId);
                 if (!match.predictionResultRecorded && match.predictionMade)
                 {
                     //increment predictions count
@@ -138,7 +198,7 @@ namespace ScorePredictor.Data
 
 
 
-        private void addStatsToDatabase(SqlConnectionStringBuilder builder, MatchStats stats, int teamId, string matchId)
+        private void addStatsToDatabase(MatchStats stats, int teamId, string matchId)
         {
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
@@ -186,7 +246,7 @@ namespace ScorePredictor.Data
         }
 
         // add goalscorers for a finished match to database
-        private void addGoalScorersToDatabase(SqlConnectionStringBuilder builder, List<Goal> goalScorers, int teamId, string matchId)
+        private void addGoalScorersToDatabase(List<Goal> goalScorers, int teamId, string matchId)
         {
             if (goalScorers.Any())
             {
@@ -212,6 +272,26 @@ namespace ScorePredictor.Data
         }
 
 
+        //match is in database as unfinished and has since finished, this updates it
+        private void updateFinishedMatchInDatabase(Match match)
+        {
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("UPDATE Match set finished = 1, " +
+                     "HomeGoalsResult = " + match.homeGoals + ", AwayGoalsResult = " + match.awayGoals + ", " +
+                     "ResultRetrieved = 1 " +
+                     "WHERE MatchId = " + match.MatchId + "; ", connection))
+                {
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+        }
+
+
+
+        // get data for last 6 games and last 6 home/away games from api and generate/calculate form data
         public async Task<Match> getRecentFormFromApi(Match match)
         {
             using (HttpResponseMessage response = await client.GetAsync("https://api.football-data.org/v2/competitions/" + match.LeagueId + "/matches?status=FINISHED&season=" + season))
@@ -224,7 +304,6 @@ namespace ScorePredictor.Data
                     match.AwayStats = MatchUtilities.getTeamForm(match.AwayStats, match.AwayTeamId, allCompetitionMatches, false);
                     match.HomeStats.overallFormString = MatchUtilities.getWDLString(match.HomeStats);
                     match.AwayStats.overallFormString = MatchUtilities.getWDLString(match.AwayStats);
-                    Predictor.generatePrediction(match);
                     return match;
                 }
                 else
@@ -234,7 +313,9 @@ namespace ScorePredictor.Data
             }
         }
 
-        private bool databaseCheck(SqlConnectionStringBuilder builder, Match match)
+
+        // return true if match is indexer the database already(using match ID)
+        public bool databaseCheck(Match match)
         {
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
@@ -254,7 +335,9 @@ namespace ScorePredictor.Data
             return false;
         }
 
-        private Match populateFutureMatch(JObject jsonObject, SqlConnectionStringBuilder builder, Match match)
+
+        // first time match has been triggered and it hasn;t finished, update relevant fields from api data
+        private Match populateFutureMatch(JObject jsonObject, Match match)
         {
             match.Stadium = jsonObject["match"]["venue"].ToString();
             match.HomeTeamName = jsonObject["match"]["homeTeam"]["name"].ToString();
@@ -269,6 +352,8 @@ namespace ScorePredictor.Data
             return match;
         }
 
+
+        // match has finished since last time it was updated, make the relevant updates to fields
         private Match populateFinishedMatch(JObject jsonObject, Match match)
         {
             match.finished = true;
@@ -290,11 +375,12 @@ namespace ScorePredictor.Data
             return match;
         }
 
-        private Match getMatchFromDatabase(SqlConnectionStringBuilder builder, Match match)
+
+        // returns match data stored in database
+        private Match getMatchFromDatabase(Match match)
         {
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
-
                 using (SqlCommand sqlCommand = new SqlCommand("SELECT * from Match as match " +
                         "Where match.MatchId = " + match.MatchId + "; ", connection))
                 {
@@ -325,26 +411,29 @@ namespace ScorePredictor.Data
 
                 }
             }
+            //stats arent needed if the match is finished
             if (!match.finished)
             {
-                match.HomeStats = getStatsFromDatabase(builder, match.HomeTeamId, match);
-                match.AwayStats = getStatsFromDatabase(builder, match.AwayTeamId, match);
+                match.HomeStats = getStatsFromDatabase(match.HomeTeamId, match);
+                match.AwayStats = getStatsFromDatabase(match.AwayTeamId, match);
             }
+            //goals arent needed(shouldn't be there) if match isn't finished
             else
             {
-                match.homeGoalScorers = getGoalsFromDatabase(builder, match.HomeTeamId, match);
-                match.awayGoalScorers = getGoalsFromDatabase(builder, match.AwayTeamId, match);
+                match.homeGoalScorers = getGoalsFromDatabase(match.HomeTeamId, match);
+                match.awayGoalScorers = getGoalsFromDatabase(match.AwayTeamId, match);
             }
 
             return match;
         }
 
-        private MatchStats getStatsFromDatabase(SqlConnectionStringBuilder builder, int teamId, Match match)
+
+        // gets saved stats like average goals or form strings from database
+        private MatchStats getStatsFromDatabase(int teamId, Match match)
         {
             MatchStats stats = new MatchStats();
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
-
                 using (SqlCommand sqlCommand = new SqlCommand("SELECT * from MatchStats as stats " +
                         "Where stats.MatchId = " + match.MatchId + " AND stats.TeamId = " + teamId + "; ", connection))
                 {
@@ -388,7 +477,9 @@ namespace ScorePredictor.Data
             return stats;
         }
 
-        private List<Goal> getGoalsFromDatabase(SqlConnectionStringBuilder builder, int teamId, Match match)
+
+        // gets goalscorers for a specific match
+        private List<Goal> getGoalsFromDatabase(int teamId, Match match)
         {
             List<Goal> goals = new List<Goal>();
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
@@ -412,6 +503,8 @@ namespace ScorePredictor.Data
             return goals;
         }
 
+
+        // returns a list of goalscorers for a finished match using api data
         private List<Goal> populateGoalScorers(JArray goals, int teamId)
         {
             List<Goal> goalScorers = new List<Goal>();
