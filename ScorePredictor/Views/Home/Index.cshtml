@@ -101,22 +101,17 @@
 </div>
 
 
-
-
-
-
-    <script>
-        $("#myDatepicker").datepicker({
-            minDate: '-8D',
-            maxDate: '+4D',
-            onSelect: function () {
-            date = new Date(this.value);
-            url = "?dateString=" + date.toString();
-            console.log(url);
-            index = window.location.href.indexOf("/");
-            window.location.href = window.location.href.substring(0, index) + url;
-        }
-    });
-    </script>
+<script>
+    $("#myDatepicker").datepicker({
+        minDate: '-8D',
+        maxDate: '+4D',
+        onSelect: function () {
+        date = new Date(this.value);
+        url = "?dateString=" + date.toString();
+        index = window.location.href.indexOf("/");
+        window.location.href = window.location.href.substring(0, index) + url;
+    }
+});
+</script>
 
 
