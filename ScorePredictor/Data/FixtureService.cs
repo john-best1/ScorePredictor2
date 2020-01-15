@@ -177,6 +177,7 @@ namespace ScorePredictor.Data
                         }
                     }
 
+                    addFixturesToDatabase(fixtureLists);
                     return reorderFixtureLists(fixtureLists);
                 }
                 else
@@ -186,51 +187,82 @@ namespace ScorePredictor.Data
             }
         }
 
-        private void addFixturesToDatabase(FixtureList[] lists)
+        private void addFixturesToDatabase(IEnumerable<FixtureList> lists)
         {
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
                 connection.Open();
-                foreach(FixtureList list in lists)
-                if(list != null)
+                foreach (FixtureList list in lists)
                 {
-                        System.Diagnostics.Debug.WriteLine(getDatabaseDateString(dateString) + list.leagueId);
+                    if (list != null)
+                    {
+                        addImageUrl(list);
                         using (SqlCommand cmd = new SqlCommand("insert into FixtureList values(" +
                                             "@fixturelistid,@leaguename,@utcdate,@imageurl,@leagueid);", connection))
-                    {
-                        cmd.Parameters.AddWithValue("@fixturelistid", getDatabaseDateString(dateString) + list.leagueId);
-                        cmd.Parameters.AddWithValue("@leaguename", list.leagueName);
-                        cmd.Parameters.AddWithValue("@utcdate", list.utcDate);
-                        cmd.Parameters.AddWithValue("@imageurl", list.imageUrl);
-                        cmd.Parameters.AddWithValue("@leagueid", list.leagueId);
-                        cmd.ExecuteNonQuery();
-                    }
-                    foreach (Fixture fixture in list.fixtures)
-                    {
-                        using (SqlCommand cmd = new SqlCommand("insert into Fixture values(" +
-                            "@fixturelistid,@matchid,@hometeamid,@hometeamname," +
-                            "@awayteamid, @awayteamname, @leagueid, @leaguename," +
-                            "@finished, @homescore, @awayscore, @postponed, @utcdate);", connection))
                         {
                             cmd.Parameters.AddWithValue("@fixturelistid", getDatabaseDateString(dateString) + list.leagueId);
-                            cmd.Parameters.AddWithValue("@matchid", fixture.matchId);
-                            cmd.Parameters.AddWithValue("@hometeamid", fixture.homeTeamId);
-                            cmd.Parameters.AddWithValue("@hometeamname", fixture.homeTeamName);
-                            cmd.Parameters.AddWithValue("@awayteamid", fixture.awayTeamId);
-                            cmd.Parameters.AddWithValue("@awayteamname", fixture.awayTeamName);
-                            cmd.Parameters.AddWithValue("@leagueid", fixture.leagueId);
-                            cmd.Parameters.AddWithValue("@leaguename", fixture.leagueName);
-                            cmd.Parameters.AddWithValue("@finished", fixture.finished);
-                            cmd.Parameters.AddWithValue("@homescore", fixture.homeScore);
-                            cmd.Parameters.AddWithValue("@awayscore", fixture.awayScore);
-                            cmd.Parameters.AddWithValue("@postponed", fixture.postponed);
-                            cmd.Parameters.AddWithValue("@utcdate", fixture.utcDate);
+                            cmd.Parameters.AddWithValue("@leaguename", list.leagueName);
+                            cmd.Parameters.AddWithValue("@utcdate", list.utcDate);
+                            cmd.Parameters.AddWithValue("@imageurl", list.imageUrl);
+                            cmd.Parameters.AddWithValue("@leagueid", list.leagueId);
                             cmd.ExecuteNonQuery();
+                        }
+                        foreach (Fixture fixture in list.fixtures)
+                        {
+                            using (SqlCommand cmd = new SqlCommand("insert into Fixture values(" +
+                                "@fixturelistid,@matchid,@hometeamid,@hometeamname," +
+                                "@awayteamid, @awayteamname, @leagueid, @leaguename," +
+                                "@finished, @homescore, @awayscore, @postponed, @utcdate);", connection))
+                            {
+                                cmd.Parameters.AddWithValue("@fixturelistid", getDatabaseDateString(dateString) + list.leagueId);
+                                cmd.Parameters.AddWithValue("@matchid", fixture.matchId);
+                                cmd.Parameters.AddWithValue("@hometeamid", fixture.homeTeamId);
+                                cmd.Parameters.AddWithValue("@hometeamname", fixture.homeTeamName);
+                                cmd.Parameters.AddWithValue("@awayteamid", fixture.awayTeamId);
+                                cmd.Parameters.AddWithValue("@awayteamname", fixture.awayTeamName);
+                                cmd.Parameters.AddWithValue("@leagueid", fixture.leagueId);
+                                cmd.Parameters.AddWithValue("@leaguename", fixture.leagueName);
+                                cmd.Parameters.AddWithValue("@finished", fixture.finished);
+                                cmd.Parameters.AddWithValue("@homescore", fixture.homeScore);
+                                cmd.Parameters.AddWithValue("@awayscore", fixture.awayScore);
+                                cmd.Parameters.AddWithValue("@postponed", fixture.postponed);
+                                cmd.Parameters.AddWithValue("@utcdate", fixture.utcDate);
+                                cmd.ExecuteNonQuery();
+                            }
                         }
                     }
                 }
                 connection.Close();
             }
+        }
+
+        private void addImageUrl(FixtureList list)
+        {
+            int[] competitionIDs = { 2021, 2016, 2030, 2014, 2077, 2002, 2004, 2019, 2121, 2015, 2142, 2084, 2003, 2017, 2009, 2145, 2137, 2013, 2008, 2024, 2119 };
+            string[] imageUrls = {
+                "/images/english-flag-small.jpg" ,
+                "/images/english-flag-small.jpg" ,
+                "/images/english-flag-small.jpg" ,
+                "/images/scotland-flag-large.jpg" ,
+                "/images/spanish-flag-small.jpg" ,
+                "/images/spanish-flag-small.jpg" ,
+                "/images/german-flag-small.jpg" ,
+                "/images/german-flag-small.jpg" ,
+                "/images/italian-flag-small.jpg" ,
+                "/images/italian-flag-small.jpg" ,
+                "/images/french-flag-small.jpg" ,
+                "/images/french-flag-small.jpg" ,
+                "/images/dutch-flag-small.jpg" ,
+                "/images/portuguese-flag-small.jpg" ,
+                "/images/belgian-flag-small.jpg" ,
+                "/images/american-flag-small.jpg" ,
+                "/images/russian-flag-small.jpg" ,
+                "/images/brazilian-flag-small.jpg" ,
+                "/images/australian-flag-small.jpg" ,
+                "/images/argentinian-flag-small.jpg" ,
+                "/images/japanese-flag-small.jpg"
+            };
+            list.imageUrl = imageUrls[Array.IndexOf(competitionIDs, list.leagueId)];
         }
 
         private bool daysFixturesInDatabase(string dateString)
