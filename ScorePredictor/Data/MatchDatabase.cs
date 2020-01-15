@@ -168,7 +168,7 @@ namespace ScorePredictor.Data
                     cmd.Parameters.AddWithValue("@resultretrieved", match.resultRetrieved);
                     cmd.Parameters.AddWithValue("@homegoalsscored", match.homeGoals);
                     cmd.Parameters.AddWithValue("@awaygoalsscored", match.awayGoals);
-                    if (!match.finished && !match.predictionResultRecorded && match.predictionMade)
+                    if (match.finished && !match.predictionResultRecorded && match.predictionMade)
                     {
                         cmd.Parameters.AddWithValue("@resultpredictionmade", 1);
                     }

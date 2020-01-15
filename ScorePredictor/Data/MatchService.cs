@@ -17,7 +17,6 @@ namespace ScorePredictor.Data
         LeagueService leagueService = new LeagueService();
         MatchDatabase database = new MatchDatabase();
         HttpClient client = new HttpClient();
-        int season = 2019;   //change this every season
         string flagUrl;
 
 

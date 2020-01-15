@@ -13,7 +13,6 @@ namespace ScorePredictor.Data
 {
     public class FixtureService
     {
-        FixtureList[] orderedList = new FixtureList[21];
         SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 
         HttpClient client = new HttpClient();
@@ -104,11 +103,10 @@ namespace ScorePredictor.Data
                     }
                 }
                 connection.Close();
-                // TODO REORDER FIXTURELISTS BASED ON LEAGUE ID
-                return fixtureLists;
+                return reorderFixtureLists(fixtureLists);
             }
         }
-        private async Task<FixtureList[]> getFixturesFromApi(DateTime? date)
+        private async Task<IEnumerable<FixtureList>> getFixturesFromApi(DateTime? date)
         {
             using (HttpResponseMessage response = await client.GetAsync("https://api.football-data.org/v2/matches" + competitionPriorityOrder + "&" + dateString))
             {
@@ -179,9 +177,7 @@ namespace ScorePredictor.Data
                         }
                     }
 
-                    reorderFixtureLists(fixtureLists);
-                    addFixturesToDatabase(orderedList);
-                    return orderedList;
+                    return reorderFixtureLists(fixtureLists);
                 }
                 else
                 {
@@ -343,106 +339,12 @@ namespace ScorePredictor.Data
             return dateString;
         }
 
-        public void reorderFixtureLists(List<FixtureList> list)
-            //reorder random ordered list into priority order
+        //priorityOrder = { 2021, 2016, 2030, 2014, 2077, 2002, 2004, 2019, 2121, 2015, 2142, 2084, 2003, 2017, 2009, 2145, 2137, 2013, 2008, 2024, 2119
+        public IEnumerable<FixtureList> reorderFixtureLists(IEnumerable<FixtureList> lists)
         {
-            if(list.Any())
-            {
-                foreach(FixtureList i in list)
-                {
-                    //priorityOrder = { 2021, 2016, 2030, 2014, 2077, 2002, 2004, 2019, 2121, 2015, 2142, 2084, 2003, 2017, 2009, 2145, 2137, 2013, 2008, 2024, 2119
-                    switch (i.fixtures[0].leagueId)
-                    {
-                        case 2021:  //eng
-                            orderedList[0] = i;
-                            i.imageUrl = "/images/english-flag-small.jpg";
-                            System.Diagnostics.Debug.WriteLine(i);
-                            break;
-                        case 2016:  //eng
-                            orderedList[1] = i;
-                            i.imageUrl = "/images/english-flag-small.jpg";
-                            break;
-                        case 2030:  //eng
-                            orderedList[2] = i;
-                            i.imageUrl = "/images/english-flag-small.jpg";
-                            break;
-                        case 2084:  //scotland
-                            orderedList[11] = i;
-                            i.imageUrl = "/images/scotland-flag-large.jpg";
-                            break;
-                        case 2014:  //spain
-                            orderedList[3] = i;
-                            i.imageUrl = "/images/spanish-flag-small.jpg";
-                            break;
-                        case 2077:  //spain
-                            orderedList[4] = i;
-                            i.imageUrl = "/images/spanish-flag-small.jpg";
-                            break;
-                        case 2002:  //germany
-                            orderedList[5] = i;
-                            i.imageUrl = "/images/german-flag-small.jpg";
-                            break;
-                        case 2004:  //germany
-                            orderedList[6] = i;
-                            i.imageUrl = "/images/german-flag-small.jpg";
-                            break;
-                        case 2019:  //italy
-                            orderedList[7] = i;
-                            i.imageUrl = "/images/italian-flag-small.jpg";
-                            break;
-                        case 2121:  //italy
-                            orderedList[8] = i;
-                            i.imageUrl = "/images/italian-flag-small.jpg";
-                            break;
-                        case 2015:  //france
-                            orderedList[9] = i;
-                            i.imageUrl = "/images/french-flag-small.jpg";
-                            break;
-                        case 2142:  //france
-                            orderedList[10] = i;
-                            i.imageUrl = "/images/french-flag-small.jpg";
-                            break;
-                        case 2003:  //netherlands
-                            orderedList[12] = i;
-                            i.imageUrl = "/images/dutch-flag-small.jpg";
-                            break;
-                        case 2017:  //portugal
-                            orderedList[13] = i;
-                            i.imageUrl = "/images/portuguese-flag-small.jpg";
-                            break;
-                        case 2009:  //belgium
-                            orderedList[14] = i;
-                            i.imageUrl = "/images/belgian-flag-small.jpg";
-                            break;
-                        case 2145:  //US
-                            orderedList[15] = i;
-                            i.imageUrl = "/images/american-flag-small.jpg";
-                            break;
-                        case 2137:  //Russia
-                            orderedList[16] = i;
-                            i.imageUrl = "/images/russian-flag-small.jpg";
-                            break;
-                        case 2013:  //Brazil
-                            orderedList[17] = i;
-                            i.imageUrl = "/images/brazilian-flag-small.jpg";
-                            break;
-                        case 2008:  //Australia
-                            orderedList[18] = i;
-                            i.imageUrl = "/images/australian-flag-small.jpg";
-                            break;
-                        case 2024:  //Argentina
-                            orderedList[19] = i;
-                            i.imageUrl = "/images/argentinian-flag-small.jpg";
-                            break;
-                        case 2119:  //Japan
-                            orderedList[20] = i;
-                            i.imageUrl = "/images/japanese-flag-small.jpg";
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
+            int[] priorityOrder = { 2021, 2016, 2030, 2014, 2077, 2002, 2004, 2019, 2121, 2015, 2142, 2084, 2003, 2017, 2009, 2145, 2137, 2013, 2008, 2024, 2119 };
+            return lists.OrderBy(s => Array.IndexOf(priorityOrder, s.leagueId)).ToList();
         }
+        
     }
 }
