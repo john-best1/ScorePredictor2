@@ -9,7 +9,7 @@ namespace ScorePredictor.ViewModels
 {
     public class FixturesViewModel
     {
-        public FixtureList[] fixtureLists { get; set; }
+        public IEnumerable<FixtureList> fixtureLists { get; set; }
 
         public DateTime date { get; set; }
 

@@ -27,7 +27,7 @@ namespace ScorePredictor.Controllers
 
             System.Diagnostics.Debug.WriteLine(date);
 
-            FixtureList[] fixtureLists = await fixtureService.getDaysFixtures(date);
+            IEnumerable<FixtureList> fixtureLists = await fixtureService.getDaysFixtures(date);
             FixturesViewModel viewModel = new FixturesViewModel { fixtureLists = fixtureLists, date = date};
             viewModel.predictionStats = fixtureService.getPredictionStats(new PredictionStats());
 
