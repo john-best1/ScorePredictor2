@@ -14,6 +14,7 @@ namespace ScorePredictor.Data
     {
         SqlConnectionStringBuilder builder;
         LeagueService leagueService = new LeagueService();
+        TeamDatabase teamDatabase = new TeamDatabase();
         HttpClient client = new HttpClient();
         int season = 2019;   //change this every season
 
@@ -37,7 +38,7 @@ namespace ScorePredictor.Data
             //check if match is in database already
             if (databaseCheck(match))
             {
-                match = getMatchFromDatabase(match);
+                match = await getMatchFromDatabase(match);
                 //if match is in database as an unfinished match, check if it has since finished and update
                 if (DateTime.Parse(match.UtcDate).AddHours(2) < DateTime.Now && !match.predictionResultRecorded)
                 {
@@ -50,7 +51,7 @@ namespace ScorePredictor.Data
                             if (jsonObject["match"]["status"].ToString() == "FINISHED")
                             {
                                 match.finished = true;
-                                match = populateFinishedMatch(jsonObject, match);
+                                match = await populateFinishedMatch(jsonObject, match);
                                 updateFinishedMatchInDatabase(match);
                                 incrementPredictions(match);
                                 addGoalScorersToDatabase(match.homeGoalScorers, match.HomeTeamId, match.MatchId);
@@ -73,12 +74,12 @@ namespace ScorePredictor.Data
                         //if match is finished, get from api as a finished match
                         if (jsonObject["match"]["status"].ToString() == "FINISHED")
                         {
-                            populateFinishedMatch(jsonObject, match);
+                            await populateFinishedMatch(jsonObject, match);
                         }
                         else
                         // else get a scheduled match object
                         {
-                            populateFutureMatch(jsonObject, match);
+                            await populateFutureMatch(jsonObject, match);
 
                             match.HomeStats = await leagueService.getStats(match.LeagueId, match.HomeTeamId, match.MatchId);
                             match.AwayStats = await leagueService.getStats(match.LeagueId, match.AwayTeamId, match.MatchId, false);
@@ -113,11 +114,11 @@ namespace ScorePredictor.Data
 
                     if (jsonObject["match"]["status"].ToString() == "FINISHED")
                     {
-                        match = populateFinishedMatch(jsonObject, match);
+                        match = await populateFinishedMatch(jsonObject, match);
                     }
                     else
                     {
-                        match = populateFutureMatch(jsonObject, match);
+                        match = await populateFutureMatch(jsonObject, match);
 
                         match.HomeStats = await leagueService.getStats(match.LeagueId, match.HomeTeamId, match.MatchId);
                         match.AwayStats = await leagueService.getStats(match.LeagueId, match.AwayTeamId, match.MatchId, false);
@@ -336,16 +337,18 @@ namespace ScorePredictor.Data
 
 
         // first time match has been triggered and it hasn;t finished, update relevant fields from api data
-        private Match populateFutureMatch(JObject jsonObject, Match match)
+        private async Task<Match> populateFutureMatch(JObject jsonObject, Match match)
         {
+            match.LeagueId = int.Parse(jsonObject["match"]["competition"]["id"].ToString());
             match.Stadium = jsonObject["match"]["venue"].ToString();
             match.HomeTeamName = jsonObject["match"]["homeTeam"]["name"].ToString();
             match.HomeTeamId = int.Parse(jsonObject["match"]["homeTeam"]["id"].ToString());
+            match.HomeTeam = await teamDatabase.getTeamFromDatabase(match.HomeTeamId, match.LeagueId);
             match.AwayTeamName = jsonObject["match"]["awayTeam"]["name"].ToString();
             match.AwayTeamId = int.Parse(jsonObject["match"]["awayTeam"]["id"].ToString());
+            match.AwayTeam = await teamDatabase.getTeamFromDatabase(match.AwayTeamId, match.LeagueId);
             match.MatchId = jsonObject["match"]["id"].ToString();
             match.UtcDate = jsonObject["match"]["utcDate"].ToString();
-            match.LeagueId = int.Parse(jsonObject["match"]["competition"]["id"].ToString());
             match.LeagueName = jsonObject["match"]["competition"]["name"].ToString();
 
             return match;
@@ -353,16 +356,18 @@ namespace ScorePredictor.Data
 
 
         // match has finished since last time it was updated, make the relevant updates to fields
-        private Match populateFinishedMatch(JObject jsonObject, Match match)
+        private async Task<Match> populateFinishedMatch(JObject jsonObject, Match match)
         {
+            match.LeagueId = int.Parse(jsonObject["match"]["competition"]["id"].ToString());
             match.finished = true;
             match.Stadium = jsonObject["match"]["venue"].ToString();
             match.HomeTeamName = jsonObject["match"]["homeTeam"]["name"].ToString();
             match.HomeTeamId = int.Parse(jsonObject["match"]["homeTeam"]["id"].ToString());
+            match.HomeTeam = await teamDatabase.getTeamFromDatabase(match.HomeTeamId, match.LeagueId);
             match.AwayTeamName = jsonObject["match"]["awayTeam"]["name"].ToString();
             match.AwayTeamId = int.Parse(jsonObject["match"]["awayTeam"]["id"].ToString());
+            match.AwayTeam = await teamDatabase.getTeamFromDatabase(match.AwayTeamId, match.LeagueId);
             match.UtcDate = jsonObject["match"]["utcDate"].ToString();
-            match.LeagueId = int.Parse(jsonObject["match"]["competition"]["id"].ToString());
             match.LeagueName = jsonObject["match"]["competition"]["name"].ToString();
             match.homeGoals = int.Parse(jsonObject["match"]["score"]["fullTime"]["homeTeam"].ToString());
             match.awayGoals = int.Parse(jsonObject["match"]["score"]["fullTime"]["awayTeam"].ToString());
@@ -376,7 +381,7 @@ namespace ScorePredictor.Data
 
 
         // returns match data stored in database
-        private Match getMatchFromDatabase(Match match)
+        private async Task<Match> getMatchFromDatabase(Match match)
         {
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
@@ -387,14 +392,16 @@ namespace ScorePredictor.Data
                     using (SqlDataReader reader = sqlCommand.ExecuteReader())
                     {
                         reader.Read();
+                        match.LeagueId = (int)reader["LeagueId"];
                         match.HomeTeamId = (int)reader["HomeTeamId"];
+                        match.HomeTeam = await teamDatabase.getTeamFromDatabase(match.HomeTeamId, match.LeagueId);
                         match.HomeTeamName = reader["HomeTeamName"].ToString();
                         match.AwayTeamId = (int)reader["AwayTeamId"];
+                        match.AwayTeam = await teamDatabase.getTeamFromDatabase(match.AwayTeamId, match.LeagueId);
                         match.AwayTeamName = reader["AwayTeamName"].ToString();
                         match.UtcDate = reader["UTCDate"].ToString();
                         match.LeagueName = reader["LeagueName"].ToString();
                         match.Stadium = reader["Stadium"].ToString();
-                        match.LeagueId = (int)reader["LeagueId"];
                         match.predictedResult = (int)reader["PredictedResult"];
                         match.predictionString = reader["PredictionString"].ToString();
                         match.predictedScore = new int[] { (int)reader["PredictedHomeGoals"], (int)reader["PredictedAwayGoals"] };

@@ -16,10 +16,14 @@ namespace ScorePredictor.Data
         public string longLeagueName { get; set; }
 
         HttpClient client = new HttpClient();
+
+        TeamDatabase teamDatabase;  
         public LeagueService()
         {
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("X-Auth-Token", "7830c352850f4acda78aa61d1666d45b");
+
+            teamDatabase = new TeamDatabase();
         }
 
 
@@ -29,33 +33,41 @@ namespace ScorePredictor.Data
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    JObject jsonObject = JObject.Parse(await response.Content.ReadAsStringAsync());
-                    shortLeagueName = jsonObject["competition"]["name"].ToString();
-                    longLeagueName = jsonObject["competition"]["area"]["name"].ToString() + " - " + shortLeagueName;
-                    JArray standings = (JArray)jsonObject["standings"];
-                    List<LeagueEntry> leagueEntries = new List<LeagueEntry>();
-                    for (int i = 0; i < standings[leagueTypeCode]["table"].Count(); i++)
+                    try
                     {
-                        LeagueEntry entry = new LeagueEntry
+                        JObject jsonObject = JObject.Parse(await response.Content.ReadAsStringAsync());
+                        shortLeagueName = jsonObject["competition"]["name"].ToString();
+                        longLeagueName = jsonObject["competition"]["area"]["name"].ToString() + " - " + shortLeagueName;
+                        JArray standings = (JArray)jsonObject["standings"];
+                        List<LeagueEntry> leagueEntries = new List<LeagueEntry>();
+                        for (int i = 0; i < standings[leagueTypeCode]["table"].Count(); i++)
                         {
-                            position = int.Parse(standings[leagueTypeCode]["table"][i]["position"].ToString()),
-                            name = standings[leagueTypeCode]["table"][i]["team"]["name"].ToString(),
-                            matchesPlayed = int.Parse(standings[leagueTypeCode]["table"][i]["playedGames"].ToString()),
-                            won = int.Parse(standings[leagueTypeCode]["table"][i]["won"].ToString()),
-                            drawn = int.Parse(standings[leagueTypeCode]["table"][i]["draw"].ToString()),
-                            lost = int.Parse(standings[leagueTypeCode]["table"][i]["lost"].ToString()),
-                            goalsFor = int.Parse(standings[leagueTypeCode]["table"][i]["goalsFor"].ToString()),
-                            goalsAgainst = int.Parse(standings[leagueTypeCode]["table"][i]["goalsAgainst"].ToString()),
-                            goalDifference = int.Parse(standings[leagueTypeCode]["table"][i]["goalDifference"].ToString()),
-                            points = int.Parse(standings[leagueTypeCode]["table"][i]["points"].ToString())
-                        };
-                        if(leagueCode == 2002 || leagueCode == 2021 || leagueCode == 2019 || leagueCode == 2142)
-                        {
-                            entry.crest = standings[leagueTypeCode]["table"][i]["team"]["crestUrl"].ToString();
+                            Dictionary<int, string> teams = await teamDatabase.getTeamsFromDatabase(leagueCode, standings);
+                            LeagueEntry entry = new LeagueEntry
+                            {
+                                name = teams[int.Parse(standings[leagueTypeCode]["table"][i]["team"]["id"].ToString())],
+                                position = int.Parse(standings[leagueTypeCode]["table"][i]["position"].ToString()),
+                                matchesPlayed = int.Parse(standings[leagueTypeCode]["table"][i]["playedGames"].ToString()),
+                                won = int.Parse(standings[leagueTypeCode]["table"][i]["won"].ToString()),
+                                drawn = int.Parse(standings[leagueTypeCode]["table"][i]["draw"].ToString()),
+                                lost = int.Parse(standings[leagueTypeCode]["table"][i]["lost"].ToString()),
+                                goalsFor = int.Parse(standings[leagueTypeCode]["table"][i]["goalsFor"].ToString()),
+                                goalsAgainst = int.Parse(standings[leagueTypeCode]["table"][i]["goalsAgainst"].ToString()),
+                                goalDifference = int.Parse(standings[leagueTypeCode]["table"][i]["goalDifference"].ToString()),
+                                points = int.Parse(standings[leagueTypeCode]["table"][i]["points"].ToString())
+                            };
+                            if (leagueCode == 2002 || leagueCode == 2021 || leagueCode == 2019 || leagueCode == 2142)
+                            {
+                                entry.crest = standings[leagueTypeCode]["table"][i]["team"]["crestUrl"].ToString();
+                            }
+                            leagueEntries.Add(entry);
                         }
-                        leagueEntries.Add(entry);
+                        return leagueEntries;
                     }
-                    return leagueEntries;
+                    catch
+                    {
+                        throw new Exception("API LIMIT HIT, PLEASE WAIT TIL THE ALLOWANCE RESTORES(EVERY MINUTE)");
+                    }
                 }
                 else
                 {

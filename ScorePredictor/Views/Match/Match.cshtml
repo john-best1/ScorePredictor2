@@ -18,7 +18,7 @@
             <div class="col-lg-6 teamone">
                 @if (!@Model.match.finished)
                 {
-                    <h1 class="team">@Model.match.HomeTeamName</h1>
+                    <h1 class="team">@Model.match.HomeTeam.ShortName</h1>
                     <h4>League Position: @Model.match.HomeStats.position</h4>
                     <h4 class="alt">W/D/L%: @Model.match.HomeStats.WDL</h4>
                     <h4>Average Scored Per Game: @Model.match.HomeStats.goalsScoredPerGame</h4>
@@ -31,7 +31,7 @@
                 }
                 else
                 {
-                    <h1 class="team">@Model.match.HomeTeamName</h1>
+                    <h1 class="team">@Model.match.HomeTeam.ShortName</h1>
                     <h1>@Model.match.homeGoals</h1>
                     @foreach (Goal goal in Model.match.homeGoalScorers)
                     {
@@ -44,7 +44,7 @@
             <div class="col-lg-6 teamtwo">
                 @if (!@Model.match.finished)
                 {
-                    <h1 class="team">@Model.match.AwayTeamName</h1>
+                    <h1 class="team">@Model.match.AwayTeam.ShortName</h1>
                     <h4>League Position: @Model.match.AwayStats.position</h4>
                     <h4 class="alt">W/D/L%: @Model.match.AwayStats.WDL</h4>
                     <h4>Average Scored Per Game: @Model.match.AwayStats.goalsScoredPerGame</h4>
@@ -57,7 +57,7 @@
                 }
                 else
                 {
-                    <h1 class="team">@Model.match.AwayTeamName</h1>
+                    <h1 class="team">@Model.match.AwayTeam.ShortName</h1>
                     <h1>@Model.match.awayGoals</h1>
                     @foreach (Goal goal in @Model.match.awayGoalScorers)
                     {
