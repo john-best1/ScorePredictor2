@@ -87,8 +87,8 @@ namespace ScorePredictor.Data
                             match.HomeStats.homeOrAwayWDL =  MatchUtilities.getWDLString(match.HomeStats);
                             match.AwayStats.homeOrAwayWDL =  MatchUtilities.getWDLString(match.AwayStats);
                             match = await getRecentFormFromApi(match);
+                            match = Predictor.generatePrediction(match);
                         }
-                        match = Predictor.generatePrediction(match);
                         addMatchToDatabase(match);
                         return match;
                     }
