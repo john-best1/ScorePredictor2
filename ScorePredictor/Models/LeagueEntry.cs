@@ -19,6 +19,5 @@ namespace ScorePredictor.Models
         public int goalsAgainst { get; set; }
         public int goalDifference { get; set; }
         public int points { get; set; }
-        public string crest { get; set; } = "";
     }
 }

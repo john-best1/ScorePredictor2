@@ -14,6 +14,7 @@
     <None Include="wwwroot\images\american-flag-small.jpg" />
     <None Include="wwwroot\images\argentinian-flag-small.jpg" />
     <None Include="wwwroot\images\australian-flag-small.jpg" />
+    <None Include="wwwroot\images\ball.jpg" />
     <None Include="wwwroot\images\belgian-flag-small.jpg" />
     <None Include="wwwroot\images\brazilian-flag-small.jpg" />
     <None Include="wwwroot\images\dutch-flag-small.jpg" />
@@ -25,7 +26,6 @@
     <None Include="wwwroot\images\portuguese-flag-small.jpg" />
     <None Include="wwwroot\images\russian-flag-small.jpg" />
     <None Include="wwwroot\images\scotland-flag-large.jpg" />
-    <None Include="wwwroot\images\spanish-flag-small - Copy.jpg" />
     <None Include="wwwroot\images\spanish-flag-small.jpg" />
   </ItemGroup>
 
@@ -39,14 +39,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="WinLess.lessc" Version="1.0.13" />
-  </ItemGroup>
-
-
-
-  <ItemGroup>
-    <None Update="images\ball.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

@@ -60,14 +60,7 @@
         {
         <tr class="wpos">
             <td>@entry.position</td>
-            @if (entry.crest != "")
-            {
-                <td class="teamname"><img class="crest" src="@entry.crest" />@entry.name</td>
-            }
-            else
-            {
-                <td class="teamname">@entry.name</td>
-            }
+            <td class="teamname">@entry.name</td>
             <td>@entry.matchesPlayed</td>
             <td>@entry.won</td>
             <td>@entry.drawn</td>
