@@ -179,8 +179,17 @@ namespace ScorePredictor.Data
                     }
 
                     cmd.ExecuteNonQuery();
-                    connection.Close();
                 }
+                if (match.finished)
+                {
+                    using (SqlCommand cmd = new SqlCommand("UPDATE Fixture " +
+                    "SET finished = " + match.finished + ", HomeScore = " + match.homeGoals + ", AwayScore = " + match.awayGoals, connection))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                
+                connection.Close();
             }
             if (!match.finished)
             {
