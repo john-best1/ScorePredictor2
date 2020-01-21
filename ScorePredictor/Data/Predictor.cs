@@ -21,7 +21,7 @@ namespace ScorePredictor.Data
             return match;
         }
 
-        private static int[] predictScore(Match match)
+        public static int[] predictScore(Match match)
         {
             int[] predictedResult = new int[2];
 
@@ -189,7 +189,7 @@ namespace ScorePredictor.Data
             return predictedResult;
         }
 
-        private static void predictionString(Match match)
+        public static void predictionString(Match match)
         {
             switch (match.predictedResult)
             {
@@ -213,7 +213,7 @@ namespace ScorePredictor.Data
             }
         }
 
-        private static int predictResult(double homePoints, double awayPoints)
+        public static int predictResult(double homePoints, double awayPoints)
         {
             // 1 = strong home win, 2 = regular home win, 3 = draw, 4 = strong away win, 5 = regular away win
             if (homePoints - awayPoints > 9.0)
@@ -238,7 +238,7 @@ namespace ScorePredictor.Data
             }
         }
 
-        private static double calculatePoints(int[] last6)
+        public static double calculatePoints(int[] last6)
         {
             double total = 0;
             foreach (int result in last6)
