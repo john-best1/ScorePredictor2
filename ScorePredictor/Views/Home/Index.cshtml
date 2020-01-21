@@ -44,41 +44,48 @@
                     </tr>
                     @for (int i = 0; i < list.fixtures.Count; i++)
                     {
-                        <tr class="collapse fixtures_@list.fixtures[0].leagueId">
-                            <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
-                            @if (list.fixtures[i].finished)
-                            {
-                                <td class="details">
-                                    @list.fixtures[i].homeTeamName [@list.fixtures[i].homeScore]
-                                    V [@list.fixtures[i].awayScore] @list.fixtures[i].awayTeamName
-                                </td>
-                            }
-                            else if (!list.fixtures[i].postponed)
-                            {
-                                <td class="details">
-                                    @list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName
-                                </td>
-                            }
-                            else
-                            {
-                                <td class="details">
-                                    @list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName     [POSTPONED]
-                                </td>
-                            }
+    <tr class="collapse fixtures_@list.fixtures[0].leagueId">
+        <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
+        @if (list.fixtures[i].finished)
+        {
+            <td class="details">
+                @list.fixtures[i].homeTeamName [@list.fixtures[i].homeScore]
+                V [@list.fixtures[i].awayScore] @list.fixtures[i].awayTeamName
+            </td>
+        }
+        else if (list.fixtures[i].predictedHomeScore != -1)
+        {
+            <td class="details">
+                @list.fixtures[i].homeTeamName [@list.fixtures[i].predictedHomeScore]
+                V [@list.fixtures[i].predictedAwayScore] @list.fixtures[i].awayTeamName
+            </td>
+        }
+        else if (!list.fixtures[i].postponed)
+        {
+            <td class="details">
+                @list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName
+            </td>
+        }
+        else
+        {
+            <td class="details">
+                @list.fixtures[i].homeTeamName V @list.fixtures[i].awayTeamName     [POSTPONED]
+            </td>
+        }
 
-                            <td class="details">
-                                @if (list.fixtures[i].finished)
-                                {
-                                    <a class="btn btn-primary" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
-                                       asp-route-flagUrl="@list.imageUrl">Result Details</a>
-                                }
-                                else if (!list.fixtures[i].postponed)
-                                {
-                                    <a class="btn btn-primary" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
-                                       asp-route-flagUrl="@list.imageUrl">Prediction</a>
-                                }
-                            </td>
-                        </tr>
+        <td class="details">
+            @if (list.fixtures[i].finished)
+            {
+                <a class="btn btn-primary" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
+                   asp-route-flagUrl="@list.imageUrl">Result Details</a>
+            }
+            else if (!list.fixtures[i].postponed)
+            {
+                <a class="btn btn-primary" asp-controller="Match" asp-action="Match" asp-route-matchId="@list.fixtures[i].matchId"
+                   asp-route-flagUrl="@list.imageUrl">Prediction</a>
+            }
+        </td>
+    </tr>
 
                     }
                 }

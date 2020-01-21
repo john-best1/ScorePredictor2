@@ -71,6 +71,8 @@ namespace ScorePredictor.Data
                             fixture.postponed = (bool)reader["Postponed"];
                             fixture.homeScore = (int)reader["HomeScore"];
                             fixture.awayScore = (int)reader["AwayScore"];
+                            fixture.predictedHomeScore = (int)reader["PredictedHomeScore"];
+                            fixture.predictedAwayScore = (int)reader["PredictedAwayScore"];
                             fixture.utcDate = reader["UtcDate"].ToString();
                             allFixtures.Add(fixture);
                         }
@@ -212,7 +214,7 @@ namespace ScorePredictor.Data
                             using (SqlCommand cmd = new SqlCommand("insert into Fixture values(" +
                                 "@fixturelistid,@matchid,@hometeamid,@hometeamname," +
                                 "@awayteamid, @awayteamname, @leagueid, @leaguename," +
-                                "@finished, @homescore, @awayscore, @postponed, @utcdate);", connection))
+                                "@finished, @homescore, @awayscore, @postponed, @utcdate, @predictedhomegoals, @predictedawaygoals);", connection))
                             {
                                 cmd.Parameters.AddWithValue("@fixturelistid", getDatabaseDateString(dateString) + list.leagueId);
                                 cmd.Parameters.AddWithValue("@matchid", fixture.matchId);
@@ -227,6 +229,8 @@ namespace ScorePredictor.Data
                                 cmd.Parameters.AddWithValue("@awayscore", fixture.awayScore);
                                 cmd.Parameters.AddWithValue("@postponed", fixture.postponed);
                                 cmd.Parameters.AddWithValue("@utcdate", fixture.utcDate);
+                                cmd.Parameters.AddWithValue("@predictedhomegoals", fixture.predictedHomeScore);
+                                cmd.Parameters.AddWithValue("@predictedawaygoals", fixture.predictedAwayScore);
                                 cmd.ExecuteNonQuery();
                             }
                         }

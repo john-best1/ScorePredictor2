@@ -177,15 +177,15 @@ namespace ScorePredictor.Data
                     {
                         cmd.Parameters.AddWithValue("@resultpredictionmade", 0);
                     }
-
                     cmd.ExecuteNonQuery();
-                }
-                if (match.finished)
-                {
-                    using (SqlCommand cmd = new SqlCommand("UPDATE Fixture " +
-                    "SET finished = " + match.finished + ", HomeScore = " + match.homeGoals + ", AwayScore = " + match.awayGoals, connection))
+                    if (match.predictedScore[0] != -1)
                     {
-                        cmd.ExecuteNonQuery();
+                        using (SqlCommand command = new SqlCommand("UPDATE Fixture " +
+                             "SET PredictedHomeScore = " + match.predictedScore[0] + ", PredictedAwayScore = " + match.predictedScore[1] + 
+                             "WHERE MatchId = " + match.MatchId + "; ", connection))
+                        {
+                            command.ExecuteNonQuery();                       
+                        };
                     }
                 }
                 
@@ -295,7 +295,16 @@ namespace ScorePredictor.Data
                 {
                     connection.Open();
                     cmd.ExecuteNonQuery();
-                    connection.Close();
+                if (match.finished)
+                {
+                    using (SqlCommand command = new SqlCommand("UPDATE Fixture " +
+                    "SET finished = 1, HomeScore = " + match.homeGoals + ", AwayScore = " + match.awayGoals +
+                    " WHERE Fixture.MatchId = " + match.MatchId, connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                }
+                connection.Close();
                 }
             }
         }

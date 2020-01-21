@@ -30,6 +30,10 @@ namespace ScorePredictor.Models
 
         public int awayScore { get; set; } = -1;
 
+        public int predictedHomeScore { get; set; } = -1;
+
+        public int predictedAwayScore { get; set; } = -1;
+
         public bool postponed { get; set; }
     }
 
