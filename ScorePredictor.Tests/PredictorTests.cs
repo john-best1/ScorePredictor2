@@ -136,5 +136,125 @@ namespace ScorePredictor.Tests
             Assert.Equal(expectedResult, result);
         }
 
+
+        [Fact]
+        public void RegularHomeWinPredictedGoalsShouldBeHigher()
+        {
+            int[] predictedResult = Predictor.predictScore(10, 10, 2);
+
+            Assert.True(predictedResult[0] > predictedResult[1] && predictedResult[0] > 0 && predictedResult[1] >= 0);
+
+            predictedResult = Predictor.predictScore(0, 0, 2);
+
+            Assert.True(predictedResult[0] > predictedResult[1] && predictedResult[0] > 0 && predictedResult[1] >= 0);
+
+            predictedResult = Predictor.predictScore(20, 5, 2);
+
+            Assert.True(predictedResult[0] > predictedResult[1] && predictedResult[0] > 0 && predictedResult[1] >= 0);
+
+            predictedResult = Predictor.predictScore(4, 15, 2);
+
+            Assert.True(predictedResult[0] > predictedResult[1] && predictedResult[0] > 0 && predictedResult[1] >= 0);
+
+            predictedResult = Predictor.predictScore(0, 20, 2);
+
+            Assert.True(predictedResult[0] > predictedResult[1] && predictedResult[0] > 0 && predictedResult[1] >= 0);
+        }
+
+        [Fact]
+        public void StrongHomeWinPredictedGoalsShouldBeHigherByAtLeast2()
+        {
+            int[] predictedResult = Predictor.predictScore(10, 10, 1);
+
+            Assert.True((predictedResult[0] - predictedResult[1] >= 2) && predictedResult[0] > 0 && predictedResult[1] >= 0);
+
+            predictedResult = Predictor.predictScore(0, 0, 1);
+
+            Assert.True((predictedResult[0] - predictedResult[1] >= 2) && predictedResult[0] > 0 && predictedResult[1] >= 0);
+
+            predictedResult = Predictor.predictScore(20, 5, 1);
+
+            Assert.True((predictedResult[0] - predictedResult[1] >= 2) && predictedResult[0] > 0 && predictedResult[1] >= 0);
+
+            predictedResult = Predictor.predictScore(4, 15, 1);
+
+            Assert.True((predictedResult[0] - predictedResult[1] >= 2) && predictedResult[0] > 0 && predictedResult[1] >= 0);
+
+            predictedResult = Predictor.predictScore(0, 20, 1);
+
+            Assert.True((predictedResult[0] - predictedResult[1] >= 2) && predictedResult[0] > 0 && predictedResult[1] >= 0);
+        }
+
+        [Fact]
+        public void DrawPredictedGoalsShouldBeEqual()
+        {
+            int[] predictedResult = Predictor.predictScore(10, 10, 3);
+
+            Assert.True(predictedResult[0] == predictedResult[1] && predictedResult[0] >= 0 && predictedResult[1] >= 0);
+
+            predictedResult = Predictor.predictScore(0, 0, 3);
+
+            Assert.True(predictedResult[0] == predictedResult[1] && predictedResult[0] >= 0 && predictedResult[1] >= 0);
+
+            predictedResult = Predictor.predictScore(20, 5, 3);
+
+            Assert.True(predictedResult[0] == predictedResult[1] && predictedResult[0] >= 0 && predictedResult[1] >= 0);
+
+            predictedResult = Predictor.predictScore(4, 15, 3);
+
+            Assert.True(predictedResult[0] == predictedResult[1] && predictedResult[0] >= 0 && predictedResult[1] >= 0);
+
+            predictedResult = Predictor.predictScore(0, 20, 3);
+
+            Assert.True(predictedResult[0] == predictedResult[1] && predictedResult[0] >= 0 && predictedResult[1] >= 0);
+        }
+
+        [Fact]
+        public void RegularAwayWinPredictedGoalsShouldBeHigher()
+        {
+            int[] predictedResult = Predictor.predictScore(10, 10, 5);
+
+            Assert.True(predictedResult[0] < predictedResult[1] && predictedResult[0] >= 0 && predictedResult[1] > 0);
+
+            predictedResult = Predictor.predictScore(0, 0, 5);
+
+            Assert.True(predictedResult[0] < predictedResult[1] && predictedResult[0] >= 0 && predictedResult[1] > 0);
+
+            predictedResult = Predictor.predictScore(20, 5, 5);
+
+            Assert.True(predictedResult[0] < predictedResult[1] && predictedResult[0] >= 0 && predictedResult[1] > 0);
+
+            predictedResult = Predictor.predictScore(4, 15, 5);
+
+            Assert.True(predictedResult[0] < predictedResult[1] && predictedResult[0] >= 0 && predictedResult[1] > 0);
+
+            predictedResult = Predictor.predictScore(0, 20, 5);
+
+            Assert.True(predictedResult[0] < predictedResult[1] && predictedResult[0] >= 0 && predictedResult[1] > 0);
+        }
+
+        [Fact]
+        public void StrongAwayWinPredictedGoalsShouldBeHigherByAtLeast2()
+        {
+            int[] predictedResult = Predictor.predictScore(10, 10, 4);
+
+            Assert.True((predictedResult[1] - predictedResult[0] >= 2) && predictedResult[0] >= 0 && predictedResult[1] > 0);
+
+            predictedResult = Predictor.predictScore(0, 0, 4);
+
+            Assert.True((predictedResult[1] - predictedResult[0] >= 2) && predictedResult[0] >= 0 && predictedResult[1] > 0);
+
+            predictedResult = Predictor.predictScore(20, 5, 4);
+
+            Assert.True((predictedResult[1] - predictedResult[0] >= 2) && predictedResult[0] >= 0 && predictedResult[1] > 0);
+
+            predictedResult = Predictor.predictScore(4, 15, 4);
+
+            Assert.True((predictedResult[1] - predictedResult[0] >= 2) && predictedResult[0] >= 0 && predictedResult[1] > 0);
+
+            predictedResult = Predictor.predictScore(0, 20, 4);
+
+            Assert.True((predictedResult[1] - predictedResult[0] >= 2) && predictedResult[0] >= 0 && predictedResult[1] > 0);
+        }
     }
 }

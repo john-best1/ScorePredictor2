@@ -15,20 +15,21 @@ namespace ScorePredictor.Data
 
             match.predictedResult = predictResult(match.HomeStats.PredictionPoints, match.AwayStats.PredictionPoints);
 
-            predictionString(match);
-            match.predictedScore = predictScore(match);
+            match.predictionString = predictionString(match.predictedResult);
+            match.predictedScore = predictScore(match.HomeStats.overallLast6Scored, match.AwayStats.overallLast6Scored, match.predictedResult);
+            match.predictionMade = true;
 
             return match;
         }
 
-        public static int[] predictScore(Match match)
+        public static int[] predictScore(int homeLast6Scored, int awayLast6Scored, int prediction)
         {
             int[] predictedResult = new int[2];
 
-            int homeGoals = (int)Math.Round(match.HomeStats.overallLast6Scored / 6.0, 0);
-            int awayGoals = (int)Math.Round(match.AwayStats.overallLast6Scored / 6.0, 0);
-            double decimalHomeGoals = match.HomeStats.overallLast6Scored / 6.0;
-            double decimalAwayGoals = match.AwayStats.overallLast6Scored / 6.0;
+            int homeGoals = (int)Math.Round(homeLast6Scored / 6.0, 0);
+            int awayGoals = (int)Math.Round(awayLast6Scored / 6.0, 0);
+            double decimalHomeGoals = homeLast6Scored / 6.0;
+            double decimalAwayGoals = awayLast6Scored / 6.0;
 
             //int homeGoals = (int)Math.Round(match.HomeStats.homeOrAwayLast6Scored / 6.0, 0);
             //int awayGoals = (int)Math.Round(match.AwayStats.homeOrAwayLast6Scored / 6.0, 0);
@@ -37,17 +38,17 @@ namespace ScorePredictor.Data
 
 
             //regular home win
-            if (match.predictedResult == 2 && homeGoals <= awayGoals)
+            if (prediction == 2 && homeGoals <= awayGoals)
             {
                 if (awayGoals > decimalAwayGoals)
                 {
                     awayGoals--;
-                } //homeGoals 2, awaygoals2;
+                } 
                 if (homeGoals < decimalHomeGoals)
                 {
                     homeGoals++;
-                } //homeGoals 3, awaygoals2;
-                if (match.predictedResult == 2 && homeGoals <= awayGoals)
+                } 
+                if (prediction == 2 && homeGoals <= awayGoals)
                 {
                     if (awayGoals > decimalAwayGoals && homeGoals > 0)
                     {
@@ -61,7 +62,7 @@ namespace ScorePredictor.Data
             }
 
             //strong home win
-            else if (match.predictedResult == 1)
+            else if (prediction == 1)
             {
                 if (awayGoals > decimalAwayGoals)
                 {
@@ -74,7 +75,8 @@ namespace ScorePredictor.Data
                 if (homeGoals == awayGoals)
                 {
                     homeGoals++;
-                    awayGoals--;
+                    if (awayGoals > 0) awayGoals--;
+                    else if (awayGoals == 0) homeGoals++;
                 }
                 else if (homeGoals - awayGoals == 1)
                 {
@@ -98,7 +100,7 @@ namespace ScorePredictor.Data
             }
 
             //strong away win
-            else if (match.predictedResult == 4)
+            else if (prediction == 4)
             {
                 if (homeGoals > decimalHomeGoals)
                 {
@@ -110,8 +112,9 @@ namespace ScorePredictor.Data
                 }
                 if (homeGoals == awayGoals)
                 {
-                    homeGoals--;
                     awayGoals++;
+                    if (homeGoals > 0) homeGoals--;
+                    else if (homeGoals == 0) awayGoals++;
                 }
                 else if (awayGoals - homeGoals == 1)
                 {
@@ -135,7 +138,7 @@ namespace ScorePredictor.Data
             }
 
             //regular away win
-            if (match.predictedResult == 5 && awayGoals <= homeGoals)
+            if (prediction == 5 && awayGoals <= homeGoals)
             {
                 if (homeGoals > decimalHomeGoals)
                 {
@@ -145,7 +148,7 @@ namespace ScorePredictor.Data
                 {
                     homeGoals++;
                 }
-                if (match.predictedResult == 5 && awayGoals <= homeGoals)
+                if (prediction == 5 && awayGoals <= homeGoals)
                 {
                     if (homeGoals > decimalHomeGoals && awayGoals > 0)
                     {
@@ -159,7 +162,7 @@ namespace ScorePredictor.Data
             }
 
             //draw
-            else if (match.predictedResult == 3 && homeGoals != awayGoals)
+            else if (prediction == 3 && homeGoals != awayGoals)
             {
                 System.Diagnostics.Debug.WriteLine("---------\n" + homeGoals + " " + decimalHomeGoals + "\n----------");
                 if (homeGoals > decimalHomeGoals && homeGoals > 0)
@@ -185,32 +188,27 @@ namespace ScorePredictor.Data
 
             predictedResult[0] = homeGoals;
             predictedResult[1] = awayGoals;
-            match.predictionMade = true;
             return predictedResult;
         }
 
-        public static void predictionString(Match match)
+        public static string predictionString(int predictedResult)
         {
-            switch (match.predictedResult)
+            switch (predictedResult)
             {
                 case 1:
-                    match.predictionString = "STRONG HOME WIN";
-                    break;
+                    return "STRONG HOME WIN";
                 case 2:
-                    match.predictionString = "HOME WIN";
-                    break;
+                    return "HOME WIN";
                 case 3:
-                    match.predictionString = "DRAW";
-                    break;
+                    return "DRAW";
                 case 4:
-                    match.predictionString = "STRONG AWAY WIN";
-                    break;
+                    return "STRONG AWAY WIN";
                 case 5:
-                    match.predictionString = "AWAY WIN";
-                    break;
+                    return "AWAY WIN";
                 default:
                     break;
             }
+            return "Error";
         }
 
         public static int predictResult(double homePoints, double awayPoints)
