@@ -74,6 +74,7 @@ namespace ScorePredictor.Data
                             fixture.predictedHomeScore = (int)reader["PredictedHomeScore"];
                             fixture.predictedAwayScore = (int)reader["PredictedAwayScore"];
                             fixture.utcDate = reader["UtcDate"].ToString();
+                            fixture.Strong = (bool)reader["Strong"];
                             allFixtures.Add(fixture);
                         }
                         reader.Close();
@@ -214,7 +215,7 @@ namespace ScorePredictor.Data
                             using (SqlCommand cmd = new SqlCommand("insert into Fixture values(" +
                                 "@fixturelistid,@matchid,@hometeamid,@hometeamname," +
                                 "@awayteamid, @awayteamname, @leagueid, @leaguename," +
-                                "@finished, @homescore, @awayscore, @postponed, @utcdate, @predictedhomegoals, @predictedawaygoals);", connection))
+                                "@finished, @homescore, @awayscore, @postponed, @utcdate, @predictedhomegoals, @predictedawaygoals, @strong);", connection))
                             {
                                 cmd.Parameters.AddWithValue("@fixturelistid", getDatabaseDateString(dateString) + list.leagueId);
                                 cmd.Parameters.AddWithValue("@matchid", fixture.matchId);
@@ -231,6 +232,7 @@ namespace ScorePredictor.Data
                                 cmd.Parameters.AddWithValue("@utcdate", fixture.utcDate);
                                 cmd.Parameters.AddWithValue("@predictedhomegoals", fixture.predictedHomeScore);
                                 cmd.Parameters.AddWithValue("@predictedawaygoals", fixture.predictedAwayScore);
+                                cmd.Parameters.AddWithValue("@strong", fixture.Strong);
                                 cmd.ExecuteNonQuery();
                             }
                         }

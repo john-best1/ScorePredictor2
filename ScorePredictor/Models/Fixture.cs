@@ -35,6 +35,8 @@ namespace ScorePredictor.Models
         public int predictedAwayScore { get; set; } = -1;
 
         public bool postponed { get; set; }
+
+        public bool Strong { get; set; } = false;
     }
 
 }

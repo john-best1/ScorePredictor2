@@ -9,6 +9,9 @@ td, tr {
     padding: 8px;
     background-color: #1082ef;
 }
+.strong td{
+    background-color: greenyellow;
+}
 
 h3 {
     font-size: 14px;

@@ -180,9 +180,13 @@ namespace ScorePredictor.Data
                     cmd.ExecuteNonQuery();
                     if (match.predictedScore[0] != -1)
                     {
+                        int strong = 0;
+                        if (match.predictedResult == 1 || match.predictedResult == 4) strong = 1;
+                        else { }
                         using (SqlCommand command = new SqlCommand("UPDATE Fixture " +
                              "SET PredictedHomeScore = " + match.predictedScore[0] + ", PredictedAwayScore = " + match.predictedScore[1] + 
-                             "WHERE MatchId = " + match.MatchId + "; ", connection))
+                             ", Strong = " + strong + 
+                             " WHERE MatchId = " + match.MatchId, connection))
                         {
                             command.ExecuteNonQuery();                       
                         };
