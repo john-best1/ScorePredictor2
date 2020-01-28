@@ -583,15 +583,34 @@ namespace ScorePredictor.Data
         {
             // 1,2 =home win, 3 = draw, 4,5 = away win
             String query = "UPDATE PredictionTally SET TotalPredictions = TotalPredictions + 1";
-            if (match.predictedScore[0] == match.homeGoals && match.predictedScore[1] == match.awayGoals)
+            switch (match.predictedResult)
             {
-                query += ", TotalCorrect = TotalCorrect + 1, TotalCorrectScores = TotalCorrectScores + 1 ";
-            }
-            else if ((match.homeGoals == match.awayGoals && match.predictedResult == 3) ||
-                ((match.homeGoals > match.awayGoals) && (match.predictedResult == 1 || ((match.homeGoals > match.awayGoals) && match.predictedResult == 2))) ||
-                ((match.homeGoals < match.awayGoals) && (match.predictedResult == 4 || ((match.homeGoals < match.awayGoals) && match.predictedResult == 5))))
-            {
-                query += ", TotalCorrect = TotalCorrect + 1 ";
+                case 1:
+                    query += ", TotalPredictedHomeWins = TotalPredictedHomeWins + 1, TotalPredictedStrongHomeWins = TotalPredictedStrongHomeWins + 1" +
+                        ", TotalPredictedStrongWins = TotalPredictedStrongWins + 1";
+                    if (match.homeGoals > match.awayGoals) query += ", TotalOverallCorrectHomeWins = TotalOverallCorrectHomeWins + 1, " +
+                            "TotalOverallCorrectStrongWins = TotalOverallCorrectStrongWins + 1";
+                    break;
+                case 2:
+                    query += ", TotalPredictedHomeWins = TotalPredictedHomeWins + 1";
+                    if (match.homeGoals > match.awayGoals) query += ", TotalOverallCorrectHomeWins = TotalOverallCorrectHomeWins + 1";
+                    break;
+                case 3:
+                    query += ", TotalPredictedDraws = TotalPredictedDraws + 1";
+                    if (match.homeGoals == match.awayGoals) query += ", CorrectDraws = CorrectDraws + 1";
+                    break;
+                case 4:
+                    query += ", TotalPredictedAwayWins = TotalPredictedAwayWins + 1, TotalPredictedStrongAwayWins = TotalPredictedStrongAwayWins + 1, " +
+                        "TotalPredictedStrongWins = TotalPredictedStrongWins + 1";
+                    if (match.homeGoals < match.awayGoals) query += ", TotalOverallCorrectAwayWins = TotalOverallCorrectAwayWins + 1, " +
+                            "TotalOverallCorrectStrongWins = TotalOverallCorrectStrongWins + 1";
+                    break;
+                case 5:
+                    query += ", TotalPredictedAwayWins = TotalPredictedAwayWins + 1";
+                    if (match.homeGoals > match.awayGoals) query += ", TotalOverallCorrectAwayWins = TotalOverallCorrectAwayWins + 1";
+                    break;
+                default:
+                    break;
             }
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {

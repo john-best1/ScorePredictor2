@@ -123,7 +123,7 @@ namespace ScorePredictor.Data
                     {
                         string competitionId = allMatches[i]["competition"]["id"].ToString();
                         if (allMatches[i]["status"].ToString() != "CANCELLED")
-                        {
+                        {                                       
                             Fixture fixture = new Fixture
                             {
                                 matchId = allMatches[i]["id"].ToString(),
