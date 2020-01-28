@@ -13,13 +13,29 @@
     <link href="@Url.Content("~/css/data.css")" rel="stylesheet" type="text/css" />
 }
 
-<div>Overall Results : @Model.TotalCorrect/@Model.TotalPredictions (@Model.CorrectResultPercentage%)</div>
-<div>Correct Scores : @Model.TotalCorrectScores/@Model.TotalPredictions (@Model.CorrectScorePercentage %)</div>
-<div>Correct Home Wins : @Model.TotalCorrectHomeWins/@Model.TotalHomeWinsPredicted (@Model.CorrectHomeWinPercentage %)</div>
-<div>Correct Away Wins : @Model.TotalCorrectAwayWins/@Model.TotalAwayWinsPredicted (@Model.CorrectAwayWinPercentage %)</div>
-<div>Correct Draws : @Model.TotalCorrectDraws/@Model.TotalDrawsPredicted (@Model.CorrectDrawPercentage %)</div>
-<div>Correct Strong Wins : @Model.TotalCorrectStrongWins/@Model.TotalStrongWinsPredicted (@Model.CorrectStrongWinPercentage%)</div>
-<div>Correct Strong Home Wins : @Model.TotalCorrectStrongHomeWins/@Model.TotalStrongHomeWinsPredicted (@Model.CorrectStrongHomeWinPercentage %)</div>
-<div>Correct Strong Away Wins : @Model.TotalCorrectStrongAwayWins/@Model.TotalStrongAwayWinsPredicted (@Model.CorrectStrongAwayWinPercentage %)</div>
+<h2>Broad Overview</h2>
+<div>Correct Result Predictions : @Model.TotalCorrect/@Model.TotalPredictions (@Model.CorrectResultPercentage%)   <span class="expected">- Expected ~52%</span></div>
+<div>Correct Score Predictions &nbsp;&nbsp; : @Model.TotalCorrectScores/@Model.TotalPredictions (@Model.CorrectScorePercentage%)   <span class="expected">- Expected ~10%</span></div>
+<br />
+<h2>Itemised Results</h2>
+<div>Correct Home Wins : @Model.TotalCorrectHomeWins/@Model.TotalHomeWinsPredicted (@Model.CorrectHomeWinPercentage%) <span class="expected">- Expected ~64%</span></div>
+<div>Correct Away Wins : @Model.TotalCorrectAwayWins/@Model.TotalAwayWinsPredicted (@Model.CorrectAwayWinPercentage%) <span class="expected">- Expected ~59%</span></div>
+<div>Correct Draws : @Model.TotalCorrectDraws/@Model.TotalDrawsPredicted (@Model.CorrectDrawPercentage%) <span class="expected">-  Expected ~30%</span></div>
+<br />
+<h2>Overall Prediction Distribution</h2>
+<div>Total Predicted Home Wins : @Model.TotalHomeWinsPredicted/@Model.TotalPredictions (@Model.HomeWinPredictedPercentage%) <span class="expected">- Expected ~47%</span></div>
+<div>Total Predicted Away Wins : @Model.TotalAwayWinsPredicted/@Model.TotalPredictions (@Model.AwayWinPredictedPercentage%) <span class="expected">- Expected ~26%</span></div>
+<div>Total Predicted Draws : @Model.TotalDrawsPredicted/@Model.TotalPredictions (@Model.DrawPredictedPercentage%) <span class="expected">-  Expected ~27%</span></div>
+<br />
+<h2>Strong Prediction Totals & Distribution</h2>
+<div>Total Predicted Strong Wins : @Model.TotalStrongWinsPredicted/@Model.TotalPredictions (@Model.StrongWinPredictedPercentage%)</div>
+<div>Total Predicted Strong Home Wins : @Model.TotalStrongHomeWinsPredicted/@Model.TotalPredictions (@Model.StrongHomeWinPredictedPercentage%)</div>
+<div>Total Predicted Strong Away Wins : @Model.TotalStrongAwayWinsPredicted/@Model.TotalPredictions (@Model.StrongAwayWinPredictedPercentage%)</div>
+<br />
+<h2>Strong Prediction Success Rates</h2>
+<div>Correct Strong Wins : @Model.TotalCorrectStrongWins/@Model.TotalStrongWinsPredicted (@Model.CorrectStrongWinPercentage%) <span class="expected">- Expected ~70%</span></div>
+<div>Correct Strong Home Wins : @Model.TotalCorrectStrongHomeWins/@Model.TotalStrongHomeWinsPredicted (@Model.CorrectStrongHomeWinPercentage%) <span class="expected">- Expected ~75%</span></div>
+<div>Correct Strong Away Wins : @Model.TotalCorrectStrongAwayWins/@Model.TotalStrongAwayWinsPredicted (@Model.CorrectStrongAwayWinPercentage%) <span class="expected">- Expected ~65%</span></div>
+
 
 

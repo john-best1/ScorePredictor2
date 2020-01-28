@@ -44,38 +44,50 @@ namespace ScorePredictor.ViewModels
 
         public decimal CorrectStrongAwayWinPercentage { get; set; }
 
-        public int TotalPredictions { get; set; }
+        public decimal HomeWinPredictedPercentage { get; set; }
 
-        public int TotalHomeWinsPredicted { get; set; }
+        public decimal AwayWinPredictedPercentage { get; set; }
 
-        public int TotalAwayWinsPredicted { get; set; }
+        public decimal DrawPredictedPercentage { get; set; }
 
-        public int TotalStrongHomeWinsPredicted { get; set; }
+        public decimal StrongWinPredictedPercentage { get; set; }
 
-        public int TotalStrongAwayWinsPredicted { get; set; }
+        public decimal StrongHomeWinPredictedPercentage { get; set; }
 
-        public int TotalStrongWinsPredicted { get; set; }
+        public decimal StrongAwayWinPredictedPercentage { get; set; }
 
-        public int TotalDrawsPredicted { get; set; }
+        public int TotalPredictions { get;  }
 
-        public int TotalCorrect { get; set; }
+        public int TotalHomeWinsPredicted { get;  }
 
-        public int TotalCorrectScores { get; set; }
+        public int TotalAwayWinsPredicted { get;  }
 
-        public int TotalCorrectDraws { get; set; }
+        public int TotalStrongHomeWinsPredicted { get;  }
 
-        public int TotalCorrectStrongWins { get; set; }
+        public int TotalStrongAwayWinsPredicted { get;  }
 
-        public int TotalCorrectHomeWins { get; set; }
+        public int TotalStrongWinsPredicted { get;  }
 
-        public int TotalCorrectStrongHomeWins { get; set; }
+        public int TotalDrawsPredicted { get;  }
 
-        public int TotalCorrectAwayWins { get; set; }
+        public int TotalCorrect { get;  }
 
-        public int TotalCorrectStrongAwayWins { get; set; }
+        public int TotalCorrectScores { get;  }
+
+        public int TotalCorrectDraws { get;  }
+
+        public int TotalCorrectStrongWins { get;  }
+
+        public int TotalCorrectHomeWins { get;  }
+
+        public int TotalCorrectStrongHomeWins { get;  }
+
+        public int TotalCorrectAwayWins { get; }
+
+        public int TotalCorrectStrongAwayWins { get;  }
 
 
-        public void SetPercentages()
+        private void SetPercentages()
         {
             CorrectResultPercentage = decimal.Round(TotalCorrect / (decimal)TotalPredictions * 100, 1, MidpointRounding.AwayFromZero);
             CorrectScorePercentage = decimal.Round(TotalCorrectScores / (decimal)TotalPredictions * 100, 1, MidpointRounding.AwayFromZero);
@@ -85,6 +97,12 @@ namespace ScorePredictor.ViewModels
             CorrectStrongWinPercentage = decimal.Round(TotalCorrectStrongWins / (decimal)TotalStrongWinsPredicted * 100, 1, MidpointRounding.AwayFromZero);
             CorrectStrongHomeWinPercentage = decimal.Round(TotalCorrectStrongHomeWins / (decimal)TotalStrongHomeWinsPredicted * 100, 1, MidpointRounding.AwayFromZero);
             CorrectStrongAwayWinPercentage = decimal.Round(TotalCorrectStrongAwayWins / (decimal)TotalStrongAwayWinsPredicted * 100, 1, MidpointRounding.AwayFromZero);
+            HomeWinPredictedPercentage = decimal.Round(TotalHomeWinsPredicted / (decimal)TotalPredictions * 100, 1, MidpointRounding.AwayFromZero);
+            AwayWinPredictedPercentage = decimal.Round(TotalAwayWinsPredicted / (decimal)TotalPredictions * 100, 1, MidpointRounding.AwayFromZero);
+            DrawPredictedPercentage = decimal.Round(TotalDrawsPredicted / (decimal)TotalPredictions * 100, 1, MidpointRounding.AwayFromZero);
+            StrongWinPredictedPercentage = decimal.Round(TotalStrongWinsPredicted / (decimal)TotalPredictions * 100, 1, MidpointRounding.AwayFromZero);
+            StrongHomeWinPredictedPercentage = decimal.Round(TotalStrongHomeWinsPredicted / (decimal)TotalPredictions * 100, 1, MidpointRounding.AwayFromZero);
+            StrongAwayWinPredictedPercentage = decimal.Round(TotalStrongAwayWinsPredicted / (decimal)TotalPredictions * 100, 1, MidpointRounding.AwayFromZero);
         }
     }
 }

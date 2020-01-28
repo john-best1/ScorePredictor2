@@ -1,5 +1,12 @@
 ﻿body {
     color:greenyellow;
 }
-
+h2 {
+    color: gold;
+    text-decoration: underline;
+}
+.expected {
+    color: springgreen;
+    font-style: italic;
+}
 
