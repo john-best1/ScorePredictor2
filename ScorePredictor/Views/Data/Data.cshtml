@@ -1,0 +1,25 @@
+﻿@model DataViewModel
+
+@{
+    ViewData["Title"] = "Prediction Data";
+}
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<link href="~/css/jquery-ui.min.css" rel="stylesheet" />
+@section Styles {
+    <link href="@Url.Content("~/css/data.css")" rel="stylesheet" type="text/css" />
+}
+
+<div>Overall Results : @Model.TotalCorrect/@Model.TotalPredictions (@Model.CorrectResultPercentage%)</div>
+<div>Correct Scores : @Model.TotalCorrectScores/@Model.TotalPredictions (@Model.CorrectScorePercentage %)</div>
+<div>Correct Home Wins : @Model.TotalCorrectHomeWins/@Model.TotalHomeWinsPredicted (@Model.CorrectHomeWinPercentage %)</div>
+<div>Correct Away Wins : @Model.TotalCorrectAwayWins/@Model.TotalAwayWinsPredicted (@Model.CorrectAwayWinPercentage %)</div>
+<div>Correct Draws : @Model.TotalCorrectDraws/@Model.TotalDrawsPredicted (@Model.CorrectDrawPercentage %)</div>
+<div>Correct Strong Wins : @Model.TotalCorrectStrongWins/@Model.TotalStrongWinsPredicted (@Model.CorrectStrongWinPercentage%)</div>
+<div>Correct Strong Home Wins : @Model.TotalCorrectStrongHomeWins/@Model.TotalStrongHomeWinsPredicted (@Model.CorrectStrongHomeWinPercentage %)</div>
+<div>Correct Strong Away Wins : @Model.TotalCorrectStrongAwayWins/@Model.TotalStrongAwayWinsPredicted (@Model.CorrectStrongAwayWinPercentage %)</div>
+
+
