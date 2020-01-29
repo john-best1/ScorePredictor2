@@ -14,7 +14,7 @@
     </div>
     <div class="dropdown">
         <button class="dropbtn  btn dropdown-toggle" style="margin-left: 10px">@Model.shortLeagueTitle</button>
-        <div class="dropdown-content">
+        <div class="dropdown-content" id="league">
             <a asp-controller="Leagues" asp-action="Leagues" asp-route-leagueCode="2021" asp-route-leagueTypeCode="@Model.leagueTypeCode"><img src="~/images/english-flag-small.jpg" />Premier League</a>
             <a asp-controller="Leagues" asp-action="Leagues" asp-route-leagueCode="2016" asp-route-leagueTypeCode="@Model.leagueTypeCode"><img src="~/images/english-flag-small.jpg" />Championship</a>
             <a asp-controller="Leagues" asp-action="Leagues" asp-route-leagueCode="2030" asp-route-leagueTypeCode="@Model.leagueTypeCode"><img src="~/images/english-flag-small.jpg" />League One</a>
@@ -41,7 +41,7 @@
 </div>
 <div class="ptable col-md-offset-7">
 
-    <h1 class="headin">@Model.longLeagueTitle</h1>
+    <h1 class="heading">@Model.longLeagueTitle</h1>
 
     <table>
         <tr class="col">

@@ -10,16 +10,18 @@ namespace ScorePredictor.Tests
     public class SeleniumTests
     {
         IWebDriver driver;
+        String url;
 
         public SeleniumTests()
         {
             driver = new ChromeDriver("C:/Users/john.best/source/repos/ScorePredictor2/ScorePredictor.Tests/bin/Debug/netcoreapp2.1");
+            url = "https://score-predictor.azurewebsites.net/";
         }
 
         [Fact]
         public void NavBarLinkTitlesShouldBeCorrect()
         {
-            driver.Navigate().GoToUrl("http://score-predictor.azurewebsites.net");
+            driver.Navigate().GoToUrl(url);
 
             var h1 = driver.FindElement(By.ClassName("navbar-brand")).Text;
             var link1 = driver.FindElement(By.CssSelector("ul >li:nth-child(1)")).Text;
@@ -37,7 +39,7 @@ namespace ScorePredictor.Tests
         [Fact]
         public void HomePageConstantsShouldBeCorrect()
         {
-            driver.Navigate().GoToUrl("http://score-predictor.azurewebsites.net");
+            driver.Navigate().GoToUrl(url);
 
             var mainHeader = driver.FindElement(By.ClassName("matchtype")).Text;
             var datePlaceholder = driver.FindElement(By.Id("myDatepicker")).GetAttribute("placeholder");
@@ -48,21 +50,47 @@ namespace ScorePredictor.Tests
             CleanUp();
         }
 
+        [Fact]
+        public void FixturesLinkAndH1LinkShouldAllBeSamePage()
+        {
+            driver.Navigate().GoToUrl(url);
+            var element = driver.FindElement(By.ClassName("navbar-brand"));
+            element.Click();
+            Assert.Equal(url, driver.Url);
+
+            element = driver.FindElement(By.CssSelector("ul >li:nth-child(1)"));
+            element.Click();
+            Assert.Equal(url, driver.Url);
+
+            CleanUp();
+        }
+
+        [Fact]
+        public void LeaguesLinkShouldOpenLeaguesPageOnPremierLeagueByDefault()
+        {
+            driver.Navigate().GoToUrl(url);
+            var element = driver.FindElement(By.CssSelector("ul >li:nth-child(2)"));  // leagues link
+            element.Click();
+            string expectedUrl = url + "Leagues/Leagues";
+            Assert.Equal(expectedUrl, driver.Url);
+
+            var leagueTypeButton = driver.FindElement(By.Id("leagueType"));
+            var leagueButton = driver.FindElement(By.Id("league"));
+
+            Assert.Equal("Overall", leagueTypeButton.Text);
+            Assert.Equal("Premier League", leagueButton.Text);
+
+            var leagueHeading = driver.FindElement(By.ClassName("heading"));
+            Assert.Equal("England - Premier League", leagueHeading.Text);
+
+            CleanUp();
+        }
+
 
         internal void Initiliaize()
         {
             driver = new ChromeDriver("C:/Users/john.best/sour ce/repos/ScorePredictor2/ScorePredictor.Tests/bin/Debug/netcoreapp2.1");
         }
-
-        //internal void EnterText(string element, string value, string elementType)
-        //{
-        //    if (elementType == "Id")
-        //        driver.FindElement(By.Id(element));
-        //    if (elementType == "Name")
-        //        driver.FindElement(By.Name(element));
-        //    if (elementType == "LinkText")
-        //        driver.FindElement(By.LinkText(element));
-        //}
 
         internal void CleanUp()
         {
