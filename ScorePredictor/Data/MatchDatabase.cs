@@ -593,7 +593,8 @@ namespace ScorePredictor.Data
                         ", TotalPredictedStrongWins = TotalPredictedStrongWins + 1";
                     if (match.homeGoals > match.awayGoals) query += ", TotalCorrect = TotalCorrect + 1" +
                             ", TotalOverallCorrectHomeWins = TotalOverallCorrectHomeWins + 1, " +
-                            "TotalOverallCorrectStrongWins = TotalOverallCorrectStrongWins + 1";
+                            "TotalOverallCorrectStrongWins = TotalOverallCorrectStrongWins + 1, " +
+                            "TotalCorrectStrongHomeWins = TotalCorrectStrongHomeWins + 1";
                     break;
                 case 2:
                     query += ", TotalPredictedHomeWins = TotalPredictedHomeWins + 1";
@@ -610,7 +611,8 @@ namespace ScorePredictor.Data
                         "TotalPredictedStrongWins = TotalPredictedStrongWins + 1";
                     if (match.homeGoals < match.awayGoals) query += ", TotalCorrect = TotalCorrect + 1" +
                             ", TotalOverallCorrectAwayWins = TotalOverallCorrectAwayWins + 1, " +
-                            "TotalOverallCorrectStrongWins = TotalOverallCorrectStrongWins + 1";
+                            "TotalOverallCorrectStrongWins = TotalOverallCorrectStrongWins + 1, " +
+                            "TotalCorrectStrongAwayWins = TotalCorrectStrongAwayWins + 1";
                     break;
                 case 5:
                     query += ", TotalPredictedAwayWins = TotalPredictedAwayWins + 1";

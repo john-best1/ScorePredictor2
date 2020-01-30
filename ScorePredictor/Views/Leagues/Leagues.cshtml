@@ -4,8 +4,8 @@
     <link href="@Url.Content("~/css/leagues.css")" rel="stylesheet" type="text/css" />
 }
 <div class="buttons">
-    <div class="dropdown">
-        <button class="dropbtn btn dropdown-toggle">@Model.leagueType</button>
+    <div class="dropdown" >
+        <button class="dropbtn btn dropdown-toggle" id="leaguetypebutton">@Model.leagueType</button>
         <div class="dropdown-content" id="leaguetype">
             <a asp-controller="Leagues" asp-action="Leagues" asp-route-leagueCode="@Model.leagueCode" asp-route-leagueTypeCode="0">Overall</a>
             <a asp-controller="Leagues" asp-action="Leagues" asp-route-leagueCode="@Model.leagueCode" asp-route-leagueTypeCode="1">Home</a>
@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class="dropdown">
-        <button class="dropbtn  btn dropdown-toggle" style="margin-left: 10px">@Model.shortLeagueTitle</button>
+        <button class="dropbtn btn dropdown-toggle" id="leaguebutton" style="margin-left: 10px">@Model.shortLeagueTitle</button>
         <div class="dropdown-content" id="league">
             <a asp-controller="Leagues" asp-action="Leagues" asp-route-leagueCode="2021" asp-route-leagueTypeCode="@Model.leagueTypeCode"><img src="~/images/english-flag-small.jpg" />Premier League</a>
             <a asp-controller="Leagues" asp-action="Leagues" asp-route-leagueCode="2016" asp-route-leagueTypeCode="@Model.leagueTypeCode"><img src="~/images/english-flag-small.jpg" />Championship</a>

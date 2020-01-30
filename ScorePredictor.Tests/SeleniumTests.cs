@@ -74,8 +74,9 @@ namespace ScorePredictor.Tests
             string expectedUrl = url + "Leagues/Leagues";
             Assert.Equal(expectedUrl, driver.Url);
 
-            var leagueTypeButton = driver.FindElement(By.Id("leagueType"));
-            var leagueButton = driver.FindElement(By.Id("league"));
+            
+            var leagueTypeButton = driver.FindElement(By.Id("leaguetypebutton"));
+            var leagueButton = driver.FindElement(By.Id("leaguebutton"));
 
             Assert.Equal("Overall", leagueTypeButton.Text);
             Assert.Equal("Premier League", leagueButton.Text);
