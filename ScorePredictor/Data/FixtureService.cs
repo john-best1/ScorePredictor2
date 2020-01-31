@@ -74,7 +74,7 @@ namespace ScorePredictor.Data
                             fixture.predictedHomeScore = (int)reader["PredictedHomeScore"];
                             fixture.predictedAwayScore = (int)reader["PredictedAwayScore"];
                             fixture.utcDate = reader["UtcDate"].ToString();
-                            fixture.Strong = (bool)reader["Strong"];
+                            fixture.strong = (bool)reader["Strong"];
                             allFixtures.Add(fixture);
                         }
                         reader.Close();
@@ -232,7 +232,7 @@ namespace ScorePredictor.Data
                                 cmd.Parameters.AddWithValue("@utcdate", fixture.utcDate);
                                 cmd.Parameters.AddWithValue("@predictedhomegoals", fixture.predictedHomeScore);
                                 cmd.Parameters.AddWithValue("@predictedawaygoals", fixture.predictedAwayScore);
-                                cmd.Parameters.AddWithValue("@strong", fixture.Strong);
+                                cmd.Parameters.AddWithValue("@strong", fixture.strong);
                                 cmd.ExecuteNonQuery();
                             }
                         }

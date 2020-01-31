@@ -3,14 +3,12 @@
 }
 
 td, tr {
-    background-color: silver;
     border: 2px solid black;
     color: black;
     padding: 8px;
-    background-color: #1082ef;
 }
 .strong td{
-    background-color: greenyellow;
+    background-color: greenyellow !important;
 }
 
 h3 {
@@ -23,7 +21,7 @@ h3 {
     width: 15%;
     padding-left: 10px;
     text-align: center;
-    background-color: lightgrey;
+    background-color:#bab3b3;
 }
 
 th {
@@ -94,7 +92,7 @@ th :after {
 
 .details {
     border: none;
-    background-color: lightgrey;
+    background-color: #bab3b3;
 }
 
 .toprow td {
@@ -149,4 +147,8 @@ input {
     color:greenyellow;
     background-color:black;
     padding-top:5px;
+}
+
+.finished td {
+    background-color: powderblue !important;
 }

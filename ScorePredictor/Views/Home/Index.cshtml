@@ -44,20 +44,21 @@
                     </tr>
                     @for (int i = 0; i < list.fixtures.Count; i++)
                     {
-                        <tr class= "collapse fixtures_@list.fixtures[0].leagueId @(list.fixtures[i].Strong ? "strong" : "")">
+                        <tr class= "collapse fixtures_@list.fixtures[0].leagueId @(list.fixtures[i].strong ? "strong" : "")
+                            @(list.fixtures[i].finished ? "finished" : "")">
                             <td class="time">@DateTime.Parse(list.fixtures[i].utcDate).ToShortTimeString()</td>
                             @if (list.fixtures[i].finished)
                             {
                                 <td class="details">
-                                    @list.fixtures[i].homeTeamName [@list.fixtures[i].homeScore]
-                                    V [@list.fixtures[i].awayScore] @list.fixtures[i].awayTeamName
+                                    @list.fixtures[i].homeTeamName <b>[@list.fixtures[i].homeScore]</b>
+                                    V <b>[@list.fixtures[i].awayScore]</b> @list.fixtures[i].awayTeamName
                                 </td>
                             }
                             else if (list.fixtures[i].predictedHomeScore != -1)
                             {
                                 <td class="details">
-                                    @list.fixtures[i].homeTeamName [@list.fixtures[i].predictedHomeScore]
-                                    V [@list.fixtures[i].predictedAwayScore] @list.fixtures[i].awayTeamName
+                                    @list.fixtures[i].homeTeamName <b>[@list.fixtures[i].predictedHomeScore]</b>
+                                    V <b>[@list.fixtures[i].predictedAwayScore]</b> @list.fixtures[i].awayTeamName
                                 </td>
                             }
                             else if (!list.fixtures[i].postponed)
@@ -109,16 +110,21 @@
 
 
 <script>
-    $("#myDatepicker").datepicker({
+    $(document).ready(function () {
+
+        $('.collapse:odd td').not('.strong, .finished').css('background-color', 'lightgrey')});
+
+        $("#myDatepicker").datepicker({
         minDate: '-8D',
-        maxDate: '+4D',
+        maxDate: '+2D',
         onSelect: function () {
         date = new Date(this.value);
         url = "?dateString=" + date.toString();
         index = window.location.href.indexOf("/");
         window.location.href = window.location.href.substring(0, index) + url;
-    }
-});
+        }
+    });
+
 </script>
 
 

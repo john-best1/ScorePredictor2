@@ -36,7 +36,7 @@ namespace ScorePredictor.Models
 
         public bool postponed { get; set; }
 
-        public bool Strong { get; set; } = false;
+        public bool strong { get; set; } = false;
     }
 
 }
