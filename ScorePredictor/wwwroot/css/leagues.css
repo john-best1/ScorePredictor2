@@ -17,7 +17,6 @@ html {
     .ptable th, td {
         padding: 7px;
         background-color: black;
-        color: #ffe221;
         text-align: center;
     }
 
@@ -41,11 +40,9 @@ img{
 
 .wpos {
     text-align: center;
+    color:greenyellow;
 }
 
-    .wpos td {
-        color: #77ff21;
-    }
 
 .pos {
     text-align: center;
