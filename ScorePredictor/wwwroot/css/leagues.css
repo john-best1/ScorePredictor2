@@ -51,7 +51,13 @@ img{
     .pos td {
         color: #ff7b21;
     }
-
+.col{
+    color:greenyellow;
+}
+.col th:hover{
+    color:fuchsia;
+    cursor: pointer;
+}
 table .col {
     border-bottom: 1px solid #FFFFFF;
 }

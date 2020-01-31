@@ -45,16 +45,16 @@
 
     <table>
         <tr class="col">
-            <th>Pos</th>
-            <th>Team</th>
-            <th>GP</th>
-            <th>W</th>
-            <th>D</th>
-            <th>L</th>
-            <th>GD</th>
-            <th>GF</th>
-            <th>GA</th>
-            <th>PTS</th>
+            <th id="position">Pos</th>
+            <th id="team">Team</th>
+            <th id="gamesplayed">GP</th>
+            <th id="won">W</th>
+            <th id="drawn">D</th>
+            <th id="lost">L</th>
+            <th id="goaldifference">GD</th>
+            <th id="goalsfor">GF</th>
+            <th id="goalsagainst">GA</th>
+            <th id="points">PTS</th>
         </tr>
         @foreach (LeagueEntry entry in Model.leagues)
         {
@@ -78,4 +78,24 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
     $('.wpos:even').css('color', 'gold');
+
+    $('.col th').click(function () {
+        var table = $(this).parents('table').eq(0)
+        var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+        this.asc = !this.asc
+        var id = $(this).attr('id');
+        if (this.asc && id != "position" && id != "team") { rows = rows.reverse() }
+        else if (!this.asc && (id == "position" || id == "team")) { console.log("was here");rows = rows.reverse() }
+        for (var i = 0; i < rows.length; i++){ table.append(rows[i]) }
+        $('.wpos:even').css('color', 'gold');
+        $('.wpos:odd').css('color', 'greenyellow');
+    });
+
+    function comparer(index) {
+    return function(a, b) {
+        var valA = getCellValue(a, index), valB = getCellValue(b, index)
+        return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
+    }
+    }
+    function getCellValue(row, index){ return $(row).children('td').eq(index).text() }
 </script>
