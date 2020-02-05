@@ -619,6 +619,7 @@ namespace ScorePredictor.Data
                     if (match.homeGoals < match.awayGoals) query += ", TotalCorrect = TotalCorrect + 1" +
                             ", TotalOverallCorrectAwayWins = TotalOverallCorrectAwayWins + 1";
                     break;
+
                 default:
                     break;
             }

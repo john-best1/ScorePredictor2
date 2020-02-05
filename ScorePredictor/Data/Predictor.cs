@@ -2,16 +2,23 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ScorePredictor.Data
 {
     public static class Predictor
     {
-        public static Match generatePrediction(Match match)
+        public static Models.Match generatePrediction(Models.Match match)
         {
-            match.HomeStats.PredictionPoints = 2.5 + calculatePoints(match.HomeStats.overallLastSix);
-            match.AwayStats.PredictionPoints = calculatePoints(match.AwayStats.overallLastSix);
+            int[] homeTeamPositions = { int.Parse(Regex.Match(match.HomeStats.position, @"\d+").Value),
+                                        int.Parse(Regex.Match(match.HomeStats.HomeOrAwayPosition, @"\d+").Value)};
+            int[] awayTeamPositions = { int.Parse(Regex.Match(match.AwayStats.position, @"\d+").Value),
+                                        int.Parse(Regex.Match(match.AwayStats.HomeOrAwayPosition, @"\d+").Value)};
+            match.HomeStats.PredictionPoints = Math.Round(2.5 + calculatePoints(match.HomeStats.overallLastSix) + 
+                leaguePositionPoints(homeTeamPositions[0], homeTeamPositions[1]), 2);
+            match.AwayStats.PredictionPoints = Math.Round(calculatePoints(match.AwayStats.overallLastSix) +
+                leaguePositionPoints(awayTeamPositions[0],awayTeamPositions[1]), 2);
 
             match.predictedResult = predictResult(match.HomeStats.PredictionPoints, match.AwayStats.PredictionPoints);
 
@@ -20,6 +27,14 @@ namespace ScorePredictor.Data
             match.predictionMade = true;
 
             return match;
+        }
+
+        public static double leaguePositionPoints(int overall, int homeOrAway)
+        {
+            double overallPoints = overall * -0.2;
+            double homeOrAwayPoints = homeOrAway * -0.3;
+
+            return overallPoints + homeOrAwayPoints;
         }
 
         public static int[] predictScore(int homeLast6Scored, int awayLast6Scored, int prediction)

@@ -256,5 +256,40 @@ namespace ScorePredictor.Tests
 
             Assert.True((predictedResult[1] - predictedResult[0] >= 2) && predictedResult[0] >= 0 && predictedResult[1] > 0);
         }
+
+        [Fact]
+        public void leaguePositionPointsCalculationShouldBeCorrect()
+        {
+            //test calculations assume -0.2 per overall league position, -0.3 per homeOrAway league position
+            double tolerance = 0.01;
+            double pointsCalculation = Predictor.leaguePositionPoints(1, 1);
+
+            Assert.True(-0.5 - pointsCalculation < tolerance && pointsCalculation + 0.5 < tolerance);
+
+            pointsCalculation = Predictor.leaguePositionPoints(2, 2);
+
+            Assert.True(-1 - pointsCalculation < tolerance && pointsCalculation + 1 < tolerance);
+
+            pointsCalculation = Predictor.leaguePositionPoints(3,1);
+
+            Assert.True(-0.9 - pointsCalculation < tolerance && pointsCalculation + 0.9 < tolerance);
+
+            pointsCalculation = Predictor.leaguePositionPoints(10,10);
+
+            Assert.True(-5 - pointsCalculation < tolerance && pointsCalculation + 5 < tolerance);
+
+            pointsCalculation = Predictor.leaguePositionPoints(20, 10);
+
+            Assert.True(-7 - pointsCalculation < tolerance && pointsCalculation + 7 < tolerance);
+
+            pointsCalculation = Predictor.leaguePositionPoints(10, 24);
+
+            Assert.True(-9.2 - pointsCalculation < tolerance && pointsCalculation + 9.2 < tolerance);
+
+            pointsCalculation = Predictor.leaguePositionPoints(24, 24);
+
+            Assert.True(-12 - pointsCalculation < tolerance && pointsCalculation + 12 < tolerance);
+
+        }
     }
 }
